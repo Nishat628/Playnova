@@ -2,260 +2,514 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090714">
-  <meta name="description" content="PlayNova - Discover exciting free online games and enter a new world of play.">
-  <title>PlayNova | A New World of Play</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090711">
+<meta name="description" content="PlayNova is your destination for exciting free online puzzle, strategy and skill games. Discover a new world of play.">
+<title>PlayNova | Discover Your Next Game</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #090714;
-      color: #ffffff;
-      min-height: 100vh;
-    }
+:root {
+  --bg:#090711;
+  --panel:#151020;
+  --purple:#a855f7;
+  --light:#d8b4fe;
+  --muted:#a69bb8;
+  --border:#30213f;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 22px 8%;
-      border-bottom: 1px solid #29213f;
-      background: #100c20;
-    }
+* { margin:0; padding:0; box-sizing:border-box; }
 
-    .logo {
-      font-size: 27px;
-      font-weight: 800;
-      color: #b98aff;
-    }
+html { scroll-behavior:smooth; }
 
-    .logo span {
-      color: #ffffff;
-    }
+body {
+  background:var(--bg);
+  color:#fff;
+  font-family:Inter,Arial,sans-serif;
+}
 
-    nav a {
-      color: #ddd5ef;
-      text-decoration: none;
-      margin-left: 24px;
-      font-size: 14px;
-    }
+a { text-decoration:none; color:inherit; }
 
-    nav a:hover {
-      color: #c49aff;
-    }
+header {
+  height:76px;
+  padding:0 7%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:rgba(12,9,20,.96);
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
 
-    .hero {
-      text-align: center;
-      padding: 100px 20px 85px;
-      background: radial-gradient(ellipse at top, #38205f 0%, #151027 45%, #090714 80%);
-    }
+.logo {
+  font-size:27px;
+  font-weight:900;
+  letter-spacing:-1px;
+}
 
-    .tag {
-      display: inline-block;
-      color: #d9bdff;
-      border: 1px solid #7650a8;
-      border-radius: 30px;
-      padding: 9px 17px;
-      font-size: 12px;
-      letter-spacing: 2px;
-      margin-bottom: 25px;
-    }
+.logo span { color:var(--purple); }
 
-    .hero h1 {
-      font-size: clamp(42px, 8vw, 76px);
-      margin-bottom: 20px;
-      line-height: 1.1;
-    }
+nav { display:flex; gap:30px; }
 
-    .hero h1 span {
-      color: #bd8cff;
-    }
+nav a {
+  font-size:13px;
+  color:#c9bfd6;
+  transition:.2s;
+}
 
-    .hero p {
-      color: #c2b9d5;
-      font-size: 17px;
-      line-height: 1.7;
-      max-width: 600px;
-      margin: 0 auto 32px;
-    }
+nav a:hover { color:var(--light); }
 
-    .play-button {
-      display: inline-block;
-      background: linear-gradient(90deg, #8b45e8, #c06aff);
-      color: white;
-      padding: 15px 32px;
-      border-radius: 9px;
-      text-decoration: none;
-      font-weight: bold;
-      box-shadow: 0 0 25px #873ce866;
-    }
+.nav-btn {
+  background:#251434;
+  border:1px solid #70419c;
+  padding:10px 17px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:700;
+}
 
-    .games {
-      padding: 65px 8%;
-    }
+.hero {
+  min-height:520px;
+  padding:100px 20px 90px;
+  text-align:center;
+  background:
+    radial-gradient(ellipse at 50% 0%,#54218b 0%,#21102f 35%,#090711 75%);
+  position:relative;
+  overflow:hidden;
+}
 
-    .section-heading {
-      text-align: center;
-      margin-bottom: 38px;
-    }
+.hero-label {
+  display:inline-block;
+  border:1px solid #7742a0;
+  background:#251333;
+  color:#e4c5ff;
+  border-radius:30px;
+  padding:9px 17px;
+  font-size:11px;
+  letter-spacing:2px;
+  margin-bottom:27px;
+}
 
-    .section-heading h2 {
-      font-size: 34px;
-      margin-bottom: 12px;
-    }
+.hero h1 {
+  font-size:clamp(43px,8vw,78px);
+  font-weight:900;
+  line-height:1.08;
+  letter-spacing:-3px;
+  margin-bottom:22px;
+}
 
-    .section-heading p {
-      color: #aaa0bd;
-    }
+.hero h1 span {
+  background:linear-gradient(90deg,#c084fc,#e9a8ff);
+  -webkit-background-clip:text;
+  color:transparent;
+}
 
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 22px;
-    }
+.hero p {
+  max-width:590px;
+  margin:0 auto 32px;
+  color:#c3b6d1;
+  font-size:15px;
+  line-height:1.9;
+}
 
-    .game-card {
-      background: #171226;
-      border: 1px solid #33264b;
-      border-radius: 16px;
-      padding: 28px 22px;
-      text-align: center;
-      transition: 0.3s;
-    }
+.primary-btn {
+  display:inline-block;
+  padding:15px 28px;
+  background:linear-gradient(100deg,#8739d5,#bd67f5);
+  border-radius:9px;
+  font-size:13px;
+  font-weight:800;
+  box-shadow:0 8px 35px #9b45e64d;
+  transition:.25s;
+}
 
-    .game-card:hover {
-      transform: translateY(-7px);
-      border-color: #a66aff;
-      box-shadow: 0 8px 30px #8d45e833;
-    }
+.primary-btn:hover {
+  transform:translateY(-3px);
+  box-shadow:0 10px 40px #a855f780;
+}
 
-    .game-icon {
-      font-size: 48px;
-      margin-bottom: 18px;
-    }
+.stats {
+  display:flex;
+  justify-content:center;
+  gap:65px;
+  padding:25px 15px;
+  border-top:1px solid #2c1d3b;
+  border-bottom:1px solid #2c1d3b;
+  background:#100c19;
+}
 
-    .game-card h3 {
-      margin-bottom: 12px;
-      font-size: 21px;
-    }
+.stat strong {
+  display:block;
+  text-align:center;
+  font-size:19px;
+  color:#d8b4fe;
+}
 
-    .game-card p {
-      color: #aaa0bd;
-      font-size: 14px;
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
+.stat small {
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-size:11px;
+}
 
-    .coming {
-      display: inline-block;
-      color: #d2b5ff;
-      background: #302044;
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-    }
+.games {
+  max-width:1200px;
+  margin:auto;
+  padding:85px 7%;
+}
 
-    footer {
-      text-align: center;
-      padding: 28px 15px;
-      border-top: 1px solid #29213f;
-      color: #9187a4;
-      font-size: 13px;
-    }
+.section-top {
+  text-align:center;
+  margin-bottom:35px;
+}
 
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        gap: 18px;
-      }
+.section-top .eyebrow {
+  color:#c084fc;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:3px;
+  margin-bottom:12px;
+}
 
-      nav a {
-        margin: 0 8px;
-      }
+.section-top h2 {
+  font-size:34px;
+  margin-bottom:12px;
+}
 
-      .hero {
-        padding: 75px 18px;
-      }
+.section-top p {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+}
 
-      .games {
-        padding: 50px 6%;
-      }
-    }
-  </style>
+.search-wrap {
+  max-width:510px;
+  margin:0 auto 27px;
+}
+
+.search-wrap input {
+  width:100%;
+  background:#171120;
+  border:1px solid #463052;
+  border-radius:10px;
+  padding:16px 18px;
+  color:white;
+  outline:none;
+  font-size:13px;
+}
+
+.search-wrap input:focus {
+  border-color:#b66af2;
+  box-shadow:0 0 0 3px #a855f722;
+}
+
+.filters {
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:35px;
+}
+
+.filter {
+  padding:10px 17px;
+  border:1px solid #392746;
+  border-radius:30px;
+  background:#171120;
+  color:#c7b9d3;
+  font-size:11px;
+  cursor:pointer;
+}
+
+.filter.active {
+  background:#702cb0;
+  border-color:#b56af0;
+  color:white;
+}
+
+.game-grid {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:19px;
+}
+
+.game-card {
+  background:linear-gradient(150deg,#1c1428,#110d19);
+  border:1px solid #382646;
+  border-radius:15px;
+  padding:25px 17px;
+  text-align:center;
+  transition:.3s;
+  min-width:0;
+}
+
+.game-card:hover {
+  transform:translateY(-7px);
+  border-color:#a855f7;
+  box-shadow:0 12px 35px #8b36c42b;
+}
+
+.game-art {
+  height:115px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:55px;
+  margin-bottom:17px;
+  border-radius:11px;
+  background:radial-gradient(circle,#43235f,#21132f 65%,#171020);
+}
+
+.game-card h3 {
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+.game-card p {
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.7;
+  min-height:57px;
+}
+
+.status {
+  display:inline-block;
+  margin-top:16px;
+  padding:7px 12px;
+  border-radius:20px;
+  background:#30203e;
+  color:#d8b4fe;
+  font-size:10px;
+  font-weight:700;
+}
+
+.empty {
+  display:none;
+  text-align:center;
+  color:var(--muted);
+  padding:35px;
+  grid-column:1/-1;
+}
+
+.about {
+  margin:0 7% 80px;
+  padding:55px 25px;
+  text-align:center;
+  border:1px solid #392547;
+  border-radius:17px;
+  background:linear-gradient(120deg,#21132f,#120d1c);
+}
+
+.about h2 {
+  font-size:28px;
+  margin-bottom:15px;
+}
+
+.about p {
+  max-width:650px;
+  margin:auto;
+  color:#b9acc7;
+  font-size:13px;
+  line-height:1.9;
+}
+
+footer {
+  padding:35px 7%;
+  text-align:center;
+  border-top:1px solid #30213f;
+  background:#0e0a16;
+}
+
+.footer-logo {
+  font-size:22px;
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.footer-logo span { color:var(--purple); }
+
+footer p {
+  color:#8f849d;
+  font-size:11px;
+  line-height:2;
+}
+
+@media(max-width:850px) {
+  .game-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+@media(max-width:600px) {
+  header { padding:0 5%; height:67px; }
+  .logo { font-size:23px; }
+  nav { gap:12px; }
+  nav a { font-size:11px; }
+  .nav-btn { display:none; }
+  .hero { padding:85px 20px 75px; min-height:440px; }
+  .hero h1 { letter-spacing:-2px; }
+  .hero p { font-size:13px; }
+  .stats { gap:28px; }
+  .stat strong { font-size:16px; }
+  .stat small { font-size:9px; }
+  .games { padding:65px 5%; }
+  .section-top h2 { font-size:27px; }
+  .game-grid { gap:12px; }
+  .game-card { padding:17px 11px; }
+  .game-art { height:95px; font-size:43px; }
+  .game-card h3 { font-size:14px; }
+  .game-card p { font-size:10px; }
+  .about { margin:0 5% 55px; }
+}
+</style>
 </head>
 
 <body>
 
-  <header>
-    <div class="logo">PLAY<span>NOVA</span></div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#games">Games</a>
-      <a href="#about">About</a>
-    </nav>
-  </header>
+<header>
+  <a href="#" class="logo">PLAY<span>NOVA</span></a>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#games">Games</a>
+    <a href="#about">About</a>
+  </nav>
+  <a href="#games" class="nav-btn">EXPLORE</a>
+</header>
 
-  <section class="hero">
-    <div class="tag">WELCOME TO PLAYNOVA</div>
-    <h1>A New World<br>of <span>Play.</span></h1>
-    <p>
-      Discover exciting games, challenge yourself,
-      unlock achievements and explore a new world
-      of online entertainment.
-    </p>
-    <a href="#games" class="play-button">Explore Games</a>
-  </section>
+<section class="hero">
+  <div class="hero-label">✦ YOUR NEXT ADVENTURE STARTS HERE ✦</div>
+  <h1>ENTER A NEW<br>WORLD OF <span>PLAY.</span></h1>
+  <p>
+    Discover exciting games, challenge your mind,
+    beat your high scores and explore endless
+    possibilities in the world of PlayNova.
+  </p>
+  <a href="#games" class="primary-btn">EXPLORE GAMES &nbsp; →</a>
+</section>
 
-  <section class="games" id="games">
-    <div class="section-heading">
-      <h2>Explore Our Games</h2>
-      <p>Your next adventure starts here.</p>
-    </div>
+<section class="stats">
+  <div class="stat">
+    <strong>FREE</strong>
+    <small>Gaming Experience</small>
+  </div>
+  <div class="stat">
+    <strong>4+</strong>
+    <small>Game Adventures</small>
+  </div>
+  <div class="stat">
+    <strong>ANYTIME</strong>
+    <small>Play Your Way</small>
+  </div>
+</section>
 
-    <div class="game-grid">
+<section class="games" id="games">
+  <div class="section-top">
+    <div class="eyebrow">DISCOVER YOUR NEXT CHALLENGE</div>
+    <h2>Explore Our Games</h2>
+    <p>Choose your adventure. Your world of play awaits.</p>
+  </div>
 
-      <div class="game-card">
-        <div class="game-icon">🧩</div>
-        <h3>2048 Puzzle</h3>
-        <p>Combine numbers, sharpen your mind and beat your best score.</p>
-        <span class="coming">Coming Soon</span>
-      </div>
+  <div class="search-wrap">
+    <input id="search" type="search" placeholder="🔍 Search your favourite game...">
+  </div>
 
-      <div class="game-card">
-        <div class="game-icon">🎨</div>
-        <h3>Match 3</h3>
-        <p>Match colourful blocks and complete exciting challenges.</p>
-        <span class="coming">Coming Soon</span>
-      </div>
+  <div class="filters">
+    <button class="filter active" data-filter="all">All Games</button>
+    <button class="filter" data-filter="puzzle">Puzzle</button>
+    <button class="filter" data-filter="strategy">Strategy</button>
+    <button class="filter" data-filter="skill">Skill</button>
+  </div>
 
-      <div class="game-card">
-        <div class="game-icon">🏙️</div>
-        <h3>City Tycoon</h3>
-        <p>Build your dream city, grow your empire and earn rewards.</p>
-        <span class="coming">Coming Soon</span>
-      </div>
+  <div class="game-grid" id="gameGrid">
 
-      <div class="game-card">
-        <div class="game-icon">⌨️</div>
-        <h3>Typing Challenge</h3>
-        <p>Test your typing speed and improve your accuracy.</p>
-        <span class="coming">Coming Soon</span>
-      </div>
+    <article class="game-card" data-category="puzzle" data-name="2048 puzzle">
+      <div class="game-art">🧩</div>
+      <h3>2048 Puzzle</h3>
+      <p>Combine numbers, sharpen your mind and beat your highest score.</p>
+      <span class="status">COMING SOON</span>
+    </article>
 
-    </div>
-  </section>
+    <article class="game-card" data-category="puzzle" data-name="match 3">
+      <div class="game-art">🎨</div>
+      <h3>Match 3</h3>
+      <p>Match colourful blocks and complete exciting puzzle challenges.</p>
+      <span class="status">COMING SOON</span>
+    </article>
 
-  <footer id="about">
-    © 2026 PlayNova. A New World of Play.
-  </footer>
+    <article class="game-card" data-category="strategy" data-name="city tycoon">
+      <div class="game-art">🏙️</div>
+      <h3>City Tycoon</h3>
+      <p>Build your dream city, grow your empire and manage your resources.</p>
+      <span class="status">COMING SOON</span>
+    </article>
+
+    <article class="game-card" data-category="skill" data-name="typing challenge">
+      <div class="game-art">⌨️</div>
+      <h3>Typing Challenge</h3>
+      <p>Test your typing speed and improve your accuracy with every round.</p>
+      <span class="status">COMING SOON</span>
+    </article>
+
+    <div class="empty" id="empty">No games found. Try another search.</div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <h2>Welcome to PlayNova</h2>
+  <p>
+    PlayNova is a growing online gaming destination
+    built for players who love challenges, creativity
+    and fun. Discover new adventures and enjoy a
+    world designed around play.
+  </p>
+</section>
+
+<footer>
+  <div class="footer-logo">PLAY<span>NOVA</span></div>
+  <p>A New World of Play.</p>
+  <p>© 2026 PlayNova. All rights reserved.</p>
+</footer>
+
+<script>
+const search = document.getElementById("search");
+const cards = document.querySelectorAll(".game-card");
+const filters = document.querySelectorAll(".filter");
+const empty = document.getElementById("empty");
+
+let activeFilter = "all";
+
+function updateGames() {
+  const term = search.value.toLowerCase().trim();
+  let visible = 0;
+
+  cards.forEach(card => {
+    const matchesName = card.dataset.name.includes(term);
+    const matchesCategory =
+      activeFilter === "all" ||
+      card.dataset.category === activeFilter;
+
+    const show = matchesName && matchesCategory;
+    card.style.display = show ? "" : "none";
+
+    if (show) visible++;
+  });
+
+  empty.style.display = visible ? "none" : "block";
+}
+
+search.addEventListener("input", updateGames);
+
+filters.forEach(button => {
+  button.addEventListener("click", () => {
+    filters.forEach(item => item.classList.remove("active"));
+    button.classList.add("active");
+    activeFilter = button.dataset.filter;
+    updateGames();
+  });
+});
+</script>
 
 </body>
 </html>
