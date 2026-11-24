@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solitaire — PlayNova Arcade</title>
+  <style>
+    :root {
+      --bg: #0b0914;
+      --panel: #151126;
+      --panel-2: #1d1734;
+      --border: rgba(255, 255, 255, 0.12);
+      --text: #f5f3ff;
+      --muted: #a79ec7;
+      --accent: #8b5cf6;
+      --accent-2: #ec4899;
+      --good: #34d399;
+      --warn: #fbbf24;
+      --red: #f43f5e;
+      --card-bg: #fcfaff;
+      --card-back: linear-gradient(135deg, #5b21b6, #be185d);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(139, 92, 246, 0.22), transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.16), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 620px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.05rem;
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      font-size: 1.05rem;
+      line-height: 1.2;
+    }
+
+    .brand p {
+      font-size: 0.7rem;
+      letter-spacing: 0.9px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--text);
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 9px 6px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.63rem;
+      color: var(--muted);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      font-size: 0.98rem;
+      font-weight: 700;
+      margin-top: 3px;
+      color: #fff;
+    }
+
+    .stat-value.good { color: var(--good); }
+    .stat-value.warn { color: var(--warn); }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 11px;
+      padding: 9px 10px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+
+    .btn.secondary {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .board {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .top-piles {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+      align-items: start;
+    }
+
+    .tableau {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+      align-items: start;
+      min-height: 290px;
+    }
+
+    .col {
+      position: relative;
+      min-height: 240px;
+    }
+
+    .slot {
+      aspect-ratio: 2.5 / 3.5;
+      width: 100%;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      display: grid;
+      place-items: center;
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 0.9rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .slot.hint-target {
+      border-color: var(--good);
+      box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.35);
+    }
+
+    .card {
+      aspect-ratio: 2.5 / 3.5;
+      width: 100%;
+      border-radius: 8px;
+      background: var(--card-bg);
+      color: #14111f;
+      border: 1px solid rgba(0, 0, 0, 0.16);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      font-weight: 800;
+    }
+
+    .card.red {
+      color: var(--red);
+    }
+
+    .card.face-down {
+      background: var(--card-back);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: transparent;
+    }
+
+    .card.face-down::after {
+      content: "✦";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 1rem;
+    }
+
+    .card.selected {
+      outline: 2.5px solid #c084fc;
+      box-shadow: 0 0 14px rgba(192, 132, 252, 0.65);
+      transform: translateY(-3px);
+    }
+
+    .card.hint-card {
+      outline: 2.5px solid var(--good);
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.55);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      line-height: 1;
+    }
+
+    .card-center {
+      text-align: center;
+      font-size: 1.05rem;
+      line-height: 1;
+    }
+
+    .col .card {
+      position: absolute;
+      left: 0;
+      right: 0;
+    }
+
+    .status-msg {
+      min-height: 20px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .win-banner {
+      display: none;
+      background: rgba(52, 211, 153, 0.14);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      color: var(--good);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .win-banner.show {
+      display: block;
+    }
+
+    @media (max-width: 430px) {
+      .card-top { font-size: 0.62rem; }
+      .card-center { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top-bar">
+      <div class="brand">
+        <div class="badge">♠</div>
+        <div>
+          <h1>Solitaire</h1>
+          <p>PlayNova Arcade</p>
+        </div>
+      </div>
+      <a href="index.html" class="back-btn">← Games</a>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat">
+        <div class="stat-label">Moves</div>
+        <div id="movesEl" class="stat-value">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Time</div>
+        <div id="timeEl" class="stat-value warn">00:00</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Foundations</div>
+        <div id="foundEl" class="stat-value good">0/52</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Best Moves</div>
+        <div id="bestEl" class="stat-value">—</div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button id="newBtn" class="btn" type="button">↻ New Deal</button>
+      <button id="undoBtn" class="btn secondary" type="button">↶ Undo</button>
+      <button id="hintBtn" class="btn secondary" type="button">💡 Hint</button>
+    </div>
+
+    <div id="winBanner" class="win-banner">🎉 You Won! All 52 cards placed in foundations!</div>
+
+    <section class="board">
+      <div class="top-piles">
+        <div id="stockSlot"></div>
+        <div id="wasteSlot"></div>
+        <div></div>
+        <div id="found0"></div>
+        <div id="found1"></div>
+        <div id="found2"></div>
+        <div id="found3"></div>
+      </div>
+
+      <div id="tableauEl" class="tableau"></div>
+    </section>
+
+    <div id="statusMsg" class="status-msg">Tap a card to select, then tap a target pile or column.</div>
+  </main>
+
+  <script>
+    (function () {
+      const BEST_KEY = "playnova_solitaire_best_moves_v1";
+      const SUITS = [
+        { key: "spades", sym: "♠", color: "black" },
+        { key: "hearts", sym: "♥", color: "red" },
+        { key: "clubs", sym: "♣", color: "black" },
+        { key: "diamonds", sym: "♦", color: "red" }
+      ];
+      const RANKS = ["", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+
+      let state = null;
+      let history = [];
+      let selected = null;
+      let hint = null;
+      let seconds = 0;
+      let timerId = null;
+      let bestMoves = null;
+
+      const movesEl = document.getElementById("movesEl");
+      const timeEl = document.getElementById("timeEl");
+      const foundEl = document.getElementById("foundEl");
+      const bestEl = document.getElementById("bestEl");
+      const stockSlot = document.getElementById("stockSlot");
+      const wasteSlot = document.getElementById("wasteSlot");
+      const foundSlots = [0, 1, 2, 3].map(i => document.getElementById("found" + i));
+      const tableauEl = document.getElementById("tableauEl");
+      const statusMsg = document.getElementById("statusMsg");
+      const winBanner = document.getElementById("winBanner");
+      const newBtn = document.getElementById("newBtn");
+      const undoBtn = document.getElementById("undoBtn");
+      const hintBtn = document.getElementById("hintBtn");
+
+      function loadBest() {
+        try {
+          const raw = parseInt(localStorage.getItem(BEST_KEY) || "0", 10);
+          bestMoves = raw > 0 ? raw : null;
+        } catch (e) {
+          bestMoves = null;
+        }
+        bestEl.textContent = bestMoves ? String(bestMoves) : "—";
+      }
+
+      function saveBestIfWon(moves) {
+        if (bestMoves === null || moves < bestMoves) {
+          bestMoves = moves;
+          bestEl.textContent = String(bestMoves);
+          try {
+            localStorage.setItem(BEST_KEY, String(bestMoves));
+          } catch (e) {}
+        }
+      }
+
+      function cloneState(s) {
+        return JSON.parse(JSON.stringify(s));
+      }
+
+      function createDeck() {
+        const deck = [];
+        for (const suit of SUITS) {
+          for (let rank = 1; rank <= 13; rank++) {
+            deck.push({
+              suit: suit.key,
+              sym: suit.sym,
+              color: suit.color,
+              rank: rank,
+              label: RANKS[rank],
+              faceUp: false
+            });
+          }
+        }
+        for (let i = deck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = deck[i];
+          deck[i] = deck[j];
+          deck[j] = tmp;
+        }
+        return deck;
+      }
+
+      function newGame() {
+        const deck = createDeck();
+        const tableau = [[], [], [], [], [], [], []];
+        for (let c = 0; c < 7; c++) {
+          for (let r = 0; r <= c; r++) {
+            const card = deck.pop();
+            card.faceUp = r === c;
+            tableau[c].push(card);
+          }
+        }
+        state = {
+          stock: deck,
+          waste: [],
+          foundations: [[], [], [], []],
+          tableau: tableau,
+          moves: 0,
+          won: false
+        };
+        history = [];
+        selected = null;
+        hint = null;
+        seconds = 0;
+        winBanner.classList.remove("show");
+        statusMsg.textContent = "New deal started. Good luck!";
+        startTimer();
+        render();
+      }
+
+      function startTimer() {
+        if (timerId) clearInterval(timerId);
+        timerId = setInterval(() => {
+          if (state && !state.won) {
+            seconds += 1;
+            const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+            const s = String(seconds % 60).padStart(2, "0");
+            timeEl.textContent = m + ":" + s;
+          }
+        }, 1000);
+      }
+
+      function pushHistory() {
+        history.push(cloneState(state));
+        if (history.length > 40) history.shift();
+      }
+
+      function canMoveToFoundation(card, fIdx) {
+        const pile = state.foundations[fIdx];
+        if (pile.length === 0) {
+          return card.rank === 1;
+        }
+        const top = pile[pile.length - 1];
+        return top.suit === card.suit && card.rank === top.rank + 1;
+      }
+
+      function canMoveToTableau(card, colIdx) {
+        const col = state.tableau[colIdx];
+        if (col.length === 0) {
+          return card.rank === 13;
+        }
+        const top = col[col.length - 1];
+        if (!top.faceUp) return false;
+        return top.color !== card.color && card.rank === top.rank - 1;
+      }
+
+      function revealTopTableau(colIdx) {
+        const col = state.tableau[colIdx];
+        if (col.length > 0 && !col[col.length - 1].faceUp) {
+          col[col.length - 1].faceUp = true;
+        }
+      }
+
+      function checkWin() {
+        const total = state.foundations.reduce((acc, p) => acc + p.length, 0);
+        foundEl.textContent = total + "/52";
+        if (total === 52 && !state.won) {
+          state.won = true;
+          winBanner.classList.add("show");
+          saveBestIfWon(state.moves);
+          statusMsg.textContent = "Victory! Completed in " + state.moves + " moves.";
+        }
+      }
+
+      function drawFromStock() {
+        if (state.won) return;
+        hint = null;
+        selected = null;
+        if (state.stock.length > 0) {
+          pushHistory();
+          const card = state.stock.pop();
+          card.faceUp = true;
+          state.waste.push(card);
+          state.moves += 1;
+          statusMsg.textContent = "Drew a card from stock.";
+        } else if (state.waste.length > 0) {
+          pushHistory();
+          while (state.waste.length > 0) {
+            const c = state.waste.pop();
+            c.faceUp = false;
+            state.stock.push(c);
+          }
+          state.moves += 1;
+          statusMsg.textContent = "Recycled waste back to stock.";
+        } else {
+          statusMsg.textContent = "No cards left in stock or waste.";
+        }
+        render();
+      }
+
+      function executeMove(targetType, targetIdx) {
+        if (!selected || state.won) return false;
+        const src = selected;
+
+        if (src.source === "waste") {
+          if (state.waste.length === 0) return false;
+          const card = state.waste[state.waste.length - 1];
+          if (targetType === "foundation" && canMoveToFoundation(card, targetIdx)) {
+            pushHistory();
+            state.foundations[targetIdx].push(state.waste.pop());
+            state.moves += 1;
+            selected = null;
+            hint = null;
+            render();
+            return true;
+          }
+          if (targetType === "tableau" && canMoveToTableau(card, targetIdx)) {
+            pushHistory();
+            state.tableau[targetIdx].push(state.waste.pop());
+            state.moves += 1;
+            selected = null;
+            hint = null;
+            render();
+            return true;
+          }
+        } else if (src.source === "tableau") {
+          const col = state.tableau[src.colIdx];
+          if (src.cardIdx < 0 || src.cardIdx >= col.length) return false;
+          const movingCards = col.slice(src.cardIdx);
+          if (!movingCards[0].faceUp) return false;
+
+          if (targetType === "foundation" && movingCards.length === 1 && canMoveToFoundation(movingCards[0], targetIdx)) {
+            pushHistory();
+            state.foundations[targetIdx].push(col.pop());
+            revealTopTableau(src.colIdx);
+            state.moves += 1;
+            selected = null;
+            hint = null;
+            render();
+            return true;
+          }
+
+          if (targetType === "tableau" && targetIdx !== src.colIdx && canMoveToTableau(movingCards[0], targetIdx)) {
+            pushHistory();
+            state.tableau[targetIdx].push(...col.splice(src.cardIdx));
+            revealTopTableau(src.colIdx);
+            state.moves += 1;
+            selected = null;
+            hint = null;
+            render();
+            return true;
+          }
+        } else if (src.source === "foundation") {
+          const fPile = state.foundations[src.fIdx];
+          if (fPile.length === 0) return false;
+          const card = fPile[fPile.length - 1];
+          if (targetType === "tableau" && canMoveToTableau(card, targetIdx)) {
+            pushHistory();
+            state.tableau[targetIdx].push(fPile.pop());
+            state.moves += 1;
+            selected = null;
+            hint = null;
+            render();
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      function tryAutoFoundation(card, fromDesc) {
+        for (let f = 0; f < 4; f++) {
+          if (canMoveToFoundation(card, f)) {
+            pushHistory();
+            if (fromDesc.source === "waste") {
+              state.foundations[f].push(state.waste.pop());
+            } else if (fromDesc.source === "tableau") {
+              state.foundations[f].push(state.tableau[fromDesc.colIdx].pop());
+              revealTopTableau(fromDesc.colIdx);
+            }
+            state.moves += 1;
+            selected = null;
+            hint = null;
+            render();
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function onWasteClick() {
+        if (state.won || state.waste.length === 0) return;
+        hint = null;
+        const top = state.waste[state.waste.length - 1];
+        if (selected && selected.source === "waste") {
+          if (!tryAutoFoundation(top, { source: "waste" })) {
+            selected = null;
+            statusMsg.textContent = "Selection cleared.";
+          }
+        } else {
+          selected = { source: "waste" };
+          statusMsg.textContent = "Selected " + top.label + top.sym + ". Tap foundation or column.";
+        }
+        render();
+      }
+
+      function onFoundationClick(fIdx) {
+        if (state.won) return;
+        hint = null;
+        if (selected) {
+          if (executeMove("foundation", fIdx)) return;
+        }
+        const pile = state.foundations[fIdx];
+        if (pile.length > 0) {
+          const top = pile[pile.length - 1];
+          selected = { source: "foundation", fIdx: fIdx };
+          statusMsg.textContent = "Selected " + top.label + top.sym + " from foundation.";
+        } else {
+          selected = null;
+        }
+        render();
+      }
+
+      function onTableauClick(colIdx, cardIdx) {
+        if (state.won) return;
+        hint = null;
+        const col = state.tableau[colIdx];
+
+        if (selected) {
+          if (executeMove("tableau", colIdx)) return;
+        }
+
+        if (col.length === 0) {
+          selected = null;
+          return;
+        }
+
+        const idx = typeof cardIdx === "number" ? cardIdx : col.length - 1;
+        const card = col[idx];
+        if (!card.faceUp) {
+          if (idx === col.length - 1) {
+            card.faceUp = true;
+            render();
+          }
+          return;
+        }
+
+        if (selected && selected.source === "tableau" && selected.colIdx === colIdx && selected.cardIdx === idx && idx === col.length - 1) {
+          if (!tryAutoFoundation(card, { source: "tableau", colIdx: colIdx })) {
+            selected = null;
+            statusMsg.textContent = "Selection cleared.";
+          }
+        } else {
+          selected = { source: "tableau", colIdx: colIdx, cardIdx: idx };
+          statusMsg.textContent = "Selected " + card.label + card.sym + ". Tap target column or foundation.";
+        }
+        render();
+      }
+
+      function findHint() {
+        if (state.won) return;
+        if (state.waste.length > 0) {
+          const wCard = state.waste[state.waste.length - 1];
+          for (let f = 0; f < 4; f++) {
+            if (canMoveToFoundation(wCard, f)) {
+              hint = { type: "waste-found", fIdx: f };
+              statusMsg.textContent = "Hint: Move " + wCard.label + wCard.sym + " from waste to foundation.";
+              render();
+              return;
+            }
+          }
+          for (let c = 0; c < 7; c++) {
+            if (canMoveToTableau(wCard, c)) {
+              hint = { type: "waste-tab", colIdx: c };
+              statusMsg.textContent = "Hint: Move " + wCard.label + wCard.sym + " from waste to column " + (c + 1) + ".";
+              render();
+              return;
+            }
+          }
+        }
+
+        for (let c = 0; c < 7; c++) {
+          const col = state.tableau[c];
+          if (col.length === 0) continue;
+          const topCard = col[col.length - 1];
+          for (let f = 0; f < 4; f++) {
+            if (canMoveToFoundation(topCard, f)) {
+              hint = { type: "tab-found", colIdx: c, cardIdx: col.length - 1, fIdx: f };
+              statusMsg.textContent = "Hint: Move " + topCard.label + topCard.sym + " to foundation.";
+              render();
+              return;
+            }
+          }
+          for (let i = 0; i < col.length; i++) {
+            if (!col[i].faceUp) continue;
+            const lead = col[i];
+            if (lead.rank === 13 && i === 0) continue;
+            for (let targetCol = 0; targetCol < 7; targetCol++) {
+              if (targetCol === c) continue;
+              if (canMoveToTableau(lead, targetCol)) {
+                hint = { type: "tab-tab", colIdx: c, cardIdx: i, targetCol: targetCol };
+                statusMsg.textContent = "Hint: Move " + lead.label + lead.sym + " to column " + (targetCol + 1) + ".";
+                render();
+                return;
+              }
+            }
+          }
+        }
+
+        if (state.stock.length > 0 || state.waste.length > 0) {
+          hint = { type: "stock" };
+          statusMsg.textContent = "Hint: Draw a card from Stock.";
+        } else {
+          statusMsg.textContent = "No obvious moves left—try Undo or New Deal.";
+        }
+        render();
+      }
+
+      function makeCardEl(card, isSelected, isHint) {
+        const el = document.createElement("div");
+        el.className = "card" + (card.color === "red" ? " red" : "") + (!card.faceUp ? " face-down" : "") + (isSelected ? " selected" : "") + (isHint ? " hint-card" : "");
+        if (card.faceUp) {
+          el.innerHTML =
+            '<div class="card-top"><span>' + card.label + '</span><span>' + card.sym + '</span></div>' +
+            '<div class="card-center">' + card.sym + '</div>' +
+            '<div class="card-top"><span>' + card.sym + '</span><span>' + card.label + '</span></div>';
+        }
+        return el;
+      }
+
+      function render() {
+        movesEl.textContent = String(state.moves);
+        checkWin();
+
+        stockSlot.innerHTML = "";
+        const sSlot = document.createElement("div");
+        sSlot.className = "slot" + (hint && hint.type === "stock" ? " hint-target" : "");
+        if (state.stock.length > 0) {
+          const back = document.createElement("div");
+          back.className = "card face-down";
+          sSlot.appendChild(back);
+        } else {
+          sSlot.textContent = "↻";
+        }
+        sSlot.addEventListener("click", drawFromStock);
+        stockSlot.appendChild(sSlot);
+
+        wasteSlot.innerHTML = "";
+        const wSlot = document.createElement("div");
+        wSlot.className = "slot";
+        if (state.waste.length > 0) {
+          const wCard = state.waste[state.waste.length - 1];
+          const isSel = selected && selected.source === "waste";
+          const isH = hint && (hint.type === "waste-found" || hint.type === "waste-tab");
+          const cEl = makeCardEl(wCard, isSel, isH);
+          cEl.addEventListener("click", (e) => {
+            e.stopPropagation();
+            onWasteClick();
+          });
+          wasteSlot.appendChild(cEl);
+        } else {
+          wSlot.textContent = "—";
+        }
+        wasteSlot.appendChild(wSlot);
+
+        foundSlots.forEach((container, fIdx) => {
+          container.innerHTML = "";
+          const fSlot = document.createElement("div");
+          const isTargetHint = hint && ((hint.type === "waste-found" && hint.fIdx === fIdx) || (hint.type === "tab-found" && hint.fIdx === fIdx));
+          fSlot.className = "slot" + (isTargetHint ? " hint-target" : "");
+          const pile = state.foundations[fIdx];
+          if (pile.length > 0) {
+            const top = pile[pile.length - 1];
+            const isSel = selected && selected.source === "foundation" && selected.fIdx === fIdx;
+            const cEl = makeCardEl(top, isSel, false);
+            cEl.addEventListener("click", (e) => {
+              e.stopPropagation();
+              onFoundationClick(fIdx);
+            });
+            fSlot.appendChild(cEl);
+          } else {
+            fSlot.textContent = SUITS[fIdx].sym;
+          }
+          fSlot.addEventListener("click", () => onFoundationClick(fIdx));
+          container.appendChild(fSlot);
+        });
+
+        tableauEl.innerHTML = "";
+        state.tableau.forEach((col, colIdx) => {
+          const colDiv = document.createElement("div");
+          colDiv.className = "col";
+
+          const baseSlot = document.createElement("div");
+          const isColHint = hint && hint.type === "waste-tab" && hint.colIdx === colIdx;
+          baseSlot.className = "slot" + (isColHint ? " hint-target" : "");
+          baseSlot.textContent = "K";
+          baseSlot.addEventListener("click", () => onTableauClick(colIdx));
+          colDiv.appendChild(baseSlot);
+
+          let offset = 0;
+          col.forEach((card, cardIdx) => {
+            const isSel = selected && selected.source === "tableau" && selected.colIdx === colIdx && cardIdx >= selected.cardIdx;
+            const isH = hint && ((hint.type === "tab-found" && hint.colIdx === colIdx && hint.cardIdx === cardIdx) || (hint.type === "tab-tab" && hint.colIdx === colIdx && cardIdx >= hint.cardIdx));
+            const cEl = makeCardEl(card, isSel, isH);
+            cEl.style.top = offset + "px";
+            cEl.addEventListener("click", (e) => {
+              e.stopPropagation();
+              onTableauClick(colIdx, cardIdx);
+            });
+            colDiv.appendChild(cEl);
+            offset += card.faceUp ? 24 : 12;
+          });
+
+          colDiv.style.minHeight = Math.max(150, offset + 90) + "px";
+          tableauEl.appendChild(colDiv);
+        });
+      }
+
+      newBtn.addEventListener("click", newGame);
+      undoBtn.addEventListener("click", () => {
+        if (history.length === 0 || state.won) {
+          statusMsg.textContent = "Nothing to undo.";
+          return;
+        }
+        state = history.pop();
+        selected = null;
+        hint = null;
+        winBanner.classList.remove("show");
+        statusMsg.textContent = "Undid last move.";
+        render();
+      });
+      hintBtn.addEventListener("click", findHint);
+
+      loadBest();
+      newGame();
+    })();
+  </script>
+</body>
+</html>
