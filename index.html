@@ -246,6 +246,49 @@ nav a:hover { color:var(--light); }
   transition:.3s;
   min-width:0;
 }
+.game-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.game-thumb svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.game-card:hover .game-thumb svg {
+  transform: scale(1.06);
+}
+
+.thumb-2048 {
+  background: linear-gradient(135deg, #2b1452 0%, #5b21b6 55%, #f59e0b 140%);
+}
+
+.thumb-match3 {
+  background: linear-gradient(135deg, #241047 0%, #9d174d 55%, #ec4899 140%);
+}
+
+.thumb-city {
+  background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 60%, #38bdf8 140%);
+}
+
+.thumb-typing {
+  background: linear-gradient(135deg, #18102e 0%, #4338ca 60%, #a855f7 140%);
+}
+
+.thumb-solitaire {
+  background: linear-gradient(135deg, #0f2922 0%, #047857 60%, #34d399 140%);
+}
 
 .game-card:hover {
   transform:translateY(-7px);
