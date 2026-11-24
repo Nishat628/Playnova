@@ -9,6 +9,8 @@
       --bg: #0b0914;
       --panel: #151126;
       --panel-2: #1d1734;
+      --felt: #164e34;
+      --felt-2: #0e3824;
       --border: rgba(255, 255, 255, 0.12);
       --text: #f5f3ff;
       --muted: #a79ec7;
@@ -16,9 +18,9 @@
       --accent-2: #ec4899;
       --good: #34d399;
       --warn: #fbbf24;
-      --red: #f43f5e;
-      --card-bg: #fcfaff;
-      --card-back: linear-gradient(135deg, #5b21b6, #be185d);
+      --red: #dc2626;
+      --black: #111827;
+      --card-bg: #ffffff;
     }
 
     * {
@@ -34,23 +36,23 @@
       overflow-x: hidden;
       min-height: 100vh;
       background:
-        radial-gradient(circle at 20% 10%, rgba(139, 92, 246, 0.22), transparent 45%),
-        radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.16), transparent 45%),
+        radial-gradient(circle at 20% 10%, rgba(139, 92, 246, 0.2), transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.14), transparent 45%),
         var(--bg);
       color: var(--text);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding: 12px;
+      padding: 10px;
       display: flex;
       justify-content: center;
     }
 
     .app {
       width: 100%;
-      max-width: 620px;
+      max-width: 640px;
       min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .top-bar {
@@ -60,37 +62,36 @@
       gap: 10px;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 10px 14px;
+      border-radius: 14px;
+      padding: 9px 12px;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      min-width: 0;
     }
 
     .badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       display: grid;
       place-items: center;
       font-weight: 800;
-      font-size: 1.05rem;
+      font-size: 1rem;
       flex: 0 0 auto;
     }
 
     .brand h1 {
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       line-height: 1.2;
     }
 
     .brand p {
-      font-size: 0.7rem;
-      letter-spacing: 0.9px;
+      font-size: 0.68rem;
+      letter-spacing: 0.8px;
       color: var(--muted);
       text-transform: uppercase;
     }
@@ -100,9 +101,9 @@
       color: var(--text);
       background: var(--panel-2);
       border: 1px solid var(--border);
-      padding: 8px 12px;
+      padding: 7px 11px;
       border-radius: 10px;
-      font-size: 0.84rem;
+      font-size: 0.82rem;
       font-weight: 600;
       white-space: nowrap;
     }
@@ -110,115 +111,108 @@
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
+      gap: 7px;
     }
 
     .stat {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 9px 6px;
+      border-radius: 11px;
+      padding: 7px 5px;
       text-align: center;
     }
 
     .stat-label {
-      font-size: 0.63rem;
+      font-size: 0.6rem;
       color: var(--muted);
-      letter-spacing: 0.8px;
+      letter-spacing: 0.7px;
       text-transform: uppercase;
     }
 
     .stat-value {
-      font-size: 0.98rem;
+      font-size: 0.94rem;
       font-weight: 700;
-      margin-top: 3px;
+      margin-top: 2px;
       color: #fff;
     }
 
     .stat-value.good { color: var(--good); }
     .stat-value.warn { color: var(--warn); }
 
-    .actions {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 11px;
-      padding: 9px 10px;
-      font-size: 0.84rem;
-      font-weight: 700;
-      cursor: pointer;
-      color: #fff;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    }
-
-    .btn.secondary {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    .board {
-      background: var(--panel);
-      border: 1px solid var(--border);
+    .table-wrap {
+      background: radial-gradient(circle at 50% 20%, var(--felt), var(--felt-2));
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 18px;
-      padding: 12px;
+      padding: 10px 8px 14px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
+      box-shadow: inset 0 0 36px rgba(0, 0, 0, 0.35);
     }
 
     .top-piles {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 6px;
+      gap: 5px;
       align-items: start;
     }
 
     .tableau {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 6px;
+      gap: 5px;
       align-items: start;
-      min-height: 290px;
+      min-height: 330px;
     }
 
     .col {
       position: relative;
-      min-height: 240px;
+      min-height: 290px;
     }
 
     .slot {
-      aspect-ratio: 2.5 / 3.5;
+      aspect-ratio: 5 / 7;
       width: 100%;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px dashed rgba(255, 255, 255, 0.18);
+      border-radius: 7px;
+      background: rgba(0, 0, 0, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.22);
       display: grid;
       place-items: center;
-      color: rgba(255, 255, 255, 0.25);
-      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.35);
+      font-size: 0.85rem;
       cursor: pointer;
       user-select: none;
+      position: relative;
     }
 
     .slot.hint-target {
-      border-color: var(--good);
-      box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.35);
+      border: 2px solid var(--warn);
+      box-shadow: 0 0 12px rgba(251, 191, 36, 0.65);
+    }
+
+    .stock-count {
+      position: absolute;
+      top: 3px;
+      right: 4px;
+      z-index: 3;
+      background: rgba(15, 23, 42, 0.82);
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 6px;
+      line-height: 1.2;
     }
 
     .card {
-      aspect-ratio: 2.5 / 3.5;
+      aspect-ratio: 5 / 7;
       width: 100%;
-      border-radius: 8px;
+      border-radius: 7px;
       background: var(--card-bg);
-      color: #14111f;
-      border: 1px solid rgba(0, 0, 0, 0.16);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
-      padding: 4px;
+      color: var(--black);
+      border: 1px solid rgba(15, 23, 42, 0.28);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      padding: 3px 4px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -233,44 +227,57 @@
     }
 
     .card.face-down {
-      background: var(--card-back);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      background-color: #b91c1c;
+      background-image:
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.22) 0 2px, transparent 2px 7px),
+        repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.22) 0 2px, transparent 2px 7px);
+      border: 2px solid #ffffff;
       color: transparent;
     }
 
-    .card.face-down::after {
-      content: "✦";
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      color: rgba(255, 255, 255, 0.45);
-      font-size: 1rem;
-    }
-
     .card.selected {
-      outline: 2.5px solid #c084fc;
-      box-shadow: 0 0 14px rgba(192, 132, 252, 0.65);
-      transform: translateY(-3px);
+      outline: 2.5px solid #facc15;
+      box-shadow: 0 0 14px rgba(250, 204, 21, 0.8);
+      transform: translateY(-2px);
+      z-index: 25 !important;
     }
 
     .card.hint-card {
-      outline: 2.5px solid var(--good);
-      box-shadow: 0 0 12px rgba(52, 211, 153, 0.55);
+      outline: 2.5px solid #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.75);
+      z-index: 24 !important;
     }
 
-    .card-top {
+    .card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.72rem;
+      gap: 1px;
+      font-size: 0.74rem;
       line-height: 1;
+      letter-spacing: -0.4px;
     }
 
     .card-center {
       text-align: center;
       font-size: 1.05rem;
       line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .card-royal {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 68%;
+      height: 54%;
+      margin: 0 auto;
+      border-radius: 5px;
+      border: 1px solid currentColor;
+      opacity: 0.85;
+      font-size: 0.72rem;
+      line-height: 1.05;
     }
 
     .col .card {
@@ -280,31 +287,68 @@
     }
 
     .status-msg {
-      min-height: 20px;
       text-align: center;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--muted);
+      min-height: 18px;
     }
 
     .win-banner {
       display: none;
-      background: rgba(52, 211, 153, 0.14);
-      border: 1px solid rgba(52, 211, 153, 0.45);
+      background: rgba(52, 211, 153, 0.16);
+      border: 1px solid rgba(52, 211, 153, 0.5);
       color: var(--good);
-      border-radius: 14px;
-      padding: 12px;
+      border-radius: 12px;
+      padding: 10px;
       text-align: center;
       font-weight: 700;
-      font-size: 0.92rem;
+      font-size: 0.88rem;
     }
 
     .win-banner.show {
       display: block;
     }
 
-    @media (max-width: 430px) {
-      .card-top { font-size: 0.62rem; }
-      .card-center { font-size: 0.9rem; }
+    .dock {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 8px;
+    }
+
+    .dock-btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 9px 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .dock-btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: none;
+      color: #fff;
+    }
+
+    .dock-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    @media (max-width: 440px) {
+      .card-header { font-size: 0.63rem; }
+      .card-center { font-size: 0.88rem; }
+      .card-royal { font-size: 0.6rem; }
     }
   </style>
 </head>
@@ -340,29 +384,42 @@
       </div>
     </section>
 
-    <div class="actions">
-      <button id="newBtn" class="btn" type="button">↻ New Deal</button>
-      <button id="undoBtn" class="btn secondary" type="button">↶ Undo</button>
-      <button id="hintBtn" class="btn secondary" type="button">💡 Hint</button>
-    </div>
-
     <div id="winBanner" class="win-banner">🎉 You Won! All 52 cards placed in foundations!</div>
 
-    <section class="board">
+    <section class="table-wrap">
       <div class="top-piles">
-        <div id="stockSlot"></div>
-        <div id="wasteSlot"></div>
-        <div></div>
         <div id="found0"></div>
         <div id="found1"></div>
         <div id="found2"></div>
         <div id="found3"></div>
+        <div></div>
+        <div id="wasteSlot"></div>
+        <div id="stockSlot"></div>
       </div>
 
       <div id="tableauEl" class="tableau"></div>
     </section>
 
-    <div id="statusMsg" class="status-msg">Tap a card to select, then tap a target pile or column.</div>
+    <div id="statusMsg" class="status-msg">Tap any card to select, then tap target column or foundation.</div>
+
+    <nav class="dock">
+      <button id="newBtn" class="dock-btn primary" type="button">
+        <span class="dock-icon">↻</span>
+        <span>New Deal</span>
+      </button>
+      <button id="undoBtn" class="dock-btn" type="button">
+        <span class="dock-icon">↶</span>
+        <span>Undo</span>
+      </button>
+      <button id="hintBtn" class="dock-btn" type="button">
+        <span class="dock-icon">💡</span>
+        <span>Hint</span>
+      </button>
+      <button id="autoBtn" class="dock-btn" type="button">
+        <span class="dock-icon">⚡</span>
+        <span>To Base</span>
+      </button>
+    </nav>
   </main>
 
   <script>
@@ -397,6 +454,7 @@
       const newBtn = document.getElementById("newBtn");
       const undoBtn = document.getElementById("undoBtn");
       const hintBtn = document.getElementById("hintBtn");
+      const autoBtn = document.getElementById("autoBtn");
 
       function loadBest() {
         try {
@@ -467,6 +525,7 @@
         selected = null;
         hint = null;
         seconds = 0;
+        timeEl.textContent = "00:00";
         winBanner.classList.remove("show");
         statusMsg.textContent = "New deal started. Good luck!";
         startTimer();
@@ -487,23 +546,19 @@
 
       function pushHistory() {
         history.push(cloneState(state));
-        if (history.length > 40) history.shift();
+        if (history.length > 50) history.shift();
       }
 
       function canMoveToFoundation(card, fIdx) {
         const pile = state.foundations[fIdx];
-        if (pile.length === 0) {
-          return card.rank === 1;
-        }
+        if (pile.length === 0) return card.rank === 1;
         const top = pile[pile.length - 1];
         return top.suit === card.suit && card.rank === top.rank + 1;
       }
 
       function canMoveToTableau(card, colIdx) {
         const col = state.tableau[colIdx];
-        if (col.length === 0) {
-          return card.rank === 13;
-        }
+        if (col.length === 0) return card.rank === 13;
         const top = col[col.length - 1];
         if (!top.faceUp) return false;
         return top.color !== card.color && card.rank === top.rank - 1;
@@ -537,7 +592,7 @@
           card.faceUp = true;
           state.waste.push(card);
           state.moves += 1;
-          statusMsg.textContent = "Drew a card from stock.";
+          statusMsg.textContent = "Drew " + card.label + card.sym + ".";
         } else if (state.waste.length > 0) {
           pushHistory();
           while (state.waste.length > 0) {
@@ -546,9 +601,9 @@
             state.stock.push(c);
           }
           state.moves += 1;
-          statusMsg.textContent = "Recycled waste back to stock.";
+          statusMsg.textContent = "Recycled waste pile to stock.";
         } else {
-          statusMsg.textContent = "No cards left in stock or waste.";
+          statusMsg.textContent = "Stock and waste are empty.";
         }
         render();
       }
@@ -619,7 +674,6 @@
             return true;
           }
         }
-
         return false;
       }
 
@@ -643,6 +697,56 @@
         return false;
       }
 
+      function moveAvailableToFoundations() {
+        if (state.won) return;
+        let movedAny = false;
+        let safety = 0;
+        while (safety < 60) {
+          safety++;
+          let stepMoved = false;
+
+          if (state.waste.length > 0) {
+            const wCard = state.waste[state.waste.length - 1];
+            for (let f = 0; f < 4; f++) {
+              if (canMoveToFoundation(wCard, f)) {
+                if (!movedAny) pushHistory();
+                state.foundations[f].push(state.waste.pop());
+                state.moves += 1;
+                movedAny = true;
+                stepMoved = true;
+                break;
+              }
+            }
+          }
+          if (stepMoved) continue;
+
+          for (let c = 0; c < 7; c++) {
+            const col = state.tableau[c];
+            if (col.length === 0) continue;
+            const top = col[col.length - 1];
+            if (!top.faceUp) continue;
+            for (let f = 0; f < 4; f++) {
+              if (canMoveToFoundation(top, f)) {
+                if (!movedAny) pushHistory();
+                state.foundations[f].push(col.pop());
+                revealTopTableau(c);
+                state.moves += 1;
+                movedAny = true;
+                stepMoved = true;
+                break;
+              }
+            }
+            if (stepMoved) break;
+          }
+          if (!stepMoved) break;
+        }
+
+        selected = null;
+        hint = null;
+        statusMsg.textContent = movedAny ? "Moved eligible cards to foundations." : "No ready cards to send to foundation.";
+        render();
+      }
+
       function onWasteClick() {
         if (state.won || state.waste.length === 0) return;
         hint = null;
@@ -654,7 +758,7 @@
           }
         } else {
           selected = { source: "waste" };
-          statusMsg.textContent = "Selected " + top.label + top.sym + ". Tap foundation or column.";
+          statusMsg.textContent = "Selected " + top.label + top.sym + ".";
         }
         render();
       }
@@ -662,9 +766,7 @@
       function onFoundationClick(fIdx) {
         if (state.won) return;
         hint = null;
-        if (selected) {
-          if (executeMove("foundation", fIdx)) return;
-        }
+        if (selected && executeMove("foundation", fIdx)) return;
         const pile = state.foundations[fIdx];
         if (pile.length > 0) {
           const top = pile[pile.length - 1];
@@ -681,9 +783,7 @@
         hint = null;
         const col = state.tableau[colIdx];
 
-        if (selected) {
-          if (executeMove("tableau", colIdx)) return;
-        }
+        if (selected && executeMove("tableau", colIdx)) return;
 
         if (col.length === 0) {
           selected = null;
@@ -707,7 +807,7 @@
           }
         } else {
           selected = { source: "tableau", colIdx: colIdx, cardIdx: idx };
-          statusMsg.textContent = "Selected " + card.label + card.sym + ". Tap target column or foundation.";
+          statusMsg.textContent = "Selected " + card.label + card.sym + ".";
         }
         render();
       }
@@ -719,7 +819,7 @@
           for (let f = 0; f < 4; f++) {
             if (canMoveToFoundation(wCard, f)) {
               hint = { type: "waste-found", fIdx: f };
-              statusMsg.textContent = "Hint: Move " + wCard.label + wCard.sym + " from waste to foundation.";
+              statusMsg.textContent = "Hint: Move " + wCard.label + wCard.sym + " to foundation.";
               render();
               return;
             }
@@ -727,7 +827,7 @@
           for (let c = 0; c < 7; c++) {
             if (canMoveToTableau(wCard, c)) {
               hint = { type: "waste-tab", colIdx: c };
-              statusMsg.textContent = "Hint: Move " + wCard.label + wCard.sym + " from waste to column " + (c + 1) + ".";
+              statusMsg.textContent = "Hint: Move " + wCard.label + wCard.sym + " to column " + (c + 1) + ".";
               render();
               return;
             }
@@ -764,21 +864,32 @@
 
         if (state.stock.length > 0 || state.waste.length > 0) {
           hint = { type: "stock" };
-          statusMsg.textContent = "Hint: Draw a card from Stock.";
+          statusMsg.textContent = "Hint: Tap Stock pile to draw.";
         } else {
-          statusMsg.textContent = "No obvious moves left—try Undo or New Deal.";
+          statusMsg.textContent = "No moves available—try Undo or New Deal.";
         }
         render();
       }
 
       function makeCardEl(card, isSelected, isHint) {
         const el = document.createElement("div");
-        el.className = "card" + (card.color === "red" ? " red" : "") + (!card.faceUp ? " face-down" : "") + (isSelected ? " selected" : "") + (isHint ? " hint-card" : "");
+        el.className =
+          "card" +
+          (card.color === "red" ? " red" : "") +
+          (!card.faceUp ? " face-down" : "") +
+          (isSelected ? " selected" : "") +
+          (isHint ? " hint-card" : "");
+
         if (card.faceUp) {
+          const isRoyal = card.rank >= 11;
+          const centerHtml = isRoyal
+            ? '<div class="card-royal"><span>' + card.label + '</span><span>' + card.sym + '</span></div>'
+            : '<div class="card-center">' + card.sym + '</div>';
+
           el.innerHTML =
-            '<div class="card-top"><span>' + card.label + '</span><span>' + card.sym + '</span></div>' +
-            '<div class="card-center">' + card.sym + '</div>' +
-            '<div class="card-top"><span>' + card.sym + '</span><span>' + card.label + '</span></div>';
+            '<div class="card-header"><span>' + card.label + '</span><span>' + card.sym + '</span></div>' +
+            centerHtml +
+            '<div style="height:2px;"></div>';
         }
         return el;
       }
@@ -787,18 +898,30 @@
         movesEl.textContent = String(state.moves);
         checkWin();
 
-        stockSlot.innerHTML = "";
-        const sSlot = document.createElement("div");
-        sSlot.className = "slot" + (hint && hint.type === "stock" ? " hint-target" : "");
-        if (state.stock.length > 0) {
-          const back = document.createElement("div");
-          back.className = "card face-down";
-          sSlot.appendChild(back);
-        } else {
-          sSlot.textContent = "↻";
-        }
-        sSlot.addEventListener("click", drawFromStock);
-        stockSlot.appendChild(sSlot);
+        foundSlots.forEach((container, fIdx) => {
+          container.innerHTML = "";
+          const fSlot = document.createElement("div");
+          const isTargetHint =
+            hint &&
+            ((hint.type === "waste-found" && hint.fIdx === fIdx) ||
+              (hint.type === "tab-found" && hint.fIdx === fIdx));
+          fSlot.className = "slot" + (isTargetHint ? " hint-target" : "");
+          const pile = state.foundations[fIdx];
+          if (pile.length > 0) {
+            const top = pile[pile.length - 1];
+            const isSel = selected && selected.source === "foundation" && selected.fIdx === fIdx;
+            const cEl = makeCardEl(top, isSel, false);
+            cEl.addEventListener("click", (e) => {
+              e.stopPropagation();
+              onFoundationClick(fIdx);
+            });
+            fSlot.appendChild(cEl);
+          } else {
+            fSlot.textContent = SUITS[fIdx].sym;
+          }
+          fSlot.addEventListener("click", () => onFoundationClick(fIdx));
+          container.appendChild(fSlot);
+        });
 
         wasteSlot.innerHTML = "";
         const wSlot = document.createElement("div");
@@ -818,27 +941,23 @@
         }
         wasteSlot.appendChild(wSlot);
 
-        foundSlots.forEach((container, fIdx) => {
-          container.innerHTML = "";
-          const fSlot = document.createElement("div");
-          const isTargetHint = hint && ((hint.type === "waste-found" && hint.fIdx === fIdx) || (hint.type === "tab-found" && hint.fIdx === fIdx));
-          fSlot.className = "slot" + (isTargetHint ? " hint-target" : "");
-          const pile = state.foundations[fIdx];
-          if (pile.length > 0) {
-            const top = pile[pile.length - 1];
-            const isSel = selected && selected.source === "foundation" && selected.fIdx === fIdx;
-            const cEl = makeCardEl(top, isSel, false);
-            cEl.addEventListener("click", (e) => {
-              e.stopPropagation();
-              onFoundationClick(fIdx);
-            });
-            fSlot.appendChild(cEl);
-          } else {
-            fSlot.textContent = SUITS[fIdx].sym;
-          }
-          fSlot.addEventListener("click", () => onFoundationClick(fIdx));
-          container.appendChild(fSlot);
-        });
+        stockSlot.innerHTML = "";
+        const sSlot = document.createElement("div");
+        sSlot.className = "slot" + (hint && hint.type === "stock" ? " hint-target" : "");
+        if (state.stock.length > 0) {
+          const back = document.createElement("div");
+          back.className = "card face-down";
+          sSlot.appendChild(back);
+
+          const countBadge = document.createElement("span");
+          countBadge.className = "stock-count";
+          countBadge.textContent = String(state.stock.length);
+          sSlot.appendChild(countBadge);
+        } else {
+          sSlot.textContent = "↻";
+        }
+        sSlot.addEventListener("click", drawFromStock);
+        stockSlot.appendChild(sSlot);
 
         tableauEl.innerHTML = "";
         state.tableau.forEach((col, colIdx) => {
@@ -855,18 +974,22 @@
           let offset = 0;
           col.forEach((card, cardIdx) => {
             const isSel = selected && selected.source === "tableau" && selected.colIdx === colIdx && cardIdx >= selected.cardIdx;
-            const isH = hint && ((hint.type === "tab-found" && hint.colIdx === colIdx && hint.cardIdx === cardIdx) || (hint.type === "tab-tab" && hint.colIdx === colIdx && cardIdx >= hint.cardIdx));
+            const isH =
+              hint &&
+              ((hint.type === "tab-found" && hint.colIdx === colIdx && hint.cardIdx === cardIdx) ||
+                (hint.type === "tab-tab" && hint.colIdx === colIdx && cardIdx >= hint.cardIdx));
             const cEl = makeCardEl(card, isSel, isH);
             cEl.style.top = offset + "px";
+            cEl.style.zIndex = String(cardIdx + 1);
             cEl.addEventListener("click", (e) => {
               e.stopPropagation();
               onTableauClick(colIdx, cardIdx);
             });
             colDiv.appendChild(cEl);
-            offset += card.faceUp ? 24 : 12;
+            offset += card.faceUp ? 22 : 11;
           });
 
-          colDiv.style.minHeight = Math.max(150, offset + 90) + "px";
+          colDiv.style.minHeight = Math.max(160, offset + 95) + "px";
           tableauEl.appendChild(colDiv);
         });
       }
@@ -885,6 +1008,7 @@
         render();
       });
       hintBtn.addEventListener("click", findHint);
+      autoBtn.addEventListener("click", moveAvailableToFoundations);
 
       loadBest();
       newGame();
