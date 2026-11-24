@@ -9,8 +9,8 @@
       --bg: #0b0914;
       --panel: #151126;
       --panel-2: #1d1734;
-      --felt: #164e34;
-      --felt-2: #0e3824;
+      --felt: #1c6342;
+      --felt-2: #0f3f29;
       --border: rgba(255, 255, 255, 0.12);
       --text: #f5f3ff;
       --muted: #a79ec7;
@@ -18,8 +18,8 @@
       --accent-2: #ec4899;
       --good: #34d399;
       --warn: #fbbf24;
-      --red: #dc2626;
-      --black: #111827;
+      --red: #d92626;
+      --black: #111318;
       --card-bg: #ffffff;
     }
 
@@ -110,27 +110,27 @@
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 7px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
     }
 
     .stat {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 11px;
-      padding: 7px 5px;
+      padding: 8px 6px;
       text-align: center;
     }
 
     .stat-label {
-      font-size: 0.6rem;
+      font-size: 0.62rem;
       color: var(--muted);
       letter-spacing: 0.7px;
       text-transform: uppercase;
     }
 
     .stat-value {
-      font-size: 0.94rem;
+      font-size: 0.96rem;
       font-weight: 700;
       margin-top: 2px;
       color: #fff;
@@ -140,42 +140,42 @@
     .stat-value.warn { color: var(--warn); }
 
     .table-wrap {
-      background: radial-gradient(circle at 50% 20%, var(--felt), var(--felt-2));
+      background: radial-gradient(circle at 50% 15%, var(--felt), var(--felt-2));
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 18px;
-      padding: 10px 8px 14px;
+      padding: 10px 7px 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
       box-shadow: inset 0 0 36px rgba(0, 0, 0, 0.35);
     }
 
     .top-piles {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 5px;
+      gap: 4px;
       align-items: start;
     }
 
     .tableau {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 5px;
+      gap: 4px;
       align-items: start;
-      min-height: 330px;
+      min-height: 350px;
     }
 
     .col {
       position: relative;
-      min-height: 290px;
+      min-height: 310px;
     }
 
     .slot {
-      aspect-ratio: 5 / 7;
+      aspect-ratio: 4.4 / 7;
       width: 100%;
-      border-radius: 7px;
-      background: rgba(0, 0, 0, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       display: grid;
       place-items: center;
       color: rgba(255, 255, 255, 0.35);
@@ -187,35 +187,36 @@
 
     .slot.hint-target {
       border: 2px solid var(--warn);
-      box-shadow: 0 0 12px rgba(251, 191, 36, 0.65);
+      box-shadow: 0 0 12px rgba(251, 191, 36, 0.7);
     }
 
     .stock-count {
       position: absolute;
-      top: 3px;
-      right: 4px;
-      z-index: 3;
-      background: rgba(15, 23, 42, 0.82);
-      color: #fff;
+      top: 2px;
+      right: 3px;
+      z-index: 4;
+      background: rgba(17, 19, 24, 0.88);
+      color: #ffffff;
       font-size: 0.62rem;
-      font-weight: 700;
+      font-weight: 800;
       padding: 1px 4px;
-      border-radius: 6px;
-      line-height: 1.2;
+      border-radius: 5px;
+      line-height: 1.15;
     }
 
     .card {
-      aspect-ratio: 5 / 7;
+      aspect-ratio: 4.4 / 7;
       width: 100%;
-      border-radius: 7px;
+      border-radius: 6px;
       background: var(--card-bg);
       color: var(--black);
-      border: 1px solid rgba(15, 23, 42, 0.28);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-      padding: 3px 4px;
+      border: 1px solid rgba(0, 0, 0, 0.28);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+      padding: 2px 3px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
+      gap: 1px;
       cursor: pointer;
       user-select: none;
       position: relative;
@@ -227,55 +228,60 @@
     }
 
     .card.face-down {
-      background-color: #b91c1c;
+      background-color: #c91e2b;
       background-image:
-        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.22) 0 2px, transparent 2px 7px),
-        repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.22) 0 2px, transparent 2px 7px);
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.28) 0 1.5px, transparent 1.5px 6px),
+        repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.28) 0 1.5px, transparent 1.5px 6px);
       border: 2px solid #ffffff;
       color: transparent;
     }
 
     .card.selected {
       outline: 2.5px solid #facc15;
-      box-shadow: 0 0 14px rgba(250, 204, 21, 0.8);
-      transform: translateY(-2px);
-      z-index: 25 !important;
+      box-shadow: 0 0 14px rgba(250, 204, 21, 0.85);
+      z-index: 30 !important;
     }
 
     .card.hint-card {
       outline: 2.5px solid #38bdf8;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.75);
-      z-index: 24 !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      z-index: 29 !important;
     }
 
-    .card-header {
+    .card-top-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 1px;
-      font-size: 0.74rem;
-      line-height: 1;
+      justify-content: center;
+      gap: 2px;
+      font-size: 0.78rem;
+      line-height: 1.05;
       letter-spacing: -0.4px;
+      white-space: nowrap;
     }
 
-    .card-center {
-      text-align: center;
-      font-size: 1.05rem;
+    .card-suit-big {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.32rem;
       line-height: 1;
-      margin-bottom: 2px;
     }
 
-    .card-royal {
-      display: inline-flex;
+    .card-royal-box {
+      flex: 1;
+      margin: 1px 2px 2px;
+      border-radius: 4px;
+      border: 1px solid currentColor;
+      background: repeating-linear-gradient(
+        135deg,
+        rgba(217, 38, 38, 0.08) 0 3px,
+        rgba(17, 19, 24, 0.06) 3px 6px
+      );
+      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 68%;
-      height: 54%;
-      margin: 0 auto;
-      border-radius: 5px;
-      border: 1px solid currentColor;
-      opacity: 0.85;
       font-size: 0.72rem;
       line-height: 1.05;
     }
@@ -346,9 +352,9 @@
     }
 
     @media (max-width: 440px) {
-      .card-header { font-size: 0.63rem; }
-      .card-center { font-size: 0.88rem; }
-      .card-royal { font-size: 0.6rem; }
+      .card-top-row { font-size: 0.68rem; gap: 1px; }
+      .card-suit-big { font-size: 1.12rem; }
+      .card-royal-box { font-size: 0.62rem; }
     }
   </style>
 </head>
@@ -371,16 +377,12 @@
         <div id="movesEl" class="stat-value">0</div>
       </div>
       <div class="stat">
-        <div class="stat-label">Time</div>
-        <div id="timeEl" class="stat-value warn">00:00</div>
-      </div>
-      <div class="stat">
         <div class="stat-label">Foundations</div>
         <div id="foundEl" class="stat-value good">0/52</div>
       </div>
       <div class="stat">
         <div class="stat-label">Best Moves</div>
-        <div id="bestEl" class="stat-value">—</div>
+        <div id="bestEl" class="stat-value warn">—</div>
       </div>
     </section>
 
@@ -400,7 +402,7 @@
       <div id="tableauEl" class="tableau"></div>
     </section>
 
-    <div id="statusMsg" class="status-msg">Tap any card to select, then tap target column or foundation.</div>
+    <div id="statusMsg" class="status-msg">Tap a card to select, then tap target column or foundation.</div>
 
     <nav class="dock">
       <button id="newBtn" class="dock-btn primary" type="button">
@@ -437,12 +439,9 @@
       let history = [];
       let selected = null;
       let hint = null;
-      let seconds = 0;
-      let timerId = null;
       let bestMoves = null;
 
       const movesEl = document.getElementById("movesEl");
-      const timeEl = document.getElementById("timeEl");
       const foundEl = document.getElementById("foundEl");
       const bestEl = document.getElementById("bestEl");
       const stockSlot = document.getElementById("stockSlot");
@@ -524,24 +523,9 @@
         history = [];
         selected = null;
         hint = null;
-        seconds = 0;
-        timeEl.textContent = "00:00";
         winBanner.classList.remove("show");
         statusMsg.textContent = "New deal started. Good luck!";
-        startTimer();
         render();
-      }
-
-      function startTimer() {
-        if (timerId) clearInterval(timerId);
-        timerId = setInterval(() => {
-          if (state && !state.won) {
-            seconds += 1;
-            const m = String(Math.floor(seconds / 60)).padStart(2, "0");
-            const s = String(seconds % 60).padStart(2, "0");
-            timeEl.textContent = m + ":" + s;
-          }
-        }, 1000);
       }
 
       function pushHistory() {
@@ -881,15 +865,11 @@
           (isHint ? " hint-card" : "");
 
         if (card.faceUp) {
-          const isRoyal = card.rank >= 11;
-          const centerHtml = isRoyal
-            ? '<div class="card-royal"><span>' + card.label + '</span><span>' + card.sym + '</span></div>'
-            : '<div class="card-center">' + card.sym + '</div>';
-
-          el.innerHTML =
-            '<div class="card-header"><span>' + card.label + '</span><span>' + card.sym + '</span></div>' +
-            centerHtml +
-            '<div style="height:2px;"></div>';
+          const topRow = '<div class="card-top-row"><span>' + card.label + '</span><span>' + card.sym + '</span></div>';
+          const bodyHtml = card.rank >= 11
+            ? '<div class="card-royal-box"><span>' + card.label + '</span><span>' + card.sym + '</span></div>'
+            : '<div class="card-suit-big">' + card.sym + '</div>';
+          el.innerHTML = topRow + bodyHtml;
         }
         return el;
       }
@@ -986,10 +966,10 @@
               onTableauClick(colIdx, cardIdx);
             });
             colDiv.appendChild(cEl);
-            offset += card.faceUp ? 22 : 11;
+            offset += card.faceUp ? 19 : 8;
           });
 
-          colDiv.style.minHeight = Math.max(160, offset + 95) + "px";
+          colDiv.style.minHeight = Math.max(160, offset + 96) + "px";
           tableauEl.appendChild(colDiv);
         });
       }
