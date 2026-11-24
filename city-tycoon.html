@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>City Tycoon — PlayNova Arcade</title>
+  <style>
+    :root {
+      --bg: #0b0914;
+      --panel: #151126;
+      --panel-2: #1d1734;
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #f5f3ff;
+      --muted: #a79ec7;
+      --accent: #8b5cf6;
+      --accent-2: #ec4899;
+      --good: #34d399;
+      --warn: #fbbf24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(139, 92, 246, 0.22), transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.16), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 540px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+
+    .brand p {
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--text);
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      font-size: 0.98rem;
+      font-weight: 700;
+      margin-top: 3px;
+      color: #ffffff;
+    }
+
+    .stat-value.good { color: var(--good); }
+    .stat-value.warn { color: var(--warn); }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      flex: 1 1 auto;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn.secondary {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn.danger {
+      background: rgba(239, 68, 68, 0.16);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+    }
+
+    .tools {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tools-title {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .tool-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .tool-btn {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: left;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .tool-btn.active {
+      border-color: #a855f7;
+      box-shadow: 0 0 0 1px #a855f7, 0 8px 20px rgba(139, 92, 246, 0.25);
+      background: #251d42;
+    }
+
+    .tool-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+
+    .tool-cost {
+      font-size: 0.8rem;
+      color: var(--good);
+    }
+
+    .tool-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .city-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px;
+    }
+
+    .city-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+
+    .plot {
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      background: #100c1e;
+      border: 1px dashed rgba(255, 255, 255, 0.14);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 4px;
+      text-align: center;
+      transition: transform 0.1s ease, border-color 0.15s ease;
+    }
+
+    .plot:hover {
+      border-color: rgba(168, 85, 247, 0.65);
+    }
+
+    .plot:active {
+      transform: scale(0.96);
+    }
+
+    .plot.built {
+      border-style: solid;
+      border-color: rgba(139, 92, 246, 0.45);
+      background: #1d1636;
+    }
+
+    .plot-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .plot-lvl {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .status-msg {
+      min-height: 20px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 420px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .tool-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top-bar">
+      <div class="brand">
+        <div class="badge">CT</div>
+        <div>
+          <h1>City Tycoon</h1>
+          <p>PlayNova Arcade</p>
+        </div>
+      </div>
+      <a href="index.html" class="back-btn">← Games</a>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat">
+        <div class="stat-label">Cash</div>
+        <div id="cashEl" class="stat-value good">$250</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Income / s</div>
+        <div id="incomeEl" class="stat-value">+$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Population</div>
+        <div id="popEl" class="stat-value">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Happiness</div>
+        <div id="happyEl" class="stat-value warn">100%</div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button id="boostBtn" class="btn" type="button">⚡ Collect Bonus (+$50)</button>
+      <button id="resetBtn" class="btn danger" type="button">Reset City</button>
+    </div>
+
+    <section class="tools">
+      <div class="tools-title">Select Building or Tool (Tap built tile to upgrade)</div>
+      <div id="toolList" class="tool-list"></div>
+    </section>
+
+    <section class="city-card">
+      <div id="cityGrid" class="city-grid"></div>
+    </section>
+
+    <div id="statusMsg" class="status-msg">Tap any empty plot to build your first structure.</div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "playnova_city_tycoon_v1";
+    const GRID_SIZE = 25;
+
+    const BUILDINGS = {
+      house: {
+        name: "House",
+        icon: "🏠",
+        cost: 80,
+        income: 6,
+        pop: 10,
+        happyDelta: 0,
+        desc: "+$6/s • +10 Pop"
+      },
+      shop: {
+        name: "Nova Shop",
+        icon: "🛍️",
+        cost: 160,
+        income: 18,
+        pop: 2,
+        happyDelta: -3,
+        desc: "+$18/s • -3% Happy"
+      },
+      park: {
+        name: "Neon Park",
+        icon: "🌳",
+        cost: 120,
+        income: 4,
+        pop: 0,
+        happyDelta: 8,
+        desc: "+$4/s • +8% Happy"
+      },
+      tower: {
+        name: "Power Hub",
+        icon: "⚡",
+        cost: 300,
+        income: 36,
+        pop: 5,
+        happyDelta: -4,
+        desc: "+$36/s • -4% Happy"
+      },
+      bulldoze: {
+        name: "Demolish",
+        icon: "🧹",
+        cost: 0,
+        income: 0,
+        pop: 0,
+        happyDelta: 0,
+        desc: "Refund 50% of build cost"
+      }
+    };
+
+    let state = {
+      cash: 250,
+      selectedTool: "house",
+      grid: Array.from({ length: GRID_SIZE }, () => null)
+    };
+
+    const cashEl = document.getElementById("cashEl");
+    const incomeEl = document.getElementById("incomeEl");
+    const popEl = document.getElementById("popEl");
+    const happyEl = document.getElementById("happyEl");
+    const toolListEl = document.getElementById("toolList");
+    const cityGridEl = document.getElementById("cityGrid");
+    const statusMsgEl = document.getElementById("statusMsg");
+    const boostBtn = document.getElementById("boostBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function loadGame() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (typeof parsed.cash === "number" && Array.isArray(parsed.grid) && parsed.grid.length === GRID_SIZE) {
+          state.cash = parsed.cash;
+          state.selectedTool = BUILDINGS[parsed.selectedTool] ? parsed.selectedTool : "house";
+          state.grid = parsed.grid;
+        }
+      } catch (_) {}
+    }
+
+    function saveGame() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (_) {}
+    }
+
+    function computeMetrics() {
+      let pop = 0;
+      let rawIncome = 0;
+      let happy = 100;
+
+      for (const cell of state.grid) {
+        if (!cell) continue;
+        const b = BUILDINGS[cell.type];
+        if (!b) continue;
+        const mult = 1 + (cell.level - 1) * 0.45;
+        pop += Math.round(b.pop * (1 + (cell.level - 1) * 0.35));
+        rawIncome += b.income * mult;
+        happy += b.happyDelta;
+      }
+
+      happy = Math.max(30, Math.min(130, happy));
+      const happyFactor = happy / 100;
+      const incomePerSec = Math.floor(rawIncome * happyFactor);
+
+      return { pop, incomePerSec, happy };
+    }
+
+    function upgradeCost(cell) {
+      const base = BUILDINGS[cell.type].cost;
+      return Math.round(base * Math.pow(1.65, cell.level));
+    }
+
+    function renderTools() {
+      toolListEl.innerHTML = "";
+      Object.entries(BUILDINGS).forEach(([key, b]) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `tool-btn ${state.selectedTool === key ? "active" : ""}`;
+        btn.innerHTML = `
+          <div class="tool-top">
+            <span>${b.icon} ${b.name}</span>
+            <span class="tool-cost">${key === "bulldoze" ? "Refund" : "$" + b.cost}</span>
+          </div>
+          <div class="tool-meta">${b.desc}</div>
+        `;
+        btn.addEventListener("click", () => {
+          state.selectedTool = key;
+          saveGame();
+          renderTools();
+          statusMsgEl.textContent =
+            key === "bulldoze"
+              ? "Demolish selected: tap a built plot to clear it."
+              : `${b.name} selected ($${b.cost}). Tap an empty plot to build.`;
+        });
+        toolListEl.appendChild(btn);
+      });
+    }
+
+    function renderGrid() {
+      cityGridEl.innerHTML = "";
+      state.grid.forEach((cell, idx) => {
+        const plot = document.createElement("button");
+        plot.type = "button";
+        plot.className = `plot ${cell ? "built" : ""}`;
+
+        if (cell) {
+          const b = BUILDINGS[cell.type];
+          plot.innerHTML = `
+            <span class="plot-icon">${b.icon}</span>
+            <span class="plot-lvl">Lv.${cell.level}</span>
+          `;
+        } else {
+          plot.innerHTML = `<span class="plot-lvl">+</span>`;
+        }
+
+        plot.addEventListener("click", () => handlePlotClick(idx));
+        cityGridEl.appendChild(plot);
+      });
+    }
+
+    function renderStats() {
+      const { pop, incomePerSec, happy } = computeMetrics();
+      cashEl.textContent = `$${Math.floor(state.cash).toLocaleString()}`;
+      incomeEl.textContent = `+$${incomePerSec}`;
+      popEl.textContent = pop.toLocaleString();
+      happyEl.textContent = `${happy}%`;
+    }
+
+    function renderAll() {
+      renderStats();
+      renderTools();
+      renderGrid();
+    }
+
+    function handlePlotClick(idx) {
+      const cell = state.grid[idx];
+      const tool = state.selectedTool;
+
+      if (tool === "bulldoze") {
+        if (!cell) {
+          statusMsgEl.textContent = "This plot is already empty.";
+          return;
+        }
+        const refund = Math.round(BUILDINGS[cell.type].cost * 0.5 * cell.level);
+        state.cash += refund;
+        state.grid[idx] = null;
+        statusMsgEl.textContent = `Demolished ${BUILDINGS[cell.type].name} (+$${refund} refund).`;
+        saveGame();
+        renderAll();
+        return;
+      }
+
+      if (!cell) {
+        const b = BUILDINGS[tool];
+        if (state.cash < b.cost) {
+          statusMsgEl.textContent = `Not enough cash for ${b.name} (need $${b.cost}).`;
+          return;
+        }
+        state.cash -= b.cost;
+        state.grid[idx] = { type: tool, level: 1 };
+        statusMsgEl.textContent = `Built ${b.name} Lv.1!`;
+        saveGame();
+        renderAll();
+        return;
+      }
+
+      const cost = upgradeCost(cell);
+      if (state.cash < cost) {
+        statusMsgEl.textContent = `Need $${cost} to upgrade ${BUILDINGS[cell.type].name} to Lv.${cell.level + 1}.`;
+        return;
+      }
+
+      state.cash -= cost;
+      cell.level += 1;
+      statusMsgEl.textContent = `Upgraded ${BUILDINGS[cell.type].name} to Lv.${cell.level}!`;
+      saveGame();
+      renderAll();
+    }
+
+    boostBtn.addEventListener("click", () => {
+      state.cash += 50;
+      statusMsgEl.textContent = "Collected +$50 city grant!";
+      saveGame();
+      renderStats();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      state = {
+        cash: 250,
+        selectedTool: "house",
+        grid: Array.from({ length: GRID_SIZE }, () => null)
+      };
+      statusMsgEl.textContent = "City reset to fresh start ($250).";
+      saveGame();
+      renderAll();
+    });
+
+    setInterval(() => {
+      const { incomePerSec } = computeMetrics();
+      if (incomePerSec > 0) {
+        state.cash += incomePerSec;
+        saveGame();
+        renderStats();
+      }
+    }, 1000);
+
+    loadGame();
+    renderAll();
+  </script>
+</body>
+</html>
