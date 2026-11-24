@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Typing Challenge — PlayNova Arcade</title>
+  <style>
+    :root {
+      --bg: #0b0914;
+      --panel: #151126;
+      --panel-2: #1d1734;
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #f5f3ff;
+      --muted: #a79ec7;
+      --accent: #8b5cf6;
+      --accent-2: #ec4899;
+      --good: #34d399;
+      --bad: #f87171;
+      --warn: #fbbf24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(139, 92, 246, 0.22), transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.16), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 0.92rem;
+      letter-spacing: 0.5px;
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+
+    .brand p {
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--text);
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 3px;
+      color: #ffffff;
+    }
+
+    .stat-value.good { color: var(--good); }
+    .stat-value.warn { color: var(--warn); }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mode-group {
+      display: flex;
+      gap: 6px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .mode-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.82rem;
+      padding: 7px 12px;
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    .mode-btn.active {
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid rgba(168, 85, 247, 0.5);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      transition: transform 0.12s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .prompt-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .prompt-text {
+      font-size: 1.12rem;
+      line-height: 1.75;
+      letter-spacing: 0.3px;
+      user-select: none;
+      word-break: break-word;
+    }
+
+    .char.correct {
+      color: var(--good);
+    }
+
+    .char.wrong {
+      color: var(--bad);
+      background: rgba(248, 113, 113, 0.18);
+      border-radius: 3px;
+    }
+
+    .char.current {
+      background: rgba(139, 92, 246, 0.35);
+      border-bottom: 2px solid #c084fc;
+      border-radius: 3px;
+      color: #fff;
+    }
+
+    .typing-input {
+      width: 100%;
+      background: #100c1e;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .typing-input:focus {
+      border-color: #a855f7;
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.22);
+    }
+
+    .result-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .result-box.show {
+      display: flex;
+    }
+
+    .result-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--good);
+    }
+
+    .result-sub {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 440px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .prompt-text {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top-bar">
+      <div class="brand">
+        <div class="badge">TC</div>
+        <div>
+          <h1>Typing Challenge</h1>
+          <p>PlayNova Arcade</p>
+        </div>
+      </div>
+      <a href="index.html" class="back-btn">← Games</a>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat">
+        <div class="stat-label">WPM</div>
+        <div id="wpmEl" class="stat-value good">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Accuracy</div>
+        <div id="accEl" class="stat-value">100%</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Time Left</div>
+        <div id="timeEl" class="stat-value warn">30s</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Best WPM</div>
+        <div id="bestEl" class="stat-value">0</div>
+      </div>
+    </section>
+
+    <div class="controls-row">
+      <div class="mode-group">
+        <button id="mode30" class="mode-btn active" type="button">30s</button>
+        <button id="mode60" class="mode-btn" type="button">60s</button>
+      </div>
+      <button id="restartBtn" class="btn" type="button">↻ Restart</button>
+    </div>
+
+    <section class="prompt-card">
+      <div id="promptText" class="prompt-text"></div>
+      <input
+        id="typingInput"
+        class="typing-input"
+        type="text"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        placeholder="Start typing here to begin the timer..."
+      />
+    </section>
+
+    <section id="resultBox" class="result-box">
+      <div id="resultTitle" class="result-title">Round Complete!</div>
+      <div id="resultSub" class="result-sub"></div>
+    </section>
+  </main>
+
+  <script>
+    const BEST_KEY = "playnova_typing_best_wpm_v1";
+    const PASSAGES = [
+      "Neon lights glow across the night arcade while fast fingers race through crisp words with sharp focus and steady rhythm.",
+      "Build clean games step by step, test every button smoothly, and turn creative ideas into fast browser experiences.",
+      "Speed comes from calm accuracy rather than rushing blindly, so keep your eyes ahead and type every word with confidence.",
+      "PlayNova brings puzzle logic, city building, and reflex speed together in one sleek space
