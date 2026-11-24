@@ -59,7 +59,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 14px;
@@ -70,6 +70,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      min-width: 0;
     }
 
     .badge {
@@ -94,6 +95,30 @@
       letter-spacing: 0.8px;
       color: var(--muted);
       text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+
+    .sound-btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1.2;
+    }
+
+    .sound-btn.muted {
+      opacity: 0.65;
+      color: var(--muted);
     }
 
     .back-btn {
@@ -143,7 +168,7 @@
       background: radial-gradient(circle at 50% 15%, var(--felt), var(--felt-2));
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 18px;
-      padding: 10px 7px 14px;
+      padding: 10px 6px 14px;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -162,16 +187,16 @@
       grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: 4px;
       align-items: start;
-      min-height: 350px;
+      min-height: 360px;
     }
 
     .col {
       position: relative;
-      min-height: 310px;
+      min-height: 320px;
     }
 
     .slot {
-      aspect-ratio: 4.4 / 7;
+      aspect-ratio: 4.3 / 7;
       width: 100%;
       border-radius: 6px;
       background: rgba(0, 0, 0, 0.16);
@@ -179,7 +204,7 @@
       display: grid;
       place-items: center;
       color: rgba(255, 255, 255, 0.35);
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       cursor: pointer;
       user-select: none;
       position: relative;
@@ -195,9 +220,9 @@
       top: 2px;
       right: 3px;
       z-index: 4;
-      background: rgba(17, 19, 24, 0.88);
+      background: rgba(17, 19, 24, 0.9);
       color: #ffffff;
-      font-size: 0.62rem;
+      font-size: 0.66rem;
       font-weight: 800;
       padding: 1px 4px;
       border-radius: 5px;
@@ -205,14 +230,14 @@
     }
 
     .card {
-      aspect-ratio: 4.4 / 7;
+      aspect-ratio: 4.3 / 7;
       width: 100%;
       border-radius: 6px;
       background: var(--card-bg);
       color: var(--black);
       border: 1px solid rgba(0, 0, 0, 0.28);
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
-      padding: 2px 3px;
+      padding: 2px 2px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -220,7 +245,7 @@
       cursor: pointer;
       user-select: none;
       position: relative;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .card.red {
@@ -252,10 +277,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 2px;
-      font-size: 0.78rem;
+      gap: 1px;
+      font-size: 0.96rem;
       line-height: 1.05;
-      letter-spacing: -0.4px;
+      letter-spacing: -0.6px;
       white-space: nowrap;
     }
 
@@ -264,7 +289,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.32rem;
+      font-size: 1.42rem;
       line-height: 1;
     }
 
@@ -282,7 +307,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 0.72rem;
+      font-size: 0.84rem;
       line-height: 1.05;
     }
 
@@ -352,9 +377,9 @@
     }
 
     @media (max-width: 440px) {
-      .card-top-row { font-size: 0.68rem; gap: 1px; }
-      .card-suit-big { font-size: 1.12rem; }
-      .card-royal-box { font-size: 0.62rem; }
+      .card-top-row { font-size: 0.82rem; letter-spacing: -0.5px; }
+      .card-suit-big { font-size: 1.18rem; }
+      .card-royal-box { font-size: 0.72rem; }
     }
   </style>
 </head>
@@ -368,7 +393,10 @@
           <p>PlayNova Arcade</p>
         </div>
       </div>
-      <a href="index.html" class="back-btn">← Games</a>
+      <div class="top-actions">
+        <button id="soundBtn" class="sound-btn" type="button" title="Toggle Sound">🔊</button>
+        <a href="index.html" class="back-btn">← Games</a>
+      </div>
     </header>
 
     <section class="stats-grid">
@@ -427,6 +455,7 @@
   <script>
     (function () {
       const BEST_KEY = "playnova_solitaire_best_moves_v1";
+      const SOUND_KEY = "playnova_solitaire_sound_v1";
       const SUITS = [
         { key: "spades", sym: "♠", color: "black" },
         { key: "hearts", sym: "♥", color: "red" },
@@ -440,6 +469,8 @@
       let selected = null;
       let hint = null;
       let bestMoves = null;
+      let soundEnabled = true;
+      let audioCtx = null;
 
       const movesEl = document.getElementById("movesEl");
       const foundEl = document.getElementById("foundEl");
@@ -450,10 +481,63 @@
       const tableauEl = document.getElementById("tableauEl");
       const statusMsg = document.getElementById("statusMsg");
       const winBanner = document.getElementById("winBanner");
+      const soundBtn = document.getElementById("soundBtn");
       const newBtn = document.getElementById("newBtn");
       const undoBtn = document.getElementById("undoBtn");
       const hintBtn = document.getElementById("hintBtn");
       const autoBtn = document.getElementById("autoBtn");
+
+      function loadSoundPref() {
+        try {
+          const saved = localStorage.getItem(SOUND_KEY);
+          soundEnabled = saved === null ? true : saved === "1";
+        } catch (e) {
+          soundEnabled = true;
+        }
+        updateSoundBtn();
+      }
+
+      function updateSoundBtn() {
+        soundBtn.textContent = soundEnabled ? "🔊" : "🔇";
+        soundBtn.classList.toggle("muted", !soundEnabled);
+      }
+
+      function playTone(freq, duration, type, delay, gainPeak) {
+        if (!soundEnabled) return;
+        try {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          if (!audioCtx) audioCtx = new Ctx();
+          if (audioCtx.state === "suspended") {
+            audioCtx.resume();
+          }
+          const now = audioCtx.currentTime + (delay || 0);
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type || "triangle";
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.exponentialRampToValueAtTime(gainPeak || 0.08, now + 0.012);
+          gain.gain.exponentialRampToValueAtTime(0.0008, now + (duration || 0.09));
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + (duration || 0.09) + 0.02);
+        } catch (e) {}
+      }
+
+      function sfxSelect() { playTone(520, 0.06, "sine", 0, 0.06); }
+      function sfxDraw() { playTone(380, 0.07, "triangle", 0, 0.07); }
+      function sfxMove() { playTone(620, 0.08, "triangle", 0, 0.08); }
+      function sfxBase() { playTone(780, 0.11, "sine", 0, 0.09); }
+      function sfxUndo() { playTone(320, 0.08, "sine", 0, 0.07); }
+      function sfxHint() { playTone(660, 0.07, "sine", 0, 0.06); playTone(880, 0.09, "sine", 0.07, 0.06); }
+      function sfxWin() {
+        playTone(523.25, 0.14, "triangle", 0, 0.1);
+        playTone(659.25, 0.14, "triangle", 0.12, 0.1);
+        playTone(783.99, 0.16, "triangle", 0.24, 0.1);
+        playTone(1046.5, 0.28, "sine", 0.38, 0.11);
+      }
 
       function loadBest() {
         try {
@@ -525,6 +609,7 @@
         hint = null;
         winBanner.classList.remove("show");
         statusMsg.textContent = "New deal started. Good luck!";
+        sfxDraw();
         render();
       }
 
@@ -563,6 +648,7 @@
           winBanner.classList.add("show");
           saveBestIfWon(state.moves);
           statusMsg.textContent = "Victory! Completed in " + state.moves + " moves.";
+          sfxWin();
         }
       }
 
@@ -577,6 +663,7 @@
           state.waste.push(card);
           state.moves += 1;
           statusMsg.textContent = "Drew " + card.label + card.sym + ".";
+          sfxDraw();
         } else if (state.waste.length > 0) {
           pushHistory();
           while (state.waste.length > 0) {
@@ -586,6 +673,7 @@
           }
           state.moves += 1;
           statusMsg.textContent = "Recycled waste pile to stock.";
+          sfxDraw();
         } else {
           statusMsg.textContent = "Stock and waste are empty.";
         }
@@ -605,6 +693,7 @@
             state.moves += 1;
             selected = null;
             hint = null;
+            sfxBase();
             render();
             return true;
           }
@@ -614,6 +703,7 @@
             state.moves += 1;
             selected = null;
             hint = null;
+            sfxMove();
             render();
             return true;
           }
@@ -630,6 +720,7 @@
             state.moves += 1;
             selected = null;
             hint = null;
+            sfxBase();
             render();
             return true;
           }
@@ -641,6 +732,7 @@
             state.moves += 1;
             selected = null;
             hint = null;
+            sfxMove();
             render();
             return true;
           }
@@ -654,6 +746,7 @@
             state.moves += 1;
             selected = null;
             hint = null;
+            sfxMove();
             render();
             return true;
           }
@@ -674,6 +767,7 @@
             state.moves += 1;
             selected = null;
             hint = null;
+            sfxBase();
             render();
             return true;
           }
@@ -727,7 +821,12 @@
 
         selected = null;
         hint = null;
-        statusMsg.textContent = movedAny ? "Moved eligible cards to foundations." : "No ready cards to send to foundation.";
+        if (movedAny) {
+          sfxBase();
+          statusMsg.textContent = "Moved eligible cards to foundations.";
+        } else {
+          statusMsg.textContent = "No ready cards to send to foundation.";
+        }
         render();
       }
 
@@ -739,10 +838,12 @@
           if (!tryAutoFoundation(top, { source: "waste" })) {
             selected = null;
             statusMsg.textContent = "Selection cleared.";
+            sfxSelect();
           }
         } else {
           selected = { source: "waste" };
           statusMsg.textContent = "Selected " + top.label + top.sym + ".";
+          sfxSelect();
         }
         render();
       }
@@ -756,6 +857,7 @@
           const top = pile[pile.length - 1];
           selected = { source: "foundation", fIdx: fIdx };
           statusMsg.textContent = "Selected " + top.label + top.sym + " from foundation.";
+          sfxSelect();
         } else {
           selected = null;
         }
@@ -779,6 +881,7 @@
         if (!card.faceUp) {
           if (idx === col.length - 1) {
             card.faceUp = true;
+            sfxDraw();
             render();
           }
           return;
@@ -788,10 +891,12 @@
           if (!tryAutoFoundation(card, { source: "tableau", colIdx: colIdx })) {
             selected = null;
             statusMsg.textContent = "Selection cleared.";
+            sfxSelect();
           }
         } else {
           selected = { source: "tableau", colIdx: colIdx, cardIdx: idx };
           statusMsg.textContent = "Selected " + card.label + card.sym + ".";
+          sfxSelect();
         }
         render();
       }
@@ -804,6 +909,7 @@
             if (canMoveToFoundation(wCard, f)) {
               hint = { type: "waste-found", fIdx: f };
               statusMsg.textContent = "Hint: Move " + wCard.label + wCard.sym + " to foundation.";
+              sfxHint();
               render();
               return;
             }
@@ -812,6 +918,7 @@
             if (canMoveToTableau(wCard, c)) {
               hint = { type: "waste-tab", colIdx: c };
               statusMsg.textContent = "Hint: Move " + wCard.label + wCard.sym + " to column " + (c + 1) + ".";
+              sfxHint();
               render();
               return;
             }
@@ -826,6 +933,7 @@
             if (canMoveToFoundation(topCard, f)) {
               hint = { type: "tab-found", colIdx: c, cardIdx: col.length - 1, fIdx: f };
               statusMsg.textContent = "Hint: Move " + topCard.label + topCard.sym + " to foundation.";
+              sfxHint();
               render();
               return;
             }
@@ -839,6 +947,7 @@
               if (canMoveToTableau(lead, targetCol)) {
                 hint = { type: "tab-tab", colIdx: c, cardIdx: i, targetCol: targetCol };
                 statusMsg.textContent = "Hint: Move " + lead.label + lead.sym + " to column " + (targetCol + 1) + ".";
+                sfxHint();
                 render();
                 return;
               }
@@ -849,6 +958,7 @@
         if (state.stock.length > 0 || state.waste.length > 0) {
           hint = { type: "stock" };
           statusMsg.textContent = "Hint: Tap Stock pile to draw.";
+          sfxHint();
         } else {
           statusMsg.textContent = "No moves available—try Undo or New Deal.";
         }
@@ -966,14 +1076,22 @@
               onTableauClick(colIdx, cardIdx);
             });
             colDiv.appendChild(cEl);
-            offset += card.faceUp ? 19 : 8;
+            offset += card.faceUp ? 21 : 9;
           });
 
-          colDiv.style.minHeight = Math.max(160, offset + 96) + "px";
+          colDiv.style.minHeight = Math.max(160, offset + 98) + "px";
           tableauEl.appendChild(colDiv);
         });
       }
 
+      soundBtn.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        try {
+          localStorage.setItem(SOUND_KEY, soundEnabled ? "1" : "0");
+        } catch (e) {}
+        updateSoundBtn();
+        if (soundEnabled) sfxSelect();
+      });
       newBtn.addEventListener("click", newGame);
       undoBtn.addEventListener("click", () => {
         if (history.length === 0 || state.won) {
@@ -985,11 +1103,13 @@
         hint = null;
         winBanner.classList.remove("show");
         statusMsg.textContent = "Undid last move.";
+        sfxUndo();
         render();
       });
       hintBtn.addEventListener("click", findHint);
       autoBtn.addEventListener("click", moveAvailableToFoundations);
 
+      loadSoundPref();
       loadBest();
       newGame();
     })();
