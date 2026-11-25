@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nishat628.github.io/Playnova/sitemap.xml
