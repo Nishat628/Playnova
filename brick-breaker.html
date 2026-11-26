@@ -68,6 +68,11 @@
       align-items: center;
       gap: 10px;
       min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .brand > div {
+      min-width: 0;
     }
 
     .badge {
@@ -84,7 +89,7 @@
     }
 
     .brand h1 {
-      font-size: 1rem;
+      font-size: 0.94rem;
       line-height: 1.2;
       white-space: nowrap;
       overflow: hidden;
@@ -282,7 +287,7 @@
     .overlay {
       position: absolute;
       inset: 0;
-      background: rgba(9, 6, 20, 0.82);
+      background: rgba(9, 6, 20, 0.86);
       backdrop-filter: blur(4px);
       display: none;
       flex-direction: column;
@@ -291,6 +296,7 @@
       gap: 10px;
       padding: 18px;
       text-align: center;
+      z-index: 5;
     }
 
     .overlay.show {
@@ -466,6 +472,22 @@
       const canvas = document.getElementById("gameCanvas");
       const ctx = canvas.getContext("2d");
 
+      function drawRoundedRect(x, y, w, h, r) {
+        if (typeof ctx.roundRect === "function") {
+          ctx.beginPath();
+          ctx.roundRect(x, y, w, h, r);
+          return;
+        }
+        const radius = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + w, y, x + w, y + h, radius);
+        ctx.arcTo(x + w, y + h, x, y + h, radius);
+        ctx.arcTo(x, y + h, x, y, radius);
+        ctx.arcTo(x, y, x + w, y, radius);
+        ctx.closePath();
+      }
+
       const scoreEl = document.getElementById("scoreEl");
       const bestEl = document.getElementById("bestEl");
       const levelEl = document.getElementById("levelEl");
@@ -485,6 +507,7 @@
       let soundOn = true;
       let audioCtx = null;
       let running = false;
+      let ballLaunched = false;
       let rafId = null;
 
       let score = 0;
@@ -589,12 +612,27 @@
         paddle.w = paddle.baseW;
         paddle.wideTimer = 0;
         paddle.x = canvas.width / 2 - paddle.w / 2;
-        ball.x = canvas.width / 2;
+        ball.x = paddle.x + paddle.w / 2;
         ball.y = paddle.y - ball.r - 2;
         const baseSpeed = Math.min(7.2, 4.4 + (level - 1) * 0.35 + (lvlSpeedBoost || 0));
         const angle = (-Math.PI / 2) + (Math.random() * 0.5 - 0.25);
         ball.vx = Math.cos(angle) * baseSpeed;
         ball.vy = Math.sin(angle) * baseSpeed;
+        ballLaunched = true;
+      }
+
+      function prepareIdleBoard() {
+        running = false;
+        ballLaunched = false;
+        keys.left = false;
+        keys.right = false;
+        paddle.w = paddle.baseW;
+        paddle.wideTimer = 0;
+        paddle.x = canvas.width / 2 - paddle.w / 2;
+        ball.x = paddle.x + paddle.w / 2;
+        ball.y = paddle.y - ball.r - 2;
+        buildLevel(1);
+        draw();
       }
 
       function startNewGame() {
@@ -603,6 +641,8 @@
         lives = 3;
         combo = 0;
         particles = [];
+        keys.left = false;
+        keys.right = false;
         updateHud();
         buildLevel(level);
         resetBall(0);
@@ -643,7 +683,7 @@
       }
 
       function step() {
-        if (!running) return;
+        if (!running || !ballLaunched) return;
 
         if (keys.left) paddle.x -= paddle.speed;
         if (keys.right) paddle.x += paddle.speed;
@@ -779,6 +819,7 @@
           beep(230, 0.16, "sawtooth");
           if (lives <= 0) {
             running = false;
+            ballLaunched = false;
             saveBest();
             overlayTitle.textContent = "Game Over!";
             overlayDesc.textContent = "Final Score: " + score + " • Level " + level + " • Best: " + bestScore;
@@ -797,8 +838,7 @@
           const b = bricks[i];
           if (!b.alive) continue;
           ctx.fillStyle = b.color;
-          ctx.beginPath();
-          ctx.roundRect(b.x, b.y, b.w, b.h, 5);
+          drawRoundedRect(b.x, b.y, b.w, b.h, 5);
           ctx.fill();
 
           if (b.hp > 1) {
@@ -811,8 +851,7 @@
         for (let i = 0; i < powerups.length; i++) {
           const p = powerups[i];
           ctx.fillStyle = p.kind === "wide" ? "#22d3ee" : "#34d399";
-          ctx.beginPath();
-          ctx.roundRect(p.x - 13, p.y - 8, 26, 16, 6);
+          drawRoundedRect(p.x - 13, p.y - 8, 26, 16, 6);
           ctx.fill();
           ctx.fillStyle = "#090614";
           ctx.font = "800 10px system-ui, sans-serif";
@@ -826,8 +865,7 @@
         pGrad.addColorStop(0.5, "#8b5cf6");
         pGrad.addColorStop(1, "#ec4899");
         ctx.fillStyle = pGrad;
-        ctx.beginPath();
-        ctx.roundRect(paddle.x, paddle.y, paddle.w, paddle.h, 7);
+        drawRoundedRect(paddle.x, paddle.y, paddle.w, paddle.h, 7);
         ctx.fill();
 
         ctx.fillStyle = "#ffffff";
@@ -851,6 +889,7 @@
       }
 
       function setPaddleFromClientX(clientX) {
+        if (!running || !ballLaunched) return;
         const rect = canvas.getBoundingClientRect();
         if (!rect.width) return;
         const relX = ((clientX - rect.left) / rect.width) * canvas.width;
@@ -858,12 +897,14 @@
       }
 
       canvas.addEventListener("pointermove", function (e) {
+        if (!running || !ballLaunched) return;
         if (e.pointerType === "mouse" || e.buttons > 0 || e.pressure > 0) {
           setPaddleFromClientX(e.clientX);
         }
       });
 
       canvas.addEventListener("pointerdown", function (e) {
+        if (!running || !ballLaunched) return;
         setPaddleFromClientX(e.clientX);
       });
 
@@ -880,6 +921,7 @@
       function bindHold(btn, prop) {
         btn.addEventListener("pointerdown", function (e) {
           e.preventDefault();
+          if (!running || !ballLaunched) return;
           keys[prop] = true;
         });
         btn.addEventListener("pointerup", function () {
@@ -896,19 +938,25 @@
       bindHold(leftBtn, "left");
       bindHold(rightBtn, "right");
 
-      startBtn.addEventListener("click", startNewGame);
-      restartBtn.addEventListener("click", startNewGame);
+      startBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        startNewGame();
+      });
 
-      soundBtn.addEventListener("click", function () {
+      restartBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        startNewGame();
+      });
+
+      soundBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
         soundOn = !soundOn;
         soundBtn.textContent = soundOn ? "🔊" : "🔇";
         if (soundOn) beep(520, 0.06, "sine");
       });
 
       loadBest();
-      buildLevel(1);
-      resetBall(0);
-      draw();
+      prepareIdleBoard();
     })();
   </script>
 </body>
