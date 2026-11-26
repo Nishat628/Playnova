@@ -301,7 +301,7 @@
             <rect x="28" y="42" width="50" height="14" rx="5" fill="#fb7185" />
             <rect x="242" y="76" width="50" height="14" rx="5" fill="#fb7185" />
             <circle cx="160" cy="58" r="8" fill="#fbbf24" />
-            <circle cx="160" cy="118" r="11" fill="#22d3ee" />
+            <circle cx="160" cy="118" r="11" fill="#00b4ff" />
             <rect x="70" y="144" width="180" height="22" rx="11" fill="#090712" fill-opacity="0.82" />
             <text x="160" y="159" text-anchor="middle" fill="#f5f3ff" font-size="10.5" font-family="system-ui, sans-serif" font-weight="800" letter-spacing="1.2">
               NOVA LANE HOPPER
@@ -365,7 +365,7 @@
       const canvas = document.getElementById("hopperCanvas");
       const ctx = canvas.getContext("2d");
       const laneWidth = canvas.width / LANES;
-      const playerY = canvas.height - 105;
+      const playerY = canvas.height - 110;
 
       const scoreEl = document.getElementById("scoreEl");
       const bestEl = document.getElementById("bestEl");
@@ -545,7 +545,7 @@
         const lerpRate = Math.min(1, dt * 24);
         playerX += (targetX - playerX) * lerpRate;
 
-        const playerRadius = 17;
+        const playerRadius = 18;
 
         for (let i = items.length - 1; i >= 0; i--) {
           const it = items[i];
@@ -585,12 +585,36 @@
         updateHud();
       }
 
+      function drawPlayerBall() {
+        ctx.strokeStyle = "rgba(0, 180, 255, 0.5)";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(playerX, playerY, 26, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = "#00b4ff";
+        ctx.beginPath();
+        ctx.arc(playerX, playerY, 18, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(playerX, playerY, 18, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 10px system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("YOU", playerX, playerY + 34);
+      }
+
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         for (let l = 1; l < LANES; l++) {
           const x = l * laneWidth;
-          ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
           ctx.setLineDash([8, 8]);
           ctx.beginPath();
           ctx.moveTo(x, 0);
@@ -613,22 +637,7 @@
           }
         });
 
-        ctx.strokeStyle = "rgba(34, 211, 238, 0.42)";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(playerX, playerY, 24, 0, Math.PI * 2);
-        ctx.stroke();
-
-        ctx.fillStyle = "#38bdf8";
-        ctx.beginPath();
-        ctx.arc(playerX, playerY, 17, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.arc(playerX, playerY, 17, 0, Math.PI * 2);
-        ctx.stroke();
+        drawPlayerBall();
       }
 
       function loop(now) {
