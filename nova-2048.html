@@ -372,6 +372,37 @@ else{render();save()}
   margin-top: 20px;
 }
 </style>
+ 
+/* Mobile responsive fix */
+@media (max-width: 768px) {
+  .more-games {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 25px auto;
+    padding: 18px;
+  }
+
+  .game-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .game-links a {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 8px;
+    font-size: 14px;
+    overflow-wrap: break-word;
+  }
+
+  .back-home {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
 
 
 </body>
