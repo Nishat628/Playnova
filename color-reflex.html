@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Play Color Reflex Rush online free on PlayNova. Test your reaction speed and focus by tapping matching neon colors before time runs out in your browser." />
+  <title>Color Reflex Rush — PlayNova Arcade</title>
+  <style>
+    :root {
+      --bg: #090712;
+      --panel: #141024;
+      --panel-2: #1d1636;
+      --border: rgba(255, 255, 255, 0.12);
+      --text: #f5f3ff;
+      --muted: #a79ec7;
+      --accent: #8b5cf6;
+      --accent-2: #ec4899;
+      --cyan: #22d3ee;
+      --good: #34d399;
+      --warn: #fbbf24;
+      --bad: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(34, 211, 238, 0.2), transparent 45%),
+        radial-gradient(circle at 86% 18%, rgba(236, 72, 153, 0.2), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 540px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .brand > div {
+      min-width: 0;
+    }
+
+    .badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #22d3ee, #fbbf24, #ec4899);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 0.92rem;
+      color: #090712;
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      font-size: 0.94rem;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand p {
+      font-size: 0.68rem;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+
+    .icon-btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--text);
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      padding: 7px 11px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .thumb-banner {
+      border-radius: 16px;
+      padding: 12px 14px;
+      background:
+        radial-gradient(circle at 15% 25%, rgba(52, 211, 153, 0.34), transparent 42%),
+        radial-gradient(circle at 82% 25%, rgba(251, 191, 36, 0.34), transparent 45%),
+        linear-gradient(135deg, #161538, #2a1238 55%, #102a36);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .thumb-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .thumb-art {
+      width: 54px;
+      height: 44px;
+      border-radius: 11px;
+      background: #0b0817;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 6px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+      flex: 0 0 auto;
+    }
+
+    .thumb-art span {
+      border-radius: 4px;
+    }
+
+    .thumb-art span:nth-child(1) { background: #22d3ee; }
+    .thumb-art span:nth-child(2) { background: #ec4899; }
+    .thumb-art span:nth-child(3) { background: #34d399; }
+    .thumb-art span:nth-child(4) { background: #fbbf24; }
+
+    .thumb-title {
+      font-size: 0.94rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .thumb-sub {
+      font-size: 0.74rem;
+      color: #e2e8f0;
+      opacity: 0.9;
+    }
+
+    .thumb-tag {
+      background: rgba(34, 211, 238, 0.18);
+      border: 1px solid rgba(34, 211, 238, 0.45);
+      color: #a5f3fc;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 5px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 8px 6px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      font-size: 0.96rem;
+      font-weight: 800;
+      margin-top: 2px;
+      color: #fff;
+    }
+
+    .stat-value.good { color: var(--good); }
+    .stat-value.warn { color: var(--warn); }
+    .stat-value.cyan { color: var(--cyan); }
+
+    .arena {
+      position: relative;
+      background: var(--panel);
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .timer-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #0d091b;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .timer-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--accent), var(--accent-2));
+      transition: width 0.08s linear;
+    }
+
+    .target-card {
+      background: #0d091b;
+      border: 2px solid rgba(255, 255, 255, 0.14);
+      border-radius: 16px;
+      padding: 20px 14px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      min-height: 132px;
+      justify-content: center;
+    }
+
+    .target-hint {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .target-swatch {
+      padding: 10px 22px;
+      border-radius: 14px;
+      font-size: 1.45rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #090712;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .streak-pill {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--warn);
+    }
+
+    .color-pads {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .color-btn {
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
+      padding: 18px 12px;
+      font-size: 1rem;
+      font-weight: 900;
+      color: #090712;
+      cursor: pointer;
+      transition: transform 0.08s ease, filter 0.12s ease;
+      touch-action: manipulation;
+    }
+
+    .color-btn:active {
+      transform: scale(0.96);
+      filter: brightness(1.08);
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 6, 20, 0.88);
+      backdrop-filter: blur(4px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 18px;
+      text-align: center;
+      z-index: 5;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .overlay h2 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .overlay p {
+      font-size: 0.86rem;
+      color: #cbd5e1;
+      max-width: 290px;
+      line-height: 1.5;
+    }
+
+    .play-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 22px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: center;
+    }
+
+    .restart-btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 9px 18px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    @media (max-width: 400px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .thumb-tag {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top-bar">
+      <div class="brand">
+        <div class="badge">CR</div>
+        <div>
+          <h1>Color Reflex Rush</h1>
+          <p>PlayNova Arcade</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="soundBtn" class="icon-btn" type="button" title="Toggle Sound">🔊</button>
+        <a href="index.html" class="back-btn">← Games</a>
+      </div>
+    </header>
+
+    <div class="thumb-banner">
+      <div class="thumb-left">
+        <div class="thumb-art" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <div class="thumb-title">Speed Reflex Challenge</div>
+          <div class="thumb-sub">Fast Taps • Combo Streaks • Beat Time</div>
+        </div>
+      </div>
+      <span class="thumb-tag">⚡ REFLEX MODE</span>
+    </div>
+
+    <section class="stats-grid">
+      <div class="stat">
+        <div class="stat-label">Score</div>
+        <div id="scoreEl" class="stat-value good">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Best</div>
+        <div id="bestEl" class="stat-value warn">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Streak</div>
+        <div id="streakEl" class="stat-value cyan">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Round</div>
+        <div id="roundEl" class="stat-value">1</div>
+      </div>
+    </section>
+
+    <section class="arena">
+      <div class="timer-track" aria-hidden="true">
+        <div id="timerFill" class="timer-fill"></div>
+      </div>
+
+      <div class="target-card">
+        <div class="target-hint">Tap the matching color fast</div>
+        <div id="targetSwatch" class="target-swatch">CYAN</div>
+        <div id="streakText" class="streak-pill">Multiplier: 1x</div>
+      </div>
+
+      <div id="colorPads" class="color-pads"></div>
+
+      <div id="overlay" class="overlay show">
+        <h2 id="overlayTitle">Color Reflex Rush</h2>
+        <p id="overlayDesc">Look at the target color card and tap the matching button before the timer bar runs out!</p>
+        <button id="startBtn" class="play-btn" type="button">▶ Play Now</button>
+      </div>
+    </section>
+
+    <div class="action-row">
+      <button id="restartBtn" class="restart-btn" type="button">↻ Restart Round</button>
+    </div>
+
+    <section aria-label="Play Color Reflex Rush Online on PlayNova" style="width:100%;flex-basis:100%;grid-column:1 / -1;box-sizing:border-box;background:#151126;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px;margin-top:4px;line-height:1.65;color:#f5f3ff">
+      <h2 style="font-size:18px;margin:0 0 8px">Play Color Reflex Rush Online — Free Reaction Speed Game</h2>
+      <p style="font-size:13px;color:#cbd5e1;margin:0 0 12px">
+        Play Color Reflex Rush online for free on PlayNova and challenge your eye-hand reaction speed in a fast browser reflex game. Match glowing colors before the bar empties, build streak multipliers, and set a new high score on mobile or desktop.
+      </p>
+
+      <h3 style="font-size:14px;margin:14px 0 6px;color:#c4b5fd">How to Play &amp; Controls</h3>
+      <p style="font-size:13px;color:#cbd5e1;margin:0 0 12px">
+        Tap or click the color button that matches the target color badge above before the round timer runs out. Consecutive hits increase your streak multiplier and speed up the challenge.
+      </p>
+
+      <h3 style="font-size:14px;margin:14px 0 6px;color:#c4b5fd">Reflex &amp; High Score Tips</h3>
+      <ul style="font-size:13px;color:#cbd5e1;margin:6px 0 14px;padding-left:18px">
+        <li style="margin-bottom:6px">Keep your thumbs or cursor hovered near the color pads so you can react immediately on each new target.</li>
+        <li style="margin-bottom:6px">Protect your streak—missing or tapping the wrong color resets your multiplier back to 1x.</li>
+        <li>Stay calm as the timer bar speeds up in higher rounds and prioritize clean, decisive taps.</li>
+      </ul>
+
+      <h3 style="font-size:14px;margin:14px 0 8px;color:#c4b5fd">More Games on PlayNova</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <a href="index.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Home</a>
+        <a href="nova-2048.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Nova 2048</a>
+        <a href="match-3.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Match 3</a>
+        <a href="city-tycoon.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">City Tycoon</a>
+        <a href="solitaire.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Solitaire</a>
+        <a href="typing-challenge.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Typing Challenge</a>
+        <a href="brick-breaker.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Neon Brick Breaker</a>
+      </div>
+
+      <div style="margin-top:14px;font-size:12px;color:#cbd5e1">
+        <a href="About.html" style="color:#c4b5fd;text-decoration:none;margin-right:10px">About</a>
+        <a href="contact.html" style="color:#c4b5fd;text-decoration:none;margin-right:10px">Contact</a>
+        <a href="privacy-policy.html" style="color:#c4b5fd;text-decoration:none">Privacy Policy</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const BEST_KEY = "playnova_color_reflex_best_v1";
+      const COLORS = [
+        { name: "CYAN", hex: "#22d3ee" },
+        { name: "PINK", hex: "#f472b6" },
+        { name: "MINT", hex: "#34d399" },
+        { name: "GOLD", hex: "#fbbf24" }
+      ];
+
+      const scoreEl = document.getElementById("scoreEl");
+      const bestEl = document.getElementById("bestEl");
+      const streakEl = document.getElementById("streakEl");
+      const roundEl = document.getElementById("roundEl");
+      const timerFill = document.getElementById("timerFill");
+      const targetSwatch = document.getElementById("targetSwatch");
+      const streakText = document.getElementById("streakText");
+      const colorPads = document.getElementById("colorPads");
+      const overlay = document.getElementById("overlay");
+      const overlayTitle = document.getElementById("overlayTitle");
+      const overlayDesc = document.getElementById("overlayDesc");
+      const startBtn = document.getElementById("startBtn");
+      const restartBtn = document.getElementById("restartBtn");
+      const soundBtn = document.getElementById("soundBtn");
+
+      let bestScore = 0;
+      let score = 0;
+      let streak = 0;
+      let round = 1;
+      let targetColor = COLORS[0];
+      let running = false;
+      let soundOn = true;
+      let audioCtx = null;
+
+      let stepLimitMs = 1750;
+      let remainingMs = 1750;
+      let lastTick = 0;
+      let rafId = null;
+
+      function loadBest() {
+        try {
+          bestScore = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
+        } catch (e) {
+          bestScore = 0;
+        }
+        bestEl.textContent = String(bestScore);
+      }
+
+      function saveBest() {
+        if (score > bestScore) {
+          bestScore = score;
+          bestEl.textContent = String(bestScore);
+          try {
+            localStorage.setItem(BEST_KEY, String(bestScore));
+          } catch (e) {}
+        }
+      }
+
+      function beep(freq, dur, type) {
+        if (!soundOn) return;
+        try {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          if (!audioCtx) audioCtx = new Ctx();
+          if (audioCtx.state === "suspended") audioCtx.resume();
+          const now = audioCtx.currentTime;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type || "triangle";
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.exponentialRampToValueAtTime(0.07, now + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0008, now + dur);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + dur + 0.02);
+        } catch (e) {}
+      }
+
+      function getMultiplier() {
+        return Math.min(5, 1 + Math.floor(streak / 4));
+      }
+
+      function updateStats() {
+        const mult = getMultiplier();
+        scoreEl.textContent = String(score);
+        streakEl.textContent = String(streak);
+        roundEl.textContent = String(round);
+        streakText.textContent = "Multiplier: " + mult + "x";
+      }
+
+      function pickNextTarget() {
+        const idx = Math.floor(Math.random() * COLORS.length);
+        targetColor = COLORS[idx];
+        targetSwatch.textContent = targetColor.name;
+        targetSwatch.style.background = targetColor.hex;
+
+        stepLimitMs = Math.max(820, 1750 - (round - 1) * 35);
+        remainingMs = stepLimitMs;
+        timerFill.style.width = "100%";
+      }
+
+      function endGame(reason) {
+        running = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        saveBest();
+        beep(220, 0.18, "sawtooth");
+        overlayTitle.textContent = "Time's Up!";
+        overlayDesc.textContent = reason + " Final Score: " + score + " • Best: " + bestScore;
+        startBtn.textContent = "↻ Play Again";
+        overlay.classList.add("show");
+      }
+
+      function tick(now) {
+        if (!running) return;
+        if (!lastTick) lastTick = now;
+        const dt = now - lastTick;
+        lastTick = now;
+        remainingMs -= dt;
+
+        const pct = Math.max(0, Math.min(100, (remainingMs / stepLimitMs) * 100));
+        timerFill.style.width = pct.toFixed(1) + "%";
+
+        if (remainingMs <= 0) {
+          endGame("Too slow on " + targetColor.name + "!");
+          return;
+        }
+        rafId = requestAnimationFrame(tick);
+      }
+
+      function handlePadTap(colorObj) {
+        if (!running) return;
+        if (colorObj.name === targetColor.name) {
+          streak += 1;
+          round += 1;
+          const mult = getMultiplier();
+          score += 10 * mult;
+          saveBest();
+          updateStats();
+          beep(620 + mult * 70, 0.06, "triangle");
+          pickNextTarget();
+          lastTick = performance.now();
+        } else {
+          endGame("Tapped " + colorObj.name + " instead of " + targetColor.name + ".");
+        }
+      }
+
+      function buildPads() {
+        colorPads.innerHTML = "";
+        COLORS.forEach(function (c) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "color-btn";
+          btn.textContent = c.name;
+          btn.style.background = c.hex;
+          btn.addEventListener("click", function () {
+            handlePadTap(c);
+          });
+          colorPads.appendChild(btn);
+        });
+      }
+
+      function startGame() {
+        score = 0;
+        streak = 0;
+        round = 1;
+        updateStats();
+        pickNextTarget();
+        overlay.classList.remove("show");
+        running = true;
+        lastTick = performance.now();
+        beep(560, 0.08, "sine");
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(tick);
+      }
+
+      startBtn.addEventListener("click", startGame);
+      restartBtn.addEventListener("click", startGame);
+
+      soundBtn.addEventListener("click", function () {
+        soundOn = !soundOn;
+        soundBtn.textContent = soundOn ? "🔊" : "🔇";
+        if (soundOn) beep(520, 0.06, "sine");
+      });
+
+      buildPads();
+      loadBest();
+      updateStats();
+      pickNextTarget();
+    })();
+  </script>
+</body>
+</html>
