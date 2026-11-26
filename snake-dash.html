@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Play Nova Snake Dash online free on PlayNova. Guide your glowing neon snake, collect bonus gems, speed up through waves, and beat your high score in your browser." />
+  <meta name="description" content="Play Nova Snake Dash online free on PlayNova. Steer a glowing neon snake, grab bonus gems, handle rising speed, and set new high scores." />
   <title>Nova Snake Dash — PlayNova Arcade</title>
   <style>
     :root {
@@ -14,7 +14,6 @@
       --text: #f5f3ff;
       --muted: #a79ec7;
       --accent: #8b5cf6;
-      --accent-2: #ec4899;
       --cyan: #22d3ee;
       --good: #34d399;
       --warn: #fbbf24;
@@ -131,91 +130,6 @@
       font-size: 0.82rem;
       font-weight: 600;
       white-space: nowrap;
-    }
-
-    .thumb-banner {
-      border-radius: 16px;
-      padding: 12px 14px;
-      background:
-        radial-gradient(circle at 15% 25%, rgba(52, 211, 153, 0.35), transparent 42%),
-        radial-gradient(circle at 82% 25%, rgba(34, 211, 238, 0.34), transparent 45%),
-        linear-gradient(135deg, #0e2629, #1b1338 55%, #122926);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      overflow: hidden;
-    }
-
-    .thumb-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .thumb-art {
-      width: 54px;
-      height: 44px;
-      border-radius: 11px;
-      background: #090712;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex: 0 0 auto;
-    }
-
-    .mini-snake {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .mini-snake span {
-      width: 7px;
-      height: 7px;
-      border-radius: 2px;
-      background: #34d399;
-    }
-
-    .mini-snake span.head {
-      background: #22d3ee;
-      box-shadow: 0 0 6px #22d3ee;
-    }
-
-    .mini-gem {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #fbbf24;
-      box-shadow: 0 0 6px #fbbf24;
-    }
-
-    .thumb-title {
-      font-size: 0.94rem;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .thumb-sub {
-      font-size: 0.74rem;
-      color: #e2e8f0;
-      opacity: 0.9;
-    }
-
-    .thumb-tag {
-      background: rgba(52, 211, 153, 0.18);
-      border: 1px solid rgba(52, 211, 153, 0.45);
-      color: #a7f3d0;
-      font-size: 0.68rem;
-      font-weight: 800;
-      padding: 5px 8px;
-      border-radius: 999px;
-      white-space: nowrap;
-      flex: 0 0 auto;
     }
 
     .stats-grid {
@@ -345,9 +259,6 @@
       .stats-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .thumb-tag {
-        display: none;
-      }
     }
   </style>
 </head>
@@ -366,22 +277,6 @@
         <a href="index.html" class="back-btn">← Games</a>
       </div>
     </header>
-
-    <div class="thumb-banner">
-      <div class="thumb-left">
-        <div class="thumb-art" aria-hidden="true">
-          <div class="mini-snake">
-            <span></span><span></span><span class="head"></span>
-          </div>
-          <div class="mini-gem"></div>
-        </div>
-        <div>
-          <div class="thumb-title">Neon Snake Dash</div>
-          <div class="thumb-sub">Swipe or D-Pad • Gold Gems • Rising Speed</div>
-        </div>
-      </div>
-      <span class="thumb-tag">⚡ ARCADE SNAKE</span>
-    </div>
 
     <section class="stats-grid">
       <div class="stat">
@@ -406,12 +301,12 @@
       <canvas id="gameCanvas" width="420" height="420"></canvas>
       <div id="overlay" class="overlay show">
         <h2 id="overlayTitle">Nova Snake Dash</h2>
-        <p id="overlayDesc">Swipe on the arena or tap the arrow buttons to steer, collect neon food &amp; gold gems, and avoid walls or yourself!</p>
+        <p id="overlayDesc">Swipe on the board or use the arrow buttons to steer, collect green orbs &amp; gold gems, and avoid walls or your tail.</p>
         <button id="startBtn" class="play-btn" type="button">▶ Play Now</button>
       </div>
     </section>
 
-    <div class="dpad" aria-label="Snake Direction Controls">
+    <div class="dpad" aria-label="Direction Controls">
       <span class="dpad-empty"></span>
       <button id="upBtn" class="dpad-btn" type="button">▲</button>
       <span class="dpad-empty"></span>
@@ -419,48 +314,11 @@
       <button id="downBtn" class="dpad-btn" type="button">▼</button>
       <button id="rightBtn" class="dpad-btn" type="button">▶</button>
     </div>
-
-    <section aria-label="Play Nova Snake Dash Online on PlayNova" style="width:100%;flex-basis:100%;grid-column:1 / -1;box-sizing:border-box;background:#151126;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px;margin-top:4px;line-height:1.65;color:#f5f3ff">
-      <h2 style="font-size:18px;margin:0 0 8px">Play Nova Snake Dash Online — Free Arcade Snake Game</h2>
-      <p style="font-size:13px;color:#cbd5e1;margin:0 0 12px">
-        Play Nova Snake Dash online for free on PlayNova and steer your glowing snake across a neon grid. Collect energy orbs and bonus gold gems, adapt to rising speed, and chase your high score on mobile or desktop.
-      </p>
-
-      <h3 style="font-size:14px;margin:14px 0 6px;color:#c4b5fd">How to Play &amp; Controls</h3>
-      <p style="font-size:13px;color:#cbd5e1;margin:0 0 12px">
-        Swipe in any direction on the game board, tap the directional buttons below, or use Arrow keys / WASD on keyboard. Grab green orbs to grow and gold gems for bonus points.
-      </p>
-
-      <h3 style="font-size:14px;margin:14px 0 6px;color:#c4b5fd">Snake Dash Pro Tips</h3>
-      <ul style="font-size:13px;color:#cbd5e1;margin:6px 0 14px;padding-left:18px">
-        <li style="margin-bottom:6px">Hug the outer perimeter when your snake gets longer so you keep open space and avoid trapping yourself.</li>
-        <li style="margin-bottom:6px">Grab golden bonus gems quickly for extra points, while keeping a safe exit path open.</li>
-        <li>Make smooth, timely turns rather than rapid double-taps that could reverse into your own body.</li>
-      </ul>
-
-      <h3 style="font-size:14px;margin:14px 0 8px;color:#c4b5fd">More Games on PlayNova</h3>
-      <div style="display:flex;flex-wrap:wrap;gap:8px">
-        <a href="index.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Home</a>
-        <a href="nova-2048.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Nova 2048</a>
-        <a href="match-3.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Match 3</a>
-        <a href="city-tycoon.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">City Tycoon</a>
-        <a href="solitaire.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Solitaire</a>
-        <a href="typing-challenge.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Typing Challenge</a>
-        <a href="brick-breaker.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Neon Brick Breaker</a>
-        <a href="color-reflex.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Color Reflex Rush</a>
-      </div>
-
-      <div style="margin-top:14px;font-size:12px;color:#cbd5e1">
-        <a href="About.html" style="color:#c4b5fd;text-decoration:none;margin-right:10px">About</a>
-        <a href="contact.html" style="color:#c4b5fd;text-decoration:none;margin-right:10px">Contact</a>
-        <a href="privacy-policy.html" style="color:#c4b5fd;text-decoration:none">Privacy Policy</a>
-      </div>
-    </section>
   </main>
 
   <script>
     (function () {
-      const BEST_KEY = "playnova_snake_dash_best_v1";
+      const BEST_KEY = "playnova_snake_dash_best_v2";
       const GRID = 20;
       const canvas = document.getElementById("gameCanvas");
       const ctx = canvas.getContext("2d");
