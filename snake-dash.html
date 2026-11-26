@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Play Nova Snake Dash online free on PlayNova. Steer a glowing neon snake, grab bonus gems, handle rising speed, and set new high scores." />
+  <meta property="og:title" content="Nova Snake Dash — PlayNova Arcade" />
+  <meta property="og:description" content="Steer a glowing neon snake, grab bonus gems, handle rising speed, and set new high scores on PlayNova." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="nova-snake-dash-thumb.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Nova Snake Dash — PlayNova Arcade" />
+  <meta name="twitter:image" content="nova-snake-dash-thumb.svg" />
   <title>Nova Snake Dash — PlayNova Arcade</title>
   <style>
     :root {
@@ -184,7 +191,7 @@
     .overlay {
       position: absolute;
       inset: 0;
-      background: rgba(9, 6, 20, 0.86);
+      background: rgba(9, 6, 20, 0.9);
       backdrop-filter: blur(4px);
       display: none;
       flex-direction: column;
@@ -198,6 +205,22 @@
 
     .overlay.show {
       display: flex;
+    }
+
+    .game-thumb-card {
+      width: 100%;
+      max-width: 240px;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+    }
+
+    .game-thumb-card svg {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     .overlay h2 {
@@ -300,6 +323,54 @@
     <section class="game-box">
       <canvas id="gameCanvas" width="420" height="420"></canvas>
       <div id="overlay" class="overlay show">
+        <div class="game-thumb-card" aria-hidden="true">
+          <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="nsdBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#111836" />
+                <stop offset="55%" stop-color="#29124b" />
+                <stop offset="100%" stop-color="#0f2c38" />
+              </linearGradient>
+              <linearGradient id="nsdSnake" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#8b5cf6" />
+                <stop offset="100%" stop-color="#22d3ee" />
+              </linearGradient>
+            </defs>
+            <rect width="320" height="180" rx="14" fill="url(#nsdBg)" />
+            <g stroke="#ffffff" stroke-opacity="0.06" stroke-width="1">
+              <line x1="0" y1="36" x2="320" y2="36" />
+              <line x1="0" y1="72" x2="320" y2="72" />
+              <line x1="0" y1="108" x2="320" y2="108" />
+              <line x1="0" y1="144" x2="320" y2="144" />
+              <line x1="64" y1="0" x2="64" y2="180" />
+              <line x1="128" y1="0" x2="128" y2="180" />
+              <line x1="192" y1="0" x2="192" y2="180" />
+              <line x1="256" y1="0" x2="256" y2="180" />
+            </g>
+            <!-- Green Orb -->
+            <circle cx="248" cy="64" r="8" fill="#34d399" />
+            <!-- Gold Bonus Gem -->
+            <polygon points="82,46 90,56 82,66 74,56" fill="#fbbf24" />
+            <!-- Snake Path -->
+            <path
+              d="M 56 124 L 104 124 L 104 82 L 156 82 L 156 116 L 198 116 L 198 64 L 222 64"
+              fill="none"
+              stroke="url(#nsdSnake)"
+              stroke-width="14"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <!-- Snake Head -->
+            <circle cx="222" cy="64" r="8.5" fill="#22d3ee" />
+            <circle cx="225" cy="61" r="1.8" fill="#090712" />
+            <circle cx="225" cy="67" r="1.8" fill="#090712" />
+            <!-- Title Pill -->
+            <rect x="78" y="144" width="164" height="22" rx="11" fill="#090712" fill-opacity="0.82" />
+            <text x="160" y="159" text-anchor="middle" fill="#f5f3ff" font-size="10.5" font-family="system-ui, sans-serif" font-weight="800" letter-spacing="1.2">
+              NOVA SNAKE DASH
+            </text>
+          </svg>
+        </div>
         <h2 id="overlayTitle">Nova Snake Dash</h2>
         <p id="overlayDesc">Swipe on the board or use the arrow buttons to steer, collect green orbs &amp; gold gems, and avoid walls or your tail.</p>
         <button id="startBtn" class="play-btn" type="button">▶ Play Now</button>
@@ -493,7 +564,7 @@
         }
         saveBest();
         beep(210, 0.18, "sawtooth");
-        overlayTitle.textContent = "Game Over!";
+        overlayTitle.textContent = "Nova Snake Dash — Game Over!";
         overlayDesc.textContent = "Score: " + score + " • Length: " + snake.length + " • Best: " + bestScore;
         startBtn.textContent = "↻ Play Again";
         overlay.classList.add("show");
