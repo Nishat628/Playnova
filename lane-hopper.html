@@ -365,7 +365,7 @@
       const canvas = document.getElementById("hopperCanvas");
       const ctx = canvas.getContext("2d");
       const laneWidth = canvas.width / LANES;
-      const playerY = canvas.height - 95;
+      const playerY = canvas.height - 105;
 
       const scoreEl = document.getElementById("scoreEl");
       const bestEl = document.getElementById("bestEl");
@@ -391,9 +391,21 @@
       let audioCtx = null;
       let lastTime = 0;
       let rafId = null;
+      let lastMoveAt = 0;
 
       function getLaneCenterX(lane) {
         return lane * laneWidth + laneWidth / 2;
+      }
+
+      function drawRoundedRect(x, y, w, h, r) {
+        const radius = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + w, y, x + w, y + h, radius);
+        ctx.arcTo(x + w, y + h, x, y + h, radius);
+        ctx.arcTo(x, y + h, x, y, radius);
+        ctx.arcTo(x, y, x + w, y, radius);
+        ctx.closePath();
       }
 
       function loadBest() {
@@ -444,8 +456,11 @@
 
       function setLane(targetLane) {
         if (!running) return;
+        const now = performance.now();
+        if (now - lastMoveAt < 50) return;
         const clamped = Math.max(0, Math.min(LANES - 1, targetLane));
         if (clamped !== playerLane) {
+          lastMoveAt = now;
           playerLane = clamped;
           beep(460, 0.04, "sine");
         }
@@ -588,8 +603,7 @@
           const cx = getLaneCenterX(it.lane);
           if (it.type === "barrier") {
             ctx.fillStyle = "#fb7185";
-            ctx.beginPath();
-            ctx.roundRect(cx - it.w / 2, it.y - it.h / 2, it.w, it.h, 6);
+            drawRoundedRect(cx - it.w / 2, it.y - it.h / 2, it.w, it.h, 6);
             ctx.fill();
           } else {
             ctx.fillStyle = "#fbbf24";
@@ -599,20 +613,16 @@
           }
         });
 
-        ctx.strokeStyle = "rgba(34, 211, 238, 0.35)";
+        ctx.strokeStyle = "rgba(34, 211, 238, 0.42)";
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(playerX, playerY, 24, 0, Math.PI * 2);
         ctx.stroke();
 
-        ctx.save();
-        ctx.shadowColor = "#38bdf8";
-        ctx.shadowBlur = 16;
         ctx.fillStyle = "#38bdf8";
         ctx.beginPath();
         ctx.arc(playerX, playerY, 17, 0, Math.PI * 2);
         ctx.fill();
-        ctx.restore();
 
         ctx.strokeStyle = "#ffffff";
         ctx.lineWidth = 2.5;
@@ -688,6 +698,14 @@
 
       rightBtn.addEventListener("pointerdown", function (e) {
         e.preventDefault();
+        moveLane(1);
+      });
+
+      leftBtn.addEventListener("click", function () {
+        moveLane(-1);
+      });
+
+      rightBtn.addEventListener("click", function () {
         moveLane(1);
       });
 
