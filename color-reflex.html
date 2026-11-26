@@ -599,6 +599,34 @@
         streakText.textContent = "Multiplier: " + mult + "x";
       }
 
+      function shuffleArray(list) {
+        const copy = list.slice();
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const temp = copy[i];
+          copy[i] = copy[j];
+          copy[j] = temp;
+        }
+        return copy;
+      }
+
+      function renderPads() {
+        const shuffled = shuffleArray(COLORS);
+        colorPads.innerHTML = "";
+        shuffled.forEach(function (c, i) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "color-btn";
+          btn.textContent = c.name;
+          btn.style.background = c.hex;
+          btn.setAttribute("data-index", String(i + 1));
+          btn.addEventListener("click", function () {
+            handlePadTap(c);
+          });
+          colorPads.appendChild(btn);
+        });
+      }
+
       function pickNextTarget() {
         let idx = Math.floor(Math.random() * COLORS.length);
         if (COLORS[idx].name === targetColor.name) {
@@ -608,6 +636,7 @@
         targetSwatch.textContent = targetColor.name;
         targetSwatch.style.background = targetColor.hex;
 
+        renderPads();
         stepLimitMs = Math.max(950, 2400 - (round - 1) * 22);
         remainingMs = stepLimitMs;
         timerFill.style.width = "100%";
@@ -645,7 +674,7 @@
         timerFill.style.width = pct.toFixed(1) + "%";
 
         if (remainingMs <= 0) {
-          endGame("Too slow on " + targetColor.name + "!");
+          endGame("Too slow to match the color!");
           return;
         }
         rafId = requestAnimationFrame(tick);
@@ -669,22 +698,6 @@
         }
       }
 
-      function buildPads() {
-        colorPads.innerHTML = "";
-        COLORS.forEach(function (c, i) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "color-btn";
-          btn.textContent = c.name;
-          btn.style.background = c.hex;
-          btn.setAttribute("data-index", String(i + 1));
-          btn.addEventListener("click", function () {
-            handlePadTap(c);
-          });
-          colorPads.appendChild(btn);
-        });
-      }
-
       function startGame() {
         score = 0;
         streak = 0;
@@ -701,9 +714,10 @@
 
       document.addEventListener("keydown", function (e) {
         if (!running) return;
+        const buttons = colorPads.querySelectorAll(".color-btn");
         const num = parseInt(e.key, 10);
-        if (num >= 1 && num <= COLORS.length) {
-          handlePadTap(COLORS[num - 1]);
+        if (num >= 1 && num <= buttons.length) {
+          buttons[num - 1].click();
         }
       });
 
@@ -716,7 +730,6 @@
         if (soundOn) beep(520, 0.06, "sine");
       });
 
-      buildPads();
       loadBest();
       updateStats();
       pickNextTarget();
