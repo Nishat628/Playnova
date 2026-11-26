@@ -338,16 +338,17 @@
       background: var(--panel-2);
       color: var(--text);
       border-radius: 12px;
-      padding: 10px 8px;
-      font-size: 0.84rem;
+      padding: 11px 8px;
+      font-size: 0.86rem;
       font-weight: 800;
       cursor: pointer;
       user-select: none;
+      touch-action: manipulation;
     }
 
-    .pad-btn:active {
-      background: #2a204d;
-      border-color: var(--accent);
+    .pad-btn:active, .pad-btn.active {
+      background: #2e2059;
+      border-color: var(--cyan);
     }
 
     @media (max-width: 400px) {
@@ -419,7 +420,7 @@
       <canvas id="gameCanvas" width="440" height="550"></canvas>
       <div id="overlay" class="overlay show">
         <h2 id="overlayTitle">Neon Brick Breaker</h2>
-        <p id="overlayDesc">Drag or tap left and right to steer your paddle, smash every brick, and collect power-ups!</p>
+        <p id="overlayDesc">Tap Left/Right buttons or drag on the screen to move the paddle and smash every brick!</p>
         <button id="startBtn" class="play-btn" type="button">▶ Play Now</button>
       </div>
     </section>
@@ -438,7 +439,7 @@
 
       <h3 style="font-size:14px;margin:14px 0 6px;color:#c4b5fd">How to Play &amp; Controls</h3>
       <p style="font-size:13px;color:#cbd5e1;margin:0 0 12px">
-        Drag your finger or mouse across the game screen, tap the Left and Right buttons below, or use Left/Right arrow keys to move the paddle and keep the ball in play.
+        Tap or hold the Left and Right buttons below, drag your finger across the game canvas, or use Left/Right arrow keys to move the paddle and keep the ball in play.
       </p>
 
       <h3 style="font-size:14px;margin:14px 0 6px;color:#c4b5fd">Brick Breaker Pro Tips</h3>
@@ -516,12 +517,12 @@
       let combo = 0;
 
       const paddle = {
-        w: 88,
-        baseW: 88,
-        h: 13,
-        x: canvas.width / 2 - 44,
-        y: canvas.height - 34,
-        speed: 7.5,
+        w: 96,
+        baseW: 96,
+        h: 14,
+        x: canvas.width / 2 - 48,
+        y: canvas.height - 52,
+        speed: 8.5,
         wideTimer: 0
       };
 
@@ -589,7 +590,7 @@
         const usableW = canvas.width - marginX * 2 - gap * (cols - 1);
         const bw = usableW / cols;
         const bh = 18;
-        const topOffset = 52;
+        const topOffset = 48;
 
         for (let r = 0; r < rows; r++) {
           const color = COLORS[r % COLORS.length];
@@ -613,9 +614,9 @@
         paddle.wideTimer = 0;
         paddle.x = canvas.width / 2 - paddle.w / 2;
         ball.x = paddle.x + paddle.w / 2;
-        ball.y = paddle.y - ball.r - 2;
-        const baseSpeed = Math.min(7.2, 4.4 + (level - 1) * 0.35 + (lvlSpeedBoost || 0));
-        const angle = (-Math.PI / 2) + (Math.random() * 0.5 - 0.25);
+        ball.y = paddle.y - ball.r - 3;
+        const baseSpeed = Math.min(7.0, 4.2 + (level - 1) * 0.35 + (lvlSpeedBoost || 0));
+        const angle = (-Math.PI / 2) + (Math.random() * 0.4 - 0.2);
         ball.vx = Math.cos(angle) * baseSpeed;
         ball.vy = Math.sin(angle) * baseSpeed;
         ballLaunched = true;
@@ -626,11 +627,13 @@
         ballLaunched = false;
         keys.left = false;
         keys.right = false;
+        leftBtn.classList.remove("active");
+        rightBtn.classList.remove("active");
         paddle.w = paddle.baseW;
         paddle.wideTimer = 0;
         paddle.x = canvas.width / 2 - paddle.w / 2;
         ball.x = paddle.x + paddle.w / 2;
-        ball.y = paddle.y - ball.r - 2;
+        ball.y = paddle.y - ball.r - 3;
         buildLevel(1);
         draw();
       }
@@ -643,6 +646,8 @@
         particles = [];
         keys.left = false;
         keys.right = false;
+        leftBtn.classList.remove("active");
+        rightBtn.classList.remove("active");
         updateHud();
         buildLevel(level);
         resetBall(0);
@@ -723,7 +728,7 @@
         ) {
           const hitPos = (ball.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
           const clamped = Math.max(-0.85, Math.min(0.85, hitPos));
-          const speed = Math.min(8.2, Math.hypot(ball.vx, ball.vy) * 1.02);
+          const speed = Math.min(8.0, Math.hypot(ball.vx, ball.vy) * 1.02);
           const bounceAngle = clamped * (Math.PI / 3);
           ball.vx = Math.sin(bounceAngle) * speed;
           ball.vy = -Math.cos(bounceAngle) * speed;
@@ -787,7 +792,7 @@
             p.x - 12 <= paddle.x + paddle.w
           ) {
             if (p.kind === "wide") {
-              paddle.w = Math.min(136, paddle.baseW + 38);
+              paddle.w = Math.min(144, paddle.baseW + 42);
               paddle.wideTimer = 480;
             } else {
               lives += 1;
@@ -820,6 +825,10 @@
           if (lives <= 0) {
             running = false;
             ballLaunched = false;
+            keys.left = false;
+            keys.right = false;
+            leftBtn.classList.remove("active");
+            rightBtn.classList.remove("active");
             saveBest();
             overlayTitle.textContent = "Game Over!";
             overlayDesc.textContent = "Final Score: " + score + " • Level " + level + " • Best: " + bestScore;
@@ -862,11 +871,14 @@
 
         const pGrad = ctx.createLinearGradient(paddle.x, 0, paddle.x + paddle.w, 0);
         pGrad.addColorStop(0, "#22d3ee");
-        pGrad.addColorStop(0.5, "#8b5cf6");
+        pGrad.addColorStop(0.5, "#a855f7");
         pGrad.addColorStop(1, "#ec4899");
         ctx.fillStyle = pGrad;
         drawRoundedRect(paddle.x, paddle.y, paddle.w, paddle.h, 7);
         ctx.fill();
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
 
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
@@ -918,25 +930,41 @@
         if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") keys.right = false;
       });
 
-      function bindHold(btn, prop) {
+      function stopAllPadHold() {
+        keys.left = false;
+        keys.right = false;
+        leftBtn.classList.remove("active");
+        rightBtn.classList.remove("active");
+      }
+
+      function bindPadButton(btn, prop) {
         btn.addEventListener("pointerdown", function (e) {
           e.preventDefault();
           if (!running || !ballLaunched) return;
           keys[prop] = true;
+          btn.classList.add("active");
+        });
+        btn.addEventListener("click", function () {
+          if (!running || !ballLaunched) return;
+          const stepPx = 28;
+          if (prop === "left") {
+            paddle.x = Math.max(8, paddle.x - stepPx);
+          } else {
+            paddle.x = Math.min(canvas.width - paddle.w - 8, paddle.x + stepPx);
+          }
         });
         btn.addEventListener("pointerup", function () {
           keys[prop] = false;
+          btn.classList.remove("active");
         });
-        btn.addEventListener("pointerleave", function () {
-          keys[prop] = false;
-        });
-        btn.addEventListener("pointercancel", function () {
-          keys[prop] = false;
-        });
+        btn.addEventListener("pointercancel", stopAllPadHold);
       }
 
-      bindHold(leftBtn, "left");
-      bindHold(rightBtn, "right");
+      window.addEventListener("pointerup", stopAllPadHold);
+      window.addEventListener("blur", stopAllPadHold);
+
+      bindPadButton(leftBtn, "left");
+      bindPadButton(rightBtn, "right");
 
       startBtn.addEventListener("click", function (e) {
         e.stopPropagation();
