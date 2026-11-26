@@ -239,11 +239,10 @@
       background: var(--panel);
       border: 1px solid rgba(139, 92, 246, 0.35);
       border-radius: 16px;
-      padding: 14px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      overflow: hidden;
+      gap: 10px;
       transition: border-color 0.15s ease;
     }
 
@@ -270,19 +269,19 @@
     .target-card {
       background: #0d091b;
       border: 2px solid rgba(255, 255, 255, 0.14);
-      border-radius: 16px;
-      padding: 20px 14px;
+      border-radius: 14px;
+      padding: 14px 12px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      min-height: 132px;
+      gap: 6px;
+      min-height: 104px;
       justify-content: center;
     }
 
     .target-hint {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.9px;
       color: var(--muted);
@@ -290,9 +289,9 @@
     }
 
     .target-swatch {
-      padding: 10px 22px;
-      border-radius: 14px;
-      font-size: 1.45rem;
+      padding: 8px 20px;
+      border-radius: 12px;
+      font-size: 1.32rem;
       font-weight: 900;
       letter-spacing: 0.5px;
       color: #090712;
@@ -300,7 +299,7 @@
     }
 
     .streak-pill {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 800;
       color: var(--warn);
     }
@@ -308,14 +307,14 @@
     .color-pads {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      gap: 9px;
     }
 
     .color-btn {
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 14px;
-      padding: 18px 12px;
-      font-size: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.22);
+      border-radius: 13px;
+      padding: 14px 10px;
+      font-size: 0.98rem;
       font-weight: 900;
       color: #090712;
       cursor: pointer;
@@ -333,6 +332,7 @@
       inset: 0;
       background: rgba(9, 6, 20, 0.88);
       backdrop-filter: blur(4px);
+      border-radius: 16px;
       display: none;
       flex-direction: column;
       align-items: center;
@@ -730,6 +730,7 @@
         if (soundOn) beep(520, 0.06, "sine");
       });
 
+      buildPads();
       loadBest();
       updateStats();
       pickNextTarget();
