@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Play Nova Snake Dash online free on PlayNova. Guide your glowing neon snake, collect bonus gems, speed up through waves, and beat your high score in your browser." />
+  <title>Nova Snake Dash — PlayNova Arcade</title>
+  <style>
+    :root {
+      --bg: #090712;
+      --panel: #141024;
+      --panel-2: #1d1636;
+      --border: rgba(255, 255, 255, 0.12);
+      --text: #f5f3ff;
+      --muted: #a79ec7;
+      --accent: #8b5cf6;
+      --accent-2: #ec4899;
+      --cyan: #22d3ee;
+      --good: #34d399;
+      --warn: #fbbf24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(52, 211, 153, 0.2), transparent 45%),
+        radial-gradient(circle at 86% 18%, rgba(139, 92, 246, 0.22), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 540px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .brand > div {
+      min-width: 0;
+    }
+
+    .badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--good), var(--cyan), var(--accent));
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 0.92rem;
+      color: #090712;
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      font-size: 0.9rem;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand p {
+      font-size: 0.66rem;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+
+    .icon-btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--text);
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      padding: 7px 11px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .thumb-banner {
+      border-radius: 16px;
+      padding: 12px 14px;
+      background:
+        radial-gradient(circle at 15% 25%, rgba(52, 211, 153, 0.35), transparent 42%),
+        radial-gradient(circle at 82% 25%, rgba(34, 211, 238, 0.34), transparent 45%),
+        linear-gradient(135deg, #0e2629, #1b1338 55%, #122926);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .thumb-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .thumb-art {
+      width: 54px;
+      height: 44px;
+      border-radius: 11px;
+      background: #090712;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex: 0 0 auto;
+    }
+
+    .mini-snake {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .mini-snake span {
+      width: 7px;
+      height: 7px;
+      border-radius: 2px;
+      background: #34d399;
+    }
+
+    .mini-snake span.head {
+      background: #22d3ee;
+      box-shadow: 0 0 6px #22d3ee;
+    }
+
+    .mini-gem {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fbbf24;
+      box-shadow: 0 0 6px #fbbf24;
+    }
+
+    .thumb-title {
+      font-size: 0.94rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .thumb-sub {
+      font-size: 0.74rem;
+      color: #e2e8f0;
+      opacity: 0.9;
+    }
+
+    .thumb-tag {
+      background: rgba(52, 211, 153, 0.18);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      color: #a7f3d0;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 5px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 8px 6px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      font-size: 0.96rem;
+      font-weight: 800;
+      margin-top: 2px;
+      color: #fff;
+    }
+
+    .stat-value.good { color: var(--good); }
+    .stat-value.warn { color: var(--warn); }
+    .stat-value.cyan { color: var(--cyan); }
+
+    .game-box {
+      position: relative;
+      background: #090614;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      touch-action: none;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 6, 20, 0.86);
+      backdrop-filter: blur(4px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 18px;
+      text-align: center;
+      z-index: 5;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .overlay h2 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .overlay p {
+      font-size: 0.86rem;
+      color: #cbd5e1;
+      max-width: 290px;
+      line-height: 1.5;
+    }
+
+    .play-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 22px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: #090712;
+      background: linear-gradient(135deg, var(--good), var(--cyan));
+    }
+
+    .dpad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      max-width: 250px;
+      margin: 2px auto 0;
+      width: 100%;
+    }
+
+    .dpad-btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 11px 8px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .dpad-btn:active {
+      background: #281b4d;
+      border-color: var(--good);
+    }
+
+    .dpad-empty {
+      visibility: hidden;
+    }
+
+    @media (max-width: 400px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .thumb-tag {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top-bar">
+      <div class="brand">
+        <div class="badge">SD</div>
+        <div>
+          <h1>Nova Snake Dash</h1>
+          <p>PlayNova Arcade</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="soundBtn" class="icon-btn" type="button" title="Toggle Sound">🔊</button>
+        <a href="index.html" class="back-btn">← Games</a>
+      </div>
+    </header>
+
+    <div class="thumb-banner">
+      <div class="thumb-left">
+        <div class="thumb-art" aria-hidden="true">
+          <div class="mini-snake">
+            <span></span><span></span><span class="head"></span>
+          </div>
+          <div class="mini-gem"></div>
+        </div>
+        <div>
+          <div class="thumb-title">Neon Snake Dash</div>
+          <div class="thumb-sub">Swipe or D-Pad • Gold Gems • Rising Speed</div>
+        </div>
+      </div>
+      <span class="thumb-tag">⚡ ARCADE SNAKE</span>
+    </div>
+
+    <section class="stats-grid">
+      <div class="stat">
+        <div class="stat-label">Score</div>
+        <div id="scoreEl" class="stat-value good">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Best</div>
+        <div id="bestEl" class="stat-value warn">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Length</div>
+        <div id="lenEl" class="stat-value cyan">3</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Speed</div>
+        <div id="speedEl" class="stat-value">1x</div>
+      </div>
+    </section>
+
+    <section class="game-box">
+      <canvas id="gameCanvas" width="420" height="420"></canvas>
+      <div id="overlay" class="overlay show">
+        <h2 id="overlayTitle">Nova Snake Dash</h2>
+        <p id="overlayDesc">Swipe on the arena or tap the arrow buttons to steer, collect neon food &amp; gold gems, and avoid walls or yourself!</p>
+        <button id="startBtn" class="play-btn" type="button">▶ Play Now</button>
+      </div>
+    </section>
+
+    <div class="dpad" aria-label="Snake Direction Controls">
+      <span class="dpad-empty"></span>
+      <button id="upBtn" class="dpad-btn" type="button">▲</button>
+      <span class="dpad-empty"></span>
+      <button id="leftBtn" class="dpad-btn" type="button">◀</button>
+      <button id="downBtn" class="dpad-btn" type="button">▼</button>
+      <button id="rightBtn" class="dpad-btn" type="button">▶</button>
+    </div>
+
+    <section aria-label="Play Nova Snake Dash Online on PlayNova" style="width:100%;flex-basis:100%;grid-column:1 / -1;box-sizing:border-box;background:#151126;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px;margin-top:4px;line-height:1.65;color:#f5f3ff">
+      <h2 style="font-size:18px;margin:0 0 8px">Play Nova Snake Dash Online — Free Arcade Snake Game</h2>
+      <p style="font-size:13px;color:#cbd5e1;margin:0 0 12px">
+        Play Nova Snake Dash online for free on PlayNova and steer your glowing snake across a neon grid. Collect energy orbs and bonus gold gems, adapt to rising speed, and chase your high score on mobile or desktop.
+      </p>
+
+      <h3 style="font-size:14px;margin:14px 0 6px;color:#c4b5fd">How to Play &amp; Controls</h3>
+      <p style="font-size:13px;color:#cbd5e1;margin:0 0 12px">
+        Swipe in any direction on the game board, tap the directional buttons below, or use Arrow keys / WASD on keyboard. Grab green orbs to grow and gold gems for bonus points.
+      </p>
+
+      <h3 style="font-size:14px;margin:14px 0 6px;color:#c4b5fd">Snake Dash Pro Tips</h3>
+      <ul style="font-size:13px;color:#cbd5e1;margin:6px 0 14px;padding-left:18px">
+        <li style="margin-bottom:6px">Hug the outer perimeter when your snake gets longer so you keep open space and avoid trapping yourself.</li>
+        <li style="margin-bottom:6px">Grab golden bonus gems quickly for extra points, while keeping a safe exit path open.</li>
+        <li>Make smooth, timely turns rather than rapid double-taps that could reverse into your own body.</li>
+      </ul>
+
+      <h3 style="font-size:14px;margin:14px 0 8px;color:#c4b5fd">More Games on PlayNova</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <a href="index.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Home</a>
+        <a href="nova-2048.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Nova 2048</a>
+        <a href="match-3.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Match 3</a>
+        <a href="city-tycoon.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">City Tycoon</a>
+        <a href="solitaire.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Solitaire</a>
+        <a href="typing-challenge.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Typing Challenge</a>
+        <a href="brick-breaker.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Neon Brick Breaker</a>
+        <a href="color-reflex.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 11px;border-radius:8px;font-size:12px;font-weight:700">Color Reflex Rush</a>
+      </div>
+
+      <div style="margin-top:14px;font-size:12px;color:#cbd5e1">
+        <a href="About.html" style="color:#c4b5fd;text-decoration:none;margin-right:10px">About</a>
+        <a href="contact.html" style="color:#c4b5fd;text-decoration:none;margin-right:10px">Contact</a>
+        <a href="privacy-policy.html" style="color:#c4b5fd;text-decoration:none">Privacy Policy</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const BEST_KEY = "playnova_snake_dash_best_v1";
+      const GRID = 20;
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+      const cellSize = canvas.width / GRID;
+
+      const scoreEl = document.getElementById("scoreEl");
+      const bestEl = document.getElementById("bestEl");
+      const lenEl = document.getElementById("lenEl");
+      const speedEl = document.getElementById("speedEl");
+      const overlay = document.getElementById("overlay");
+      const overlayTitle = document.getElementById("overlayTitle");
+      const overlayDesc = document.getElementById("overlayDesc");
+      const startBtn = document.getElementById("startBtn");
+      const soundBtn = document.getElementById("soundBtn");
+
+      const upBtn = document.getElementById("upBtn");
+      const downBtn = document.getElementById("downBtn");
+      const leftBtn = document.getElementById("leftBtn");
+      const rightBtn = document.getElementById("rightBtn");
+
+      let bestScore = 0;
+      let score = 0;
+      let snake = [];
+      let dir = { x: 1, y: 0 };
+      let nextDir = { x: 1, y: 0 };
+      let food = { x: 14, y: 10 };
+      let bonusGem = null;
+      let eatenCount = 0;
+      let running = false;
+      let soundOn = true;
+      let audioCtx = null;
+
+      let moveIntervalMs = 155;
+      let accumulator = 0;
+      let lastTime = 0;
+      let rafId = null;
+
+      function loadBest() {
+        try {
+          bestScore = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
+        } catch (e) {
+          bestScore = 0;
+        }
+        bestEl.textContent = String(bestScore);
+      }
+
+      function saveBest() {
+        if (score > bestScore) {
+          bestScore = score;
+          bestEl.textContent = String(bestScore);
+          try {
+            localStorage.setItem(BEST_KEY, String(bestScore));
+          } catch (e) {}
+        }
+      }
+
+      function beep(freq, dur, type) {
+        if (!soundOn) return;
+        try {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          if (!audioCtx) audioCtx = new Ctx();
+          if (audioCtx.state === "suspended") audioCtx.resume();
+          const now = audioCtx.currentTime;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type || "triangle";
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.exponentialRampToValueAtTime(0.07, now + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0008, now + dur);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + dur + 0.02);
+        } catch (e) {}
+      }
+
+      function isOccupied(x, y) {
+        for (let i = 0; i < snake.length; i++) {
+          if (snake[i].x === x && snake[i].y === y) return true;
+        }
+        if (food && food.x === x && food.y === y) return true;
+        if (bonusGem && bonusGem.x === x && bonusGem.y === y) return true;
+        return false;
+      }
+
+      function randomFreeCell() {
+        for (let attempt = 0; attempt < 200; attempt++) {
+          const x = Math.floor(Math.random() * GRID);
+          const y = Math.floor(Math.random() * GRID);
+          if (!isOccupied(x, y)) return { x: x, y: y };
+        }
+        return { x: 2, y: 2 };
+      }
+
+      function updateHud() {
+        scoreEl.textContent = String(score);
+        lenEl.textContent = String(snake.length);
+        const mult = (155 / moveIntervalMs).toFixed(1).replace(/\.0$/, "");
+        speedEl.textContent = mult + "x";
+      }
+
+      function setDirection(nx, ny) {
+        if (!running) return;
+        if (nx === -dir.x && ny === -dir.y) return;
+        if (nx === dir.x && ny === dir.y) return;
+        nextDir = { x: nx, y: ny };
+      }
+
+      function resetState() {
+        snake = [
+          { x: 6, y: 10 },
+          { x: 5, y: 10 },
+          { x: 4, y: 10 }
+        ];
+        dir = { x: 1, y: 0 };
+        nextDir = { x: 1, y: 0 };
+        score = 0;
+        eatenCount = 0;
+        moveIntervalMs = 155;
+        accumulator = 0;
+        bonusGem = null;
+        food = { x: 14, y: 10 };
+        if (isOccupied(food.x, food.y)) food = randomFreeCell();
+        updateHud();
+        draw();
+      }
+
+      function gameOver() {
+        running = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        saveBest();
+        beep(210, 0.18, "sawtooth");
+        overlayTitle.textContent = "Game Over!";
+        overlayDesc.textContent = "Score: " + score + " • Length: " + snake.length + " • Best: " + bestScore;
+        startBtn.textContent = "↻ Play Again";
+        overlay.classList.add("show");
+      }
+
+      function stepSnake() {
+        dir = { x: nextDir.x, y: nextDir.y };
+        const head = snake[0];
+        const nx = head.x + dir.x;
+        const ny = head.y + dir.y;
+
+        if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID) {
+          gameOver();
+          return;
+        }
+
+        const willEatFood = nx === food.x && ny === food.y;
+        const willEatGem = bonusGem && nx === bonusGem.x && ny === bonusGem.y;
+
+        const bodyCheckLimit = willEatFood || willEatGem ? snake.length : snake.length - 1;
+        for (let i = 0; i < bodyCheckLimit; i++) {
+          if (snake[i].x === nx && snake[i].y === ny) {
+            gameOver();
+            return;
+          }
+        }
+
+        snake.unshift({ x: nx, y: ny });
+
+        if (willEatFood) {
+          score += 10;
+          eatenCount += 1;
+          moveIntervalMs = Math.max(78, 155 - Math.floor(eatenCount / 2) * 5);
+          food = randomFreeCell();
+          if (!bonusGem && eatenCount % 4 === 0) {
+            const gemPos = randomFreeCell();
+            bonusGem = { x: gemPos.x, y: gemPos.y, stepsLeft: 45 };
+          }
+          saveBest();
+          beep(640, 0.06, "triangle");
+        } else {
+          snake.pop();
+        }
+
+        if (willEatGem) {
+          score += 25;
+          bonusGem = null;
+          saveBest();
+          beep(880, 0.09, "sine");
+        } else if (bonusGem) {
+          bonusGem.stepsLeft -= 1;
+          if (bonusGem.stepsLeft <= 0) {
+            bonusGem = null;
+          }
+        }
+
+        updateHud();
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+        ctx.lineWidth = 1;
+        for (let i = 1; i < GRID; i++) {
+          const p = i * cellSize;
+          ctx.beginPath();
+          ctx.moveTo(p, 0);
+          ctx.lineTo(p, canvas.height);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(0, p);
+          ctx.lineTo(canvas.width, p);
+          ctx.stroke();
+        }
+
+        const pad = 2.5;
+        ctx.fillStyle = "#34d399";
+        ctx.beginPath();
+        ctx.arc(
+          food.x * cellSize + cellSize / 2,
+          food.y * cellSize + cellSize / 2,
+          cellSize * 0.36,
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+
+        if (bonusGem) {
+          ctx.fillStyle = "#fbbf24";
+          ctx.beginPath();
+          ctx.arc(
+            bonusGem.x * cellSize + cellSize / 2,
+            bonusGem.y * cellSize + cellSize / 2,
+            cellSize * 0.42,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
+
+        for (let i = snake.length - 1; i >= 0; i--) {
+          const seg = snake[i];
+          ctx.fillStyle = i === 0 ? "#22d3ee" : (i % 2 === 0 ? "#8b5cf6" : "#a855f7");
+          ctx.fillRect(
+            seg.x * cellSize + pad,
+            seg.y * cellSize + pad,
+            cellSize - pad * 2,
+            cellSize - pad * 2
+          );
+        }
+      }
+
+      function frame(now) {
+        if (!running) return;
+        if (!lastTime) lastTime = now;
+        const dt = now - lastTime;
+        lastTime = now;
+        accumulator += dt;
+
+        while (accumulator >= moveIntervalMs && running) {
+          accumulator -= moveIntervalMs;
+          stepSnake();
+        }
+
+        draw();
+        if (running) {
+          rafId = requestAnimationFrame(frame);
+        }
+      }
+
+      function startGame() {
+        resetState();
+        overlay.classList.remove("show");
+        running = true;
+        lastTime = performance.now();
+        beep(560, 0.08, "sine");
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(frame);
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") {
+          e.preventDefault();
+          setDirection(0, -1);
+        } else if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
+          e.preventDefault();
+          setDirection(0, 1);
+        } else if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+          e.preventDefault();
+          setDirection(-1, 0);
+        } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+          e.preventDefault();
+          setDirection(1, 0);
+        }
+      });
+
+      let touchStartX = 0;
+      let touchStartY = 0;
+
+      canvas.addEventListener("touchstart", function (e) {
+        if (!e.touches || !e.touches.length) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      canvas.addEventListener("touchend", function (e) {
+        if (!e.changedTouches || !e.changedTouches.length) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) < 18 && Math.abs(dy) < 18) return;
+        if (Math.abs(dx) > Math.abs(dy)) {
+          setDirection(dx > 0 ? 1 : -1, 0);
+        } else {
+          setDirection(0, dy > 0 ? 1 : -1);
+        }
+      }, { passive: true });
+
+      upBtn.addEventListener("click", function () { setDirection(0, -1); });
+      downBtn.addEventListener("click", function () { setDirection(0, 1); });
+      leftBtn.addEventListener("click", function () { setDirection(-1, 0); });
+      rightBtn.addEventListener("click", function () { setDirection(1, 0); });
+
+      startBtn.addEventListener("click", startGame);
+
+      soundBtn.addEventListener("click", function () {
+        soundOn = !soundOn;
+        soundBtn.textContent = soundOn ? "🔊" : "🔇";
+        if (soundOn) beep(520, 0.06, "sine");
+      });
+
+      loadBest();
+      resetState();
+    })();
+  </script>
+</body>
+</html>
