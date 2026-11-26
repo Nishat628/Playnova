@@ -420,7 +420,7 @@
       <canvas id="gameCanvas" width="440" height="550"></canvas>
       <div id="overlay" class="overlay show">
         <h2 id="overlayTitle">Neon Brick Breaker</h2>
-        <p id="overlayDesc">Tap Left/Right buttons or drag on the screen to move the paddle and smash every brick!</p>
+        <p id="overlayDesc">Hold Left/Right buttons or drag on the screen to move the paddle and smash every brick!</p>
         <button id="startBtn" class="play-btn" type="button">▶ Play Now</button>
       </div>
     </section>
@@ -439,7 +439,7 @@
 
       <h3 style="font-size:14px;margin:14px 0 6px;color:#c4b5fd">How to Play &amp; Controls</h3>
       <p style="font-size:13px;color:#cbd5e1;margin:0 0 12px">
-        Tap or hold the Left and Right buttons below, drag your finger across the game canvas, or use Left/Right arrow keys to move the paddle and keep the ball in play.
+        Hold the Left and Right buttons below, drag your finger across the game canvas, or use Left/Right arrow keys to move the paddle and keep the ball in play.
       </p>
 
       <h3 style="font-size:14px;margin:14px 0 6px;color:#c4b5fd">Brick Breaker Pro Tips</h3>
@@ -616,7 +616,7 @@
         ball.x = paddle.x + paddle.w / 2;
         ball.y = paddle.y - ball.r - 3;
         const baseSpeed = Math.min(7.0, 4.2 + (level - 1) * 0.35 + (lvlSpeedBoost || 0));
-        const angle = (-Math.PI / 2) + (Math.random() * 0.4 - 0.2);
+        const angle = (-Math.PI / 2) + (Math.random() * 0.3 - 0.15);
         ball.vx = Math.cos(angle) * baseSpeed;
         ball.vy = Math.sin(angle) * baseSpeed;
         ballLaunched = true;
@@ -727,9 +727,9 @@
           ball.x - ball.r <= paddle.x + paddle.w
         ) {
           const hitPos = (ball.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
-          const clamped = Math.max(-0.85, Math.min(0.85, hitPos));
-          const speed = Math.min(8.0, Math.hypot(ball.vx, ball.vy) * 1.02);
-          const bounceAngle = clamped * (Math.PI / 3);
+          const clamped = Math.max(-0.8, Math.min(0.8, hitPos));
+          const speed = Math.min(7.8, Math.hypot(ball.vx, ball.vy) * 1.015);
+          const bounceAngle = clamped * (Math.PI / 3.2);
           ball.vx = Math.sin(bounceAngle) * speed;
           ball.vy = -Math.cos(bounceAngle) * speed;
           ball.y = paddle.y - ball.r - 0.5;
@@ -941,19 +941,15 @@
         btn.addEventListener("pointerdown", function (e) {
           e.preventDefault();
           if (!running || !ballLaunched) return;
-          keys[prop] = true;
+          keys.left = prop === "left";
+          keys.right = prop === "right";
           btn.classList.add("active");
         });
-        btn.addEventListener("click", function () {
-          if (!running || !ballLaunched) return;
-          const stepPx = 28;
-          if (prop === "left") {
-            paddle.x = Math.max(8, paddle.x - stepPx);
-          } else {
-            paddle.x = Math.min(canvas.width - paddle.w - 8, paddle.x + stepPx);
-          }
-        });
         btn.addEventListener("pointerup", function () {
+          keys[prop] = false;
+          btn.classList.remove("active");
+        });
+        btn.addEventListener("pointerleave", function () {
           keys[prop] = false;
           btn.classList.remove("active");
         });
