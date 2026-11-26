@@ -67,7 +67,7 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
       min-width: 0;
       flex: 1 1 auto;
     }
@@ -90,7 +90,7 @@
     }
 
     .brand h1 {
-      font-size: 0.94rem;
+      font-size: 0.88rem;
       line-height: 1.2;
       white-space: nowrap;
       overflow: hidden;
@@ -98,7 +98,7 @@
     }
 
     .brand p {
-      font-size: 0.68rem;
+      font-size: 0.66rem;
       letter-spacing: 0.8px;
       color: var(--muted);
       text-transform: uppercase;
@@ -174,7 +174,7 @@
     }
 
     .thumb-art span:nth-child(1) { background: #22d3ee; }
-    .thumb-art span:nth-child(2) { background: #ec4899; }
+    .thumb-art span:nth-child(2) { background: #f472b6; }
     .thumb-art span:nth-child(3) { background: #34d399; }
     .thumb-art span:nth-child(4) { background: #fbbf24; }
 
@@ -244,6 +244,11 @@
       flex-direction: column;
       gap: 12px;
       overflow: hidden;
+      transition: border-color 0.15s ease;
+    }
+
+    .arena.hit {
+      border-color: var(--good);
     }
 
     .timer-track {
@@ -259,7 +264,7 @@
       width: 100%;
       height: 100%;
       background: linear-gradient(90deg, var(--cyan), var(--accent), var(--accent-2));
-      transition: width 0.08s linear;
+      transition: width 0.06s linear;
     }
 
     .target-card {
@@ -440,7 +445,7 @@
       </div>
     </section>
 
-    <section class="arena">
+    <section id="arenaEl" class="arena">
       <div class="timer-track" aria-hidden="true">
         <div id="timerFill" class="timer-fill"></div>
       </div>
@@ -511,6 +516,7 @@
         { name: "GOLD", hex: "#fbbf24" }
       ];
 
+      const arenaEl = document.getElementById("arenaEl");
       const scoreEl = document.getElementById("scoreEl");
       const bestEl = document.getElementById("bestEl");
       const streakEl = document.getElementById("streakEl");
@@ -535,8 +541,8 @@
       let soundOn = true;
       let audioCtx = null;
 
-      let stepLimitMs = 1750;
-      let remainingMs = 1750;
+      let stepLimitMs = 2400;
+      let remainingMs = 2400;
       let lastTick = 0;
       let rafId = null;
 
@@ -594,14 +600,24 @@
       }
 
       function pickNextTarget() {
-        const idx = Math.floor(Math.random() * COLORS.length);
+        let idx = Math.floor(Math.random() * COLORS.length);
+        if (COLORS[idx].name === targetColor.name) {
+          idx = (idx + 1) % COLORS.length;
+        }
         targetColor = COLORS[idx];
         targetSwatch.textContent = targetColor.name;
         targetSwatch.style.background = targetColor.hex;
 
-        stepLimitMs = Math.max(820, 1750 - (round - 1) * 35);
+        stepLimitMs = Math.max(950, 2400 - (round - 1) * 22);
         remainingMs = stepLimitMs;
         timerFill.style.width = "100%";
+      }
+
+      function flashHit() {
+        arenaEl.classList.add("hit");
+        setTimeout(function () {
+          arenaEl.classList.remove("hit");
+        }, 130);
       }
 
       function endGame(reason) {
@@ -644,6 +660,7 @@
           score += 10 * mult;
           saveBest();
           updateStats();
+          flashHit();
           beep(620 + mult * 70, 0.06, "triangle");
           pickNextTarget();
           lastTick = performance.now();
@@ -654,12 +671,13 @@
 
       function buildPads() {
         colorPads.innerHTML = "";
-        COLORS.forEach(function (c) {
+        COLORS.forEach(function (c, i) {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "color-btn";
           btn.textContent = c.name;
           btn.style.background = c.hex;
+          btn.setAttribute("data-index", String(i + 1));
           btn.addEventListener("click", function () {
             handlePadTap(c);
           });
@@ -681,6 +699,14 @@
         rafId = requestAnimationFrame(tick);
       }
 
+      document.addEventListener("keydown", function (e) {
+        if (!running) return;
+        const num = parseInt(e.key, 10);
+        if (num >= 1 && num <= COLORS.length) {
+          handlePadTap(COLORS[num - 1]);
+        }
+      });
+
       startBtn.addEventListener("click", startGame);
       restartBtn.addEventListener("click", startGame);
 
@@ -694,6 +720,8 @@
       loadBest();
       updateStats();
       pickNextTarget();
+      running = false;
+      timerFill.style.width = "100%";
     })();
   </script>
 </body>
