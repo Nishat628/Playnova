@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Play Swarm Surge free online on PlayNova. Dodge incoming hazards, collect energy cores, and survive escalating waves." />
+  <meta property="og:title" content="Swarm Surge — PlayNova Arcade" />
+  <meta property="og:description" content="Dodge incoming hazards and collect energy cores in Swarm Surge on PlayNova." />
+  <meta property="og:type" content="website" />
+  <title>Swarm Surge — PlayNova Arcade</title>
+  <style>
+    :root {
+      --bg: #090712;
+      --panel: #141024;
+      --panel-2: #1d1636;
+      --border: rgba(255, 255, 255, 0.12);
+      --text: #f5f3ff;
+      --muted: #a79ec7;
+      --accent: #8b5cf6;
+      --cyan: #22d3ee;
+      --good: #34d399;
+      --warn: #fbbf24;
+      --danger: #fb7185;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(139, 92, 246, 0.24), transparent 45%),
+        radial-gradient(circle at 85% 18%, rgba(34, 211, 238, 0.18), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 12px;
+      display: block;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 560px;
+      min-width: 0;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--cyan), var(--accent));
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: #090712;
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      font-size: 0.94rem;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand p {
+      font-size: 0.66rem;
+      color: var(--muted);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-btn, .back-btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 7px 11px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 8px 6px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .stat-val {
+      font-size: 0.98rem;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .stat-val.good { color: var(--good); }
+    .stat-val.warn { color: var(--warn); }
+    .stat-val.cyan { color: var(--cyan); }
+
+    .game-box {
+      position: relative;
+      background: #070510;
+      border: 1px solid rgba(34, 211, 238, 0.36);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 360px;
+      touch-action: none;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 6, 20, 0.9);
+      backdrop-filter: blur(3px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 18px;
+      text-align: center;
+      z-index: 4;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .thumb-preview {
+      width: 100%;
+      max-width: 220px;
+      aspect-ratio: 16 / 9;
+      border-radius: 11px;
+      overflow: hidden;
+      border: 1px solid rgba(34, 211, 238, 0.4);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .thumb-preview svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .overlay h2 {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .overlay p {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      max-width: 295px;
+      line-height: 1.5;
+    }
+
+    .start-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 22px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: #090712;
+      background: linear-gradient(135deg, var(--cyan), var(--good));
+    }
+
+    .info-card {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      background: #151126;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 4px;
+      line-height: 1.65;
+      color: #f5f3ff;
+    }
+
+    .info-card h2 {
+      font-size: 17px;
+      margin: 0 0 8px;
+    }
+
+    .info-card h3 {
+      font-size: 14px;
+      margin: 12px 0 6px;
+      color: #c4b5fd;
+    }
+
+    .info-card p {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin: 0 0 12px;
+    }
+
+    .info-card ul {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin: 6px 0 12px;
+      padding-left: 18px;
+    }
+
+    .info-card li {
+      margin-bottom: 6px;
+    }
+
+    .game-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .game-links a {
+      color: #f5f3ff;
+      text-decoration: none;
+      background: #1d1734;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .footer-links {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .footer-links a {
+      color: #c4b5fd;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top-bar">
+      <div class="brand">
+        <div class="badge">SS</div>
+        <div>
+          <h1>Swarm Surge</h1>
+          <p>PlayNova Arcade</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="soundBtn" class="icon-btn" type="button" title="Toggle Sound">🔊</button>
+        <a href="index.html" class="back-btn">← Games</a>
+      </div>
+    </header>
+
+    <section class="stats">
+      <div class="stat">
+        <div class="stat-label">Score</div>
+        <div id="scoreEl" class="stat-val good">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Best</div>
+        <div id="bestEl" class="stat-val warn">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Wave</div>
+        <div id="waveEl" class="stat-val cyan">1</div>
+      </div>
+    </section>
+
+    <section class="game-box">
+      <canvas id="gameCanvas" width="520" height="360"></canvas>
+
+      <div id="overlay" class="overlay show">
+        <div class="thumb-preview" aria-hidden="true">
+          <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="ssThumbBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0a0918" />
+                <stop offset="55%" stop-color="#1e1240" />
+                <stop offset="100%" stop-color="#092938" />
+              </linearGradient>
+            </defs>
+            <rect width="320" height="180" fill="url(#ssThumbBg)" />
+            <circle cx="160" cy="88" r="22" fill="#22d3ee" fill-opacity="0.22" />
+            <circle cx="160" cy="88" r="12" fill="#22d3ee" stroke="#ffffff" stroke-width="2" />
+            <circle cx="84" cy="54" r="9" fill="#fb7185" />
+            <circle cx="242" cy="60" r="9" fill="#fb7185" />
+            <circle cx="96" cy="122" r="8" fill="#fb7185" />
+            <circle cx="226" cy="118" r="8" fill="#fb7185" />
+            <circle cx="198" cy="46" r="7" fill="#fbbf24" />
+            <circle cx="122" cy="44" r="7" fill="#34d399" />
+            <rect x="88" y="144" width="144" height="22" rx="11" fill="#090712" fill-opacity="0.85" />
+            <text x="160" y="159" text-anchor="middle" fill="#f5f3ff" font-size="10.5" font-family="system-ui, sans-serif" font-weight="800" letter-spacing="1.2">
+              SWARM SURGE
+            </text>
+          </svg>
+        </div>
+        <h2 id="overlayTitle">Swarm Surge</h2>
+        <p id="overlayDesc">Drag or use Arrow/WASD keys to dodge red hazards and collect glowing cores.</p>
+        <button id="startBtn" class="start-btn" type="button">▶ Play Now</button>
+      </div>
+    </section>
+
+    <section class="info-card" aria-label="Play Swarm Surge Online on PlayNova">
+      <h2>Play Swarm Surge Online — Fast Arcade Survival Game</h2>
+      <p>
+        Play Swarm Surge online for free on PlayNova. Guide your glowing core through incoming hazard swarms, grab energy orbs for bonus points, and survive escalating waves.
+      </p>
+
+      <h3>How to Play &amp; Controls</h3>
+      <p>
+        Touch and drag inside the arena on mobile or move with Arrow keys / WASD on desktop to avoid red hazards and collect gold or mint energy cores.
+      </p>
+
+      <h3>Swarm Surge Pro Tips</h3>
+      <ul>
+        <li>Stay near the center when swarms crowd the edges so you always have escape room.</li>
+        <li>Grab glowing cores early, but never cut across a fast hazard's path for a single orb.</li>
+        <li>Watch wave transitions closely as hazard speed increases steadily over time.</li>
+      </ul>
+
+      <h3>More Games on PlayNova</h3>
+      <div class="game-links">
+        <a href="index.html">Home</a>
+        <a href="stack-tower.html">Stack Tower</a>
+        <a href="color-reflex.html">Color Reflex Rush</a>
+        <a href="coin-cascade.html">Coin Cascade</a>
+        <a href="lane-hopper.html">Nova Lane Hopper</a>
+        <a href="snake-dash.html">Nova Snake Dash</a>
+        <a href="nova-2048.html">Nova 2048</a>
+        <a href="match-3.html">Match 3</a>
+        <a href="city-tycoon.html">City Tycoon</a>
+      </div>
+
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const BEST_KEY = "playnova_swarm_surge_best_v1";
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const scoreEl = document.getElementById("scoreEl");
+      const bestEl = document.getElementById("bestEl");
+      const waveEl = document.getElementById("waveEl");
+      const overlay = document.getElementById("overlay");
+      const overlayTitle = document.getElementById("overlayTitle");
+      const overlayDesc = document.getElementById("overlayDesc");
+      const startBtn = document.getElementById("startBtn");
+      const soundBtn = document.getElementById("soundBtn");
+
+      const keys = {};
+      let pointerActive = false;
+      let pointerTarget = null;
+
+      let player = { x: 260, y: 240, r: 13, speed: 270 };
+      let hazards = [];
+      let gems = [];
+      let score = 0;
+      let bestScore = 0;
+      let wave = 1;
+      let spawnTimer = 0;
+      let gemTimer = 0;
+      let running = false;
+      let soundOn = true;
+      let audioCtx = null;
+      let lastTime = 0;
+      let rafId = null;
+
+      function loadBest() {
+        try {
+          bestScore = Math.max(0, parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0);
+        } catch (e) {
+          bestScore = 0;
+        }
+        bestEl.textContent = String(bestScore);
+      }
+
+      function saveBest() {
+        if (score > bestScore) {
+          bestScore = score;
+          bestEl.textContent = String(bestScore);
+          try {
+            localStorage.setItem(BEST_KEY, String(bestScore));
+          } catch (e) {}
+        }
+      }
+
+      function beep(freq, dur, type) {
+        if (!soundOn) return;
+        try {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          if (!audioCtx) audioCtx = new Ctx();
+          if (audioCtx.state === "suspended") audioCtx.resume();
+          const now = audioCtx.currentTime;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type || "triangle";
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.exponentialRampToValueAtTime(0.065, now + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0008, now + dur);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + dur + 0.02);
+        } catch (e) {}
+      }
+
+      function updateHud() {
+        scoreEl.textContent = String(Math.floor(score));
+        waveEl.textContent = String(wave);
+      }
+
+      function spawnHazard() {
+        const w = canvas.width;
+        const h = canvas.height;
+        const edge = Math.floor(Math.random() * 4);
+        let x = 0, y = 0;
+        if (edge === 0) { x = Math.random() * w; y = -14; }
+        else if (edge === 1) { x = w + 14; y = Math.random() * h; }
+        else if (edge === 2) { x = Math.random() * w; y = h + 14; }
+        else { x = -14; y = Math.random() * h; }
+
+        const angle = Math.atan2(player.y - y, player.x - x) + (Math.random() - 0.5) * 0.45;
+        const baseSpeed = 95 + wave * 16 + Math.random() * 45;
+        hazards.push({
+          x: x,
+          y: y,
+          r: 10 + Math.random() * 4,
+          vx: Math.cos(angle) * baseSpeed,
+          vy: Math.sin(angle) * baseSpeed
+        });
+      }
+
+      function spawnGem() {
+        if (gems.length >= 3) return;
+        const pad = 28;
+        gems.push({
+          x: pad + Math.random() * (canvas.width - pad * 2),
+          y: pad + Math.random() * (canvas.height - pad * 2),
+          r: 8,
+          color: Math.random() < 0.5 ? "#fbbf24" : "#34d399"
+        });
+      }
+
+      function resetGame() {
+        player = { x: canvas.width * 0.5, y: canvas.height * 0.65, r: 13, speed: 270 };
+        hazards = [];
+        gems = [];
+        score = 0;
+        wave = 1;
+        spawnTimer = 0.35;
+        gemTimer = 0.2;
+        pointerTarget = null;
+        spawnGem();
+        updateHud();
+      }
+
+      function gameOver() {
+        running = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        saveBest();
+        beep(170, 0.24, "sawtooth");
+        overlayTitle.textContent = "Core Hit!";
+        overlayDesc.textContent = "Score: " + Math.floor(score) + " • Best: " + bestScore + " • Wave " + wave;
+        startBtn.textContent = "↻ Play Again";
+        overlay.classList.add("show");
+      }
+
+      function update(dt) {
+        if (!running || dt <= 0) return;
+
+        score += dt * (12 + wave * 3);
+        wave = 1 + Math.floor(score / 180);
+
+        let dx = 0, dy = 0;
+        if (keys["ArrowLeft"] || keys["a"] || keys["A"]) dx -= 1;
+        if (keys["ArrowRight"] || keys["d"] || keys["D"]) dx += 1;
+        if (keys["ArrowUp"] || keys["w"] || keys["W"]) dy -= 1;
+        if (keys["ArrowDown"] || keys["s"] || keys["S"]) dy += 1;
+
+        if (dx !== 0 || dy !== 0) {
+          const len = Math.hypot(dx, dy);
+          player.x += (dx / len) * player.speed * dt;
+          player.y += (dy / len) * player.speed * dt;
+        } else if (pointerActive && pointerTarget) {
+          const toX = pointerTarget.x - player.x;
+          const toY = pointerTarget.y - player.y;
+          const dist = Math.hypot(toX, toY);
+          if (dist > 2) {
+            const step = Math.min(dist, player.speed * 1.15 * dt);
+            player.x += (toX / dist) * step;
+            player.y += (toY / dist) * step;
+          }
+        }
+
+        player.x = Math.max(player.r + 4, Math.min(canvas.width - player.r - 4, player.x));
+        player.y = Math.max(player.r + 4, Math.min(canvas.height - player.r - 4, player.y));
+
+        spawnTimer -= dt;
+        if (spawnTimer <= 0) {
+          spawnHazard();
+          spawnTimer = Math.max(0.24, 0.92 - wave * 0.065);
+        }
+
+        gemTimer -= dt;
+        if (gemTimer <= 0) {
+          spawnGem();
+          gemTimer = 2.2;
+        }
+
+        for (let i = gems.length - 1; i >= 0; i--) {
+          const g = gems[i];
+          if (Math.hypot(player.x - g.x, player.y - g.y) <= player.r + g.r + 3) {
+            gems.splice(i, 1);
+            score += 25;
+            beep(740, 0.07, "triangle");
+          }
+        }
+
+        for (let i = hazards.length - 1; i >= 0; i--) {
+          const hObj = hazards[i];
+          hObj.x += hObj.vx * dt;
+          hObj.y += hObj.vy * dt;
+
+          if (Math.hypot(player.x - hObj.x, player.y - hObj.y) < player.r + hObj.r - 2) {
+            saveBest();
+            updateHud();
+            gameOver();
+            return;
+          }
+
+          if (
+            hObj.x < -50 || hObj.x > canvas.width + 50 ||
+            hObj.y < -50 || hObj.y > canvas.height + 50
+          ) {
+            hazards.splice(i, 1);
+          }
+        }
+
+        saveBest();
+        updateHud();
+      }
+
+      function draw() {
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.fillStyle = "#080614";
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.strokeStyle = "rgba(139, 92, 246, 0.12)";
+        ctx.lineWidth = 1;
+        for (let gx = 32; gx < w; gx += 32) {
+          ctx.beginPath();
+          ctx.moveTo(gx, 0);
+          ctx.lineTo(gx, h);
+          ctx.stroke();
+        }
+        for (let gy = 32; gy < h; gy += 32) {
+          ctx.beginPath();
+          ctx.moveTo(0, gy);
+          ctx.lineTo(w, gy);
+          ctx.stroke();
+        }
+
+        for (const g of gems) {
+          ctx.beginPath();
+          ctx.arc(g.x, g.y, g.r, 0, Math.PI * 2);
+          ctx.fillStyle = g.color;
+          ctx.fill();
+        }
+
+        for (const hObj of hazards) {
+          ctx.beginPath();
+          ctx.arc(hObj.x, hObj.y, hObj.r, 0, Math.PI * 2);
+          ctx.fillStyle = "#fb7185";
+          ctx.fill();
+        }
+
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, player.r + 5, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(34, 211, 238, 0.2)";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
+        ctx.fillStyle = "#22d3ee";
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#ffffff";
+        ctx.stroke();
+      }
+
+      function loop(now) {
+        if (!running) return;
+        const dt = Math.min(0.05, Math.max(0.001, (now - lastTime) / 1000));
+        lastTime = now;
+        update(dt);
+        draw();
+        if (running) {
+          rafId = requestAnimationFrame(loop);
+        }
+      }
+
+      function startGame() {
+        resetGame();
+        overlay.classList.remove("show");
+        running = true;
+        lastTime = performance.now();
+        beep(540, 0.07, "sine");
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(loop);
+      }
+
+      function updatePointerPos(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        pointerTarget = {
+          x: ((clientX - rect.left) / rect.width) * canvas.width,
+          y: ((clientY - rect.top) / rect.height) * canvas.height
+        };
+      }
+
+      canvas.addEventListener("pointerdown", function (e) {
+        pointerActive = true;
+        updatePointerPos(e.clientX, e.clientY);
+      });
+
+      window.addEventListener("pointermove", function (e) {
+        if (!pointerActive) return;
+        updatePointerPos(e.clientX, e.clientY);
+      });
+
+      window.addEventListener("pointerup", function () {
+        pointerActive = false;
+      });
+
+      window.addEventListener("keydown", function (e) {
+        if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " "].includes(e.key)) {
+          e.preventDefault();
+        }
+        keys[e.key] = true;
+      });
+
+      window.addEventListener("keyup", function (e) {
+        keys[e.key] = false;
+      });
+
+      startBtn.addEventListener("click", startGame);
+
+      soundBtn.addEventListener("click", function () {
+        soundOn = !soundOn;
+        soundBtn.textContent = soundOn ? "🔊" : "🔇";
+        if (soundOn) beep(520, 0.06, "sine");
+      });
+
+      loadBest();
+      resetGame();
+      draw();
+    })();
+  </script>
+</body>
+</html>
