@@ -5,11 +5,7 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://nishat628.github.io/Playnova/nova-2048.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://nishat628.github.io/Playnova/match-3.html</loc>
+    <loc>https://nishat628.github.io/Playnova/brick-breaker.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -17,7 +13,23 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nishat628.github.io/Playnova/typing-challenge.html</loc>
+    <loc>https://nishat628.github.io/Playnova/color-reflex.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nishat628.github.io/Playnova/lane-hopper.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nishat628.github.io/Playnova/match-3.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nishat628.github.io/Playnova/nova-2048.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nishat628.github.io/Playnova/snake-dash.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -33,7 +45,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nishat628.github.io/Playnova/lane-hopper.html</loc>
+    <loc>https://nishat628.github.io/Playnova/typing-challenge.html</loc>
     <priority>0.8</priority>
   </url>
 </urlset>
