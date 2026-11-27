@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Play Nova Lane Hopper free online on PlayNova. Switch lanes fast, dodge neon barriers, collect gold orbs, and beat your high score." />
+  <meta property="og:title" content="Nova Lane Hopper — PlayNova Arcade" />
+  <meta property="og:description" content="Switch lanes fast, dodge neon barriers, collect gold orbs, and beat your high score on PlayNova." />
+  <meta property="og:type" content="website" />
   <title>Nova Lane Hopper — PlayNova Arcade</title>
   <style>
     :root {
@@ -15,6 +18,7 @@
       --muted: #a79ec7;
       --accent: #8b5cf6;
       --cyan: #22d3ee;
+      --blue: #38bdf8;
       --good: #34d399;
       --warn: #fbbf24;
       --danger: #fb7185;
@@ -33,19 +37,20 @@
       overflow-x: hidden;
       min-height: 100vh;
       background:
-        radial-gradient(circle at 20% 10%, rgba(34, 211, 238, 0.18), transparent 45%),
-        radial-gradient(circle at 85% 18%, rgba(139, 92, 246, 0.24), transparent 45%),
+        radial-gradient(circle at 20% 10%, rgba(56, 189, 248, 0.2), transparent 45%),
+        radial-gradient(circle at 85% 18%, rgba(139, 92, 246, 0.25), transparent 45%),
         var(--bg);
       color: var(--text);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       padding: 12px;
-      display: flex;
-      justify-content: center;
+      display: block;
     }
 
     .app {
       width: 100%;
-      max-width: 520px;
+      max-width: 560px;
+      min-width: 0;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -73,7 +78,7 @@
       width: 38px;
       height: 38px;
       border-radius: 11px;
-      background: linear-gradient(135deg, var(--cyan), var(--accent));
+      background: linear-gradient(135deg, var(--blue), var(--accent));
       display: grid;
       place-items: center;
       font-weight: 900;
@@ -145,12 +150,12 @@
 
     .stat-val.good { color: var(--good); }
     .stat-val.warn { color: var(--warn); }
-    .stat-val.cyan { color: var(--cyan); }
+    .stat-val.cyan { color: var(--blue); }
 
     .game-box {
       position: relative;
       background: #080512;
-      border: 1px solid rgba(34, 211, 238, 0.35);
+      border: 1px solid rgba(56, 189, 248, 0.42);
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
@@ -168,7 +173,7 @@
       position: absolute;
       inset: 0;
       background: rgba(9, 6, 20, 0.88);
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(3px);
       display: none;
       flex-direction: column;
       align-items: center;
@@ -183,15 +188,32 @@
       display: flex;
     }
 
+    .game-thumb-card {
+      width: 100%;
+      max-width: 240px;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+    }
+
+    .game-thumb-card svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
     .overlay h2 {
       font-size: 1.35rem;
       font-weight: 900;
+      color: #fff;
     }
 
     .overlay p {
       font-size: 0.86rem;
       color: #cbd5e1;
-      max-width: 280px;
+      max-width: 290px;
       line-height: 1.5;
     }
 
@@ -203,7 +225,7 @@
       font-weight: 800;
       cursor: pointer;
       color: #090712;
-      background: linear-gradient(135deg, var(--cyan), var(--good));
+      background: linear-gradient(135deg, var(--blue), var(--good));
     }
 
     .lane-controls {
@@ -217,7 +239,7 @@
       background: var(--panel-2);
       color: var(--text);
       border-radius: 12px;
-      padding: 12px;
+      padding: 13px;
       font-size: 0.95rem;
       font-weight: 800;
       cursor: pointer;
@@ -227,7 +249,78 @@
 
     .move-btn:active {
       background: #281b4d;
-      border-color: var(--cyan);
+      border-color: var(--blue);
+    }
+
+    .info-card {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      background: #151126;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 4px;
+      line-height: 1.65;
+      color: #f5f3ff;
+    }
+
+    .info-card h2 {
+      font-size: 17px;
+      margin: 0 0 8px;
+    }
+
+    .info-card h3 {
+      font-size: 14px;
+      margin: 12px 0 6px;
+      color: #c4b5fd;
+    }
+
+    .info-card p {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin: 0 0 12px;
+    }
+
+    .info-card ul {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin: 6px 0 12px;
+      padding-left: 18px;
+    }
+
+    .info-card li {
+      margin-bottom: 6px;
+    }
+
+    .game-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .game-links a {
+      color: #f5f3ff;
+      text-decoration: none;
+      background: #1d1734;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .footer-links {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .footer-links a {
+      color: #c4b5fd;
+      text-decoration: none;
+      margin-right: 10px;
     }
   </style>
 </head>
@@ -265,8 +358,30 @@
     <section class="game-box">
       <canvas id="hopperCanvas" width="360" height="480"></canvas>
       <div id="overlay" class="overlay show">
+        <div class="game-thumb-card" aria-hidden="true">
+          <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="lhBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#111836" />
+                <stop offset="55%" stop-color="#29124b" />
+                <stop offset="100%" stop-color="#0f2c38" />
+              </linearGradient>
+            </defs>
+            <rect width="320" height="180" rx="14" fill="url(#lhBg)" />
+            <line x1="106" y1="0" x2="106" y2="180" stroke="#ffffff" stroke-opacity="0.12" stroke-dasharray="6 6" />
+            <line x1="213" y1="0" x2="213" y2="180" stroke="#ffffff" stroke-opacity="0.12" stroke-dasharray="6 6" />
+            <rect x="28" y="42" width="50" height="14" rx="5" fill="#fb7185" />
+            <rect x="242" y="76" width="50" height="14" rx="5" fill="#fb7185" />
+            <circle cx="160" cy="58" r="8" fill="#fbbf24" />
+            <circle cx="160" cy="118" r="12" fill="#38bdf8" stroke="#ffffff" stroke-width="2" />
+            <rect x="70" y="144" width="180" height="22" rx="11" fill="#090712" fill-opacity="0.82" />
+            <text x="160" y="159" text-anchor="middle" fill="#f5f3ff" font-size="10.5" font-family="system-ui, sans-serif" font-weight="800" letter-spacing="1.2">
+              NOVA LANE HOPPER
+            </text>
+          </svg>
+        </div>
         <h2 id="overlayTitle">Nova Lane Hopper</h2>
-        <p id="overlayDesc">Swipe left/right or use the buttons below to switch lanes, dodge red barriers, and grab gold orbs.</p>
+        <p id="overlayDesc">Move the blue ball left or right to dodge red blocks and collect yellow balls.</p>
         <button id="startBtn" class="start-btn" type="button">▶ Play Now</button>
       </div>
     </section>
@@ -275,46 +390,45 @@
       <button id="leftBtn" class="move-btn" type="button">◀ Move Left</button>
       <button id="rightBtn" class="move-btn" type="button">Move Right ▶</button>
     </div>
-  </main>
-        
-         <section style="display:block;width:100%;box-sizing:border-box;background:#151126;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:16px;margin-top:6px;line-height:1.6;color:#f5f3ff">
-      <h2 style="font-size:17px;margin:0 0 8px">Play Nova Lane Hopper Online — Fast Neon Arcade Dodger</h2>
-      <p style="font-size:13px;color:#cbd5e1;margin:0 0 12px">
+
+    <section class="info-card" aria-label="Play Nova Lane Hopper Online on PlayNova">
+      <h2>Play Nova Lane Hopper Online — Fast Neon Arcade Dodger</h2>
+      <p>
         Play Nova Lane Hopper online for free on PlayNova. Switch across three neon lanes, dodge incoming red barriers, collect gold orbs for bonus points, and survive increasing speed on mobile or desktop.
       </p>
 
-      <h3 style="font-size:14px;margin:12px 0 6px;color:#c4b5fd">How to Play &amp; Controls</h3>
-      <p style="font-size:13px;color:#cbd5e1;margin:0 0 12px">
+      <h3>How to Play &amp; Controls</h3>
+      <p>
         Swipe left or right on the arena, tap the Move Left / Move Right buttons below, or press Left/Right Arrow or A/D keys on keyboard to shift lanes quickly.
       </p>
 
-      <h3 style="font-size:14px;margin:12px 0 6px;color:#c4b5fd">Lane Hopper Pro Tips</h3>
-      <ul style="font-size:13px;color:#cbd5e1;margin:6px 0 12px;padding-left:18px">
-        <li style="margin-bottom:6px">Stay near the center lane when possible so you can react fast in either direction.</li>
-        <li style="margin-bottom:6px">Grab gold orbs when the path is clear, but never risk a crash for a late orb.</li>
+      <h3>Lane Hopper Pro Tips</h3>
+      <ul>
+        <li>Stay near the center lane when possible so you can react fast in either direction.</li>
+        <li>Grab gold orbs when the path is clear, but never risk a crash for a late orb.</li>
         <li>Watch upcoming rows early so you have enough time to switch lanes smoothly at high speed.</li>
       </ul>
 
-      <h3 style="font-size:14px;margin:12px 0 8px;color:#c4b5fd">More Games on PlayNova</h3>
-      <div style="display:flex;flex-wrap:wrap;gap:8px">
-        <a href="index.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">Home</a>
-        <a href="snake-dash.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">Nova Snake Dash</a>
-        <a href="nova-2048.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">Nova 2048</a>
-        <a href="match-3.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">Match 3</a>
-        <a href="city-tycoon.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">City Tycoon</a>
-        <a href="solitaire.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">Solitaire</a>
-        <a href="typing-challenge.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">Typing Challenge</a>
-        <a href="brick-breaker.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">Neon Brick Breaker</a>
-        <a href="color-reflex.html" style="color:#f5f3ff;text-decoration:none;background:#1d1734;border:1px solid rgba(255,255,255,0.14);padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700">Color Reflex Rush</a>
+      <h3>More Games on PlayNova</h3>
+      <div class="game-links">
+        <a href="index.html">Home</a>
+        <a href="snake-dash.html">Nova Snake Dash</a>
+        <a href="nova-2048.html">Nova 2048</a>
+        <a href="match-3.html">Match 3</a>
+        <a href="city-tycoon.html">City Tycoon</a>
+        <a href="solitaire.html">Solitaire</a>
+        <a href="typing-challenge.html">Typing Challenge</a>
+        <a href="brick-breaker.html">Neon Brick Breaker</a>
+        <a href="color-reflex.html">Color Reflex Rush</a>
       </div>
 
-      <div style="margin-top:12px;font-size:12px;color:#cbd5e1">
-        <a href="about.html" style="color:#c4b5fd;text-decoration:none;margin-right:10px">About</a>
-        <a href="contact.html" style="color:#c4b5fd;text-decoration:none;margin-right:10px">Contact</a>
-        <a href="privacy-policy.html" style="color:#c4b5fd;text-decoration:none">Privacy Policy</a>
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
       </div>
     </section>
- 
+  </main>
 
   <script>
     (function () {
@@ -323,7 +437,7 @@
       const canvas = document.getElementById("hopperCanvas");
       const ctx = canvas.getContext("2d");
       const laneWidth = canvas.width / LANES;
-      const playerY = canvas.height - 68;
+      const playerY = canvas.height - 86;
 
       const scoreEl = document.getElementById("scoreEl");
       const bestEl = document.getElementById("bestEl");
@@ -337,6 +451,8 @@
       const rightBtn = document.getElementById("rightBtn");
 
       let playerLane = 1;
+      let playerX = laneWidth * 1 + laneWidth / 2;
+      let scoreFrac = 0;
       let score = 0;
       let bestScore = 0;
       let speedPx = 220;
@@ -347,10 +463,26 @@
       let audioCtx = null;
       let lastTime = 0;
       let rafId = null;
+      let lastMoveAt = 0;
+
+      function getLaneCenterX(lane) {
+        return lane * laneWidth + laneWidth / 2;
+      }
+
+      function drawRoundedRect(x, y, w, h, r) {
+        const radius = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + w, y, x + w, y + h, radius);
+        ctx.arcTo(x + w, y + h, x, y + h, radius);
+        ctx.arcTo(x, y + h, x, y, radius);
+        ctx.arcTo(x, y, x + w, y, radius);
+        ctx.closePath();
+      }
 
       function loadBest() {
         try {
-          bestScore = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
+          bestScore = Math.max(0, parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0);
         } catch (e) {
           bestScore = 0;
         }
@@ -390,17 +522,24 @@
       }
 
       function updateHud() {
-        scoreEl.textContent = String(score);
+        scoreEl.textContent = String(Math.max(0, score));
         speedEl.textContent = (speedPx / 220).toFixed(1) + "x";
       }
 
-      function moveLane(delta) {
+      function setLane(targetLane) {
         if (!running) return;
-        const next = Math.max(0, Math.min(LANES - 1, playerLane + delta));
-        if (next !== playerLane) {
-          playerLane = next;
+        const now = performance.now();
+        if (now - lastMoveAt < 50) return;
+        const clamped = Math.max(0, Math.min(LANES - 1, targetLane));
+        if (clamped !== playerLane) {
+          lastMoveAt = now;
+          playerLane = clamped;
           beep(460, 0.04, "sine");
         }
+      }
+
+      function moveLane(delta) {
+        setLane(playerLane + delta);
       }
 
       function spawnRow() {
@@ -434,6 +573,8 @@
 
       function resetGame() {
         playerLane = 1;
+        playerX = getLaneCenterX(1);
+        scoreFrac = 0;
         score = 0;
         speedPx = 220;
         spawnTimer = 0.25;
@@ -450,14 +591,21 @@
         }
         saveBest();
         beep(190, 0.2, "sawtooth");
-        overlayTitle.textContent = "Crashed!";
+        overlayTitle.textContent = "Nova Lane Hopper — Crashed!";
         overlayDesc.textContent = "Score: " + score + " • Best: " + bestScore;
         startBtn.textContent = "↻ Play Again";
         overlay.classList.add("show");
       }
 
       function update(dt) {
-        score += Math.floor(dt * 24 * (speedPx / 220));
+        if (dt <= 0) return;
+        scoreFrac += dt * 24 * (speedPx / 220);
+        if (scoreFrac >= 1) {
+          const gained = Math.floor(scoreFrac);
+          score += gained;
+          scoreFrac -= gained;
+        }
+
         speedPx = Math.min(480, speedPx + dt * 6.5);
         spawnTimer -= dt;
         if (spawnTimer <= 0) {
@@ -465,22 +613,24 @@
           spawnTimer = Math.max(0.52, 1.05 - (speedPx - 220) / 550);
         }
 
-        const px = playerLane * laneWidth + laneWidth / 2;
-        const playerRadius = 15;
+        const targetX = getLaneCenterX(playerLane);
+        playerX += (targetX - playerX) * Math.min(1, dt * 24);
+
+        const playerRadius = 17;
 
         for (let i = items.length - 1; i >= 0; i--) {
           const it = items[i];
           it.y += speedPx * dt;
 
-          const ix = it.lane * laneWidth + laneWidth / 2;
+          const ix = getLaneCenterX(it.lane);
           if (it.type === "barrier") {
             const left = ix - it.w / 2;
             const right = ix + it.w / 2;
             const top = it.y - it.h / 2;
             const bottom = it.y + it.h / 2;
             if (
-              px + playerRadius > left &&
-              px - playerRadius < right &&
+              playerX + playerRadius > left &&
+              playerX - playerRadius < right &&
               playerY + playerRadius > top &&
               playerY - playerRadius < bottom
             ) {
@@ -488,7 +638,7 @@
               return;
             }
           } else if (it.type === "orb") {
-            const dist = Math.hypot(px - ix, playerY - it.y);
+            const dist = Math.hypot(playerX - ix, playerY - it.y);
             if (dist < playerRadius + it.r) {
               score += 25;
               saveBest();
@@ -506,12 +656,39 @@
         updateHud();
       }
 
+      function drawPlayerBall() {
+        for (let l = 0; l < LANES; l++) {
+          const lx = getLaneCenterX(l);
+          ctx.fillStyle = l === playerLane ? "#38bdf8" : "rgba(255, 255, 255, 0.14)";
+          ctx.beginPath();
+          ctx.arc(lx, canvas.height - 24, l === playerLane ? 6 : 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.strokeStyle = "rgba(56, 189, 248, 0.5)";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(playerX, playerY, 25, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = "#38bdf8";
+        ctx.beginPath();
+        ctx.arc(playerX, playerY, 17, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(playerX, playerY, 17, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         for (let l = 1; l < LANES; l++) {
           const x = l * laneWidth;
-          ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
           ctx.setLineDash([8, 8]);
           ctx.beginPath();
           ctx.moveTo(x, 0);
@@ -521,11 +698,10 @@
         ctx.setLineDash([]);
 
         items.forEach(function (it) {
-          const cx = it.lane * laneWidth + laneWidth / 2;
+          const cx = getLaneCenterX(it.lane);
           if (it.type === "barrier") {
             ctx.fillStyle = "#fb7185";
-            ctx.beginPath();
-            ctx.roundRect(cx - it.w / 2, it.y - it.h / 2, it.w, it.h, 6);
+            drawRoundedRect(cx - it.w / 2, it.y - it.h / 2, it.w, it.h, 6);
             ctx.fill();
           } else {
             ctx.fillStyle = "#fbbf24";
@@ -535,16 +711,12 @@
           }
         });
 
-        const playerX = playerLane * laneWidth + laneWidth / 2;
-        ctx.fillStyle = "#22d3ee";
-        ctx.beginPath();
-        ctx.arc(playerX, playerY, 15, 0, Math.PI * 2);
-        ctx.fill();
+        drawPlayerBall();
       }
 
       function loop(now) {
         if (!running) return;
-        const dt = Math.min(0.05, (now - lastTime) / 1000);
+        const dt = Math.min(0.05, Math.max(0.001, (now - lastTime) / 1000));
         lastTime = now;
         update(dt);
         draw();
@@ -574,19 +746,43 @@
       });
 
       let touchStartX = 0;
+      let touchMoved = false;
+
       canvas.addEventListener("touchstart", function (e) {
-        if (e.touches && e.touches.length) {
-          touchStartX = e.touches[0].clientX;
+        if (!e.touches || !e.touches.length) return;
+        touchStartX = e.touches[0].clientX;
+        touchMoved = false;
+      }, { passive: true });
+
+      canvas.addEventListener("touchmove", function (e) {
+        if (!e.touches || !e.touches.length || touchMoved) return;
+        const dx = e.touches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 16) {
+          touchMoved = true;
+          moveLane(dx > 0 ? 1 : -1);
         }
       }, { passive: true });
 
       canvas.addEventListener("touchend", function (e) {
-        if (!e.changedTouches || !e.changedTouches.length) return;
-        const dx = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(dx) > 18) {
-          moveLane(dx > 0 ? 1 : -1);
-        }
+        if (!running || touchMoved) return;
+        const touch = e.changedTouches && e.changedTouches[0];
+        if (!touch) return;
+        const rect = canvas.getBoundingClientRect();
+        const relX = touch.clientX - rect.left;
+        const tappedLane = Math.max(0, Math.min(LANES - 1, Math.floor((relX / rect.width) * LANES)));
+        if (tappedLane < playerLane) moveLane(-1);
+        else if (tappedLane > playerLane) moveLane(1);
       }, { passive: true });
+
+      leftBtn.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
+        moveLane(-1);
+      });
+
+      rightBtn.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
+        moveLane(1);
+      });
 
       leftBtn.addEventListener("click", function () { moveLane(-1); });
       rightBtn.addEventListener("click", function () { moveLane(1); });
