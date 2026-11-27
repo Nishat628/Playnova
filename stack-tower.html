@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Play Stack Tower free online on PlayNova. Tap at the right moment to stack blocks higher, hit perfect combos, and beat your best score." />
+  <meta property="og:title" content="Stack Tower — PlayNova Arcade" />
+  <meta property="og:description" content="Tap at the right moment to stack blocks higher and beat your high score on PlayNova." />
+  <meta property="og:type" content="website" />
+  <title>Stack Tower — PlayNova Arcade</title>
+  <style>
+    :root {
+      --bg: #090712;
+      --panel: #141024;
+      --panel-2: #1d1636;
+      --border: rgba(255, 255, 255, 0.12);
+      --text: #f5f3ff;
+      --muted: #a79ec7;
+      --accent: #8b5cf6;
+      --cyan: #22d3ee;
+      --good: #34d399;
+      --warn: #fbbf24;
+      --danger: #fb7185;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(34, 211, 238, 0.18), transparent 45%),
+        radial-gradient(circle at 85% 18%, rgba(139, 92, 246, 0.25), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 12px;
+      display: block;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 560px;
+      min-width: 0;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--cyan), var(--accent));
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: #090712;
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      font-size: 0.94rem;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand p {
+      font-size: 0.66rem;
+      color: var(--muted);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-btn, .back-btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 7px 11px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 8px 6px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .stat-val {
+      font-size: 0.98rem;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .stat-val.good { color: var(--good); }
+    .stat-val.warn { color: var(--warn); }
+    .stat-val.cyan { color: var(--cyan); }
+
+    .game-box {
+      position: relative;
+      background: #080512;
+      border: 1px solid rgba(34, 211, 238, 0.38);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 3 / 4;
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 6, 20, 0.88);
+      backdrop-filter: blur(3px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 18px;
+      text-align: center;
+      z-index: 4;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .overlay h2 {
+      font-size: 1.38rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .overlay p {
+      font-size: 0.86rem;
+      color: #cbd5e1;
+      max-width: 290px;
+      line-height: 1.5;
+    }
+
+    .start-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 22px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: #090712;
+      background: linear-gradient(135deg, var(--cyan), var(--good));
+    }
+
+    .action-bar {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .drop-btn {
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 0.98rem;
+      font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .drop-btn:active {
+      background: #281b4d;
+      border-color: var(--cyan);
+    }
+
+    .info-card {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      background: #151126;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 4px;
+      line-height: 1.65;
+      color: #f5f3ff;
+    }
+
+    .info-card h2 {
+      font-size: 17px;
+      margin: 0 0 8px;
+    }
+
+    .info-card h3 {
+      font-size: 14px;
+      margin: 12px 0 6px;
+      color: #c4b5fd;
+    }
+
+    .info-card p {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin: 0 0 12px;
+    }
+
+    .info-card ul {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin: 6px 0 12px;
+      padding-left: 18px;
+    }
+
+    .info-card li {
+      margin-bottom: 6px;
+    }
+
+    .game-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .game-links a {
+      color: #f5f3ff;
+      text-decoration: none;
+      background: #1d1734;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .footer-links {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .footer-links a {
+      color: #c4b5fd;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top-bar">
+      <div class="brand">
+        <div class="badge">ST</div>
+        <div>
+          <h1>Stack Tower</h1>
+          <p>PlayNova Arcade</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="soundBtn" class="icon-btn" type="button" title="Toggle Sound">🔊</button>
+        <a href="index.html" class="back-btn">← Games</a>
+      </div>
+    </header>
+
+    <section class="stats">
+      <div class="stat">
+        <div class="stat-label">Score</div>
+        <div id="scoreEl" class="stat-val good">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Best</div>
+        <div id="bestEl" class="stat-val warn">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Combo</div>
+        <div id="comboEl" class="stat-val cyan">0x</div>
+      </div>
+    </section>
+
+    <section class="game-box">
+      <canvas id="towerCanvas" width="360" height="480"></canvas>
+      <div id="overlay" class="overlay show">
+        <h2 id="overlayTitle">Stack Tower</h2>
+        <p id="overlayDesc">Tap the screen or button right when the moving block lines up with the tower below.</p>
+        <button id="startBtn" class="start-btn" type="button">▶ Play Now</button>
+      </div>
+    </section>
+
+    <div class="action-bar">
+      <button id="dropBtn" class="drop-btn" type="button">⬇ Place Block</button>
+    </div>
+
+    <section class="info-card" aria-label="Play Stack Tower Online on PlayNova">
+      <h2>Play Stack Tower Online — Precision Block Stacking Game</h2>
+      <p>
+        Play Stack Tower online for free on PlayNova. Time your tap carefully to stack each moving neon layer cleanly onto the tower below and build high combo streaks.
+      </p>
+
+      <h3>How to Play &amp; Controls</h3>
+      <p>
+        Tap anywhere on the game canvas, press the Place Block button below, or hit Space / Enter on a keyboard to drop the active block.
+      </p>
+
+      <h3>Stack Tower Pro Tips</h3>
+      <ul>
+        <li>Aim for dead-center alignment to trigger Perfect drops and keep your block width intact.</li>
+        <li>Avoid rushing early layers—steady timing gives you a wider margin for error later.</li>
+        <li>Watch the edge shadow of the block below so you can release just in time.</li>
+      </ul>
+
+      <h3>More Games on PlayNova</h3>
+      <div class="game-links">
+        <a href="index.html">Home</a>
+        <a href="lane-hopper.html">Nova Lane Hopper</a>
+        <a href="snake-dash.html">Nova Snake Dash</a>
+        <a href="nova-2048.html">Nova 2048</a>
+        <a href="match-3.html">Match 3</a>
+        <a href="city-tycoon.html">City Tycoon</a>
+        <a href="solitaire.html">Solitaire</a>
+        <a href="typing-challenge.html">Typing Challenge</a>
+      </div>
+
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const BEST_KEY = "playnova_stack_tower_best_v1";
+      const canvas = document.getElementById("towerCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const scoreEl = document.getElementById("scoreEl");
+      const bestEl = document.getElementById("bestEl");
+      const comboEl = document.getElementById("comboEl");
+      const overlay = document.getElementById("overlay");
+      const overlayTitle = document.getElementById("overlayTitle");
+      const overlayDesc = document.getElementById("overlayDesc");
+      const startBtn = document.getElementById("startBtn");
+      const dropBtn = document.getElementById("dropBtn");
+      const soundBtn = document.getElementById("soundBtn");
+
+      const BLOCK_H = 24;
+      const BASE_W = 190;
+      const COLORS = ["#22d3ee", "#38bdf8", "#818cf8", "#a855f7", "#ec4899", "#f43f5e", "#fbbf24", "#34d399"];
+
+      let stack = [];
+      let active = null;
+      let debris = [];
+      let floatingText = null;
+      let cameraY = 0;
+      let targetCameraY = 0;
+      let score = 0;
+      let bestScore = 0;
+      let combo = 0;
+      let running = false;
+      let soundOn = true;
+      let audioCtx = null;
+      let lastTime = 0;
+      let rafId = null;
+
+      function loadBest() {
+        try {
+          bestScore = Math.max(0, parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0);
+        } catch (e) {
+          bestScore = 0;
+        }
+        bestEl.textContent = String(bestScore);
+      }
+
+      function saveBest() {
+        if (score > bestScore) {
+          bestScore = score;
+          bestEl.textContent = String(bestScore);
+          try {
+            localStorage.setItem(BEST_KEY, String(bestScore));
+          } catch (e) {}
+        }
+      }
+
+      function beep(freq, dur, type) {
+        if (!soundOn) return;
+        try {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          if (!audioCtx) audioCtx = new Ctx();
+          if (audioCtx.state === "suspended") audioCtx.resume();
+          const now = audioCtx.currentTime;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type || "triangle";
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.exponentialRampToValueAtTime(0.07, now + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0008, now + dur);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + dur + 0.02);
+        } catch (e) {}
+      }
+
+      function updateHud() {
+        scoreEl.textContent = String(Math.max(0, score));
+        comboEl.textContent = combo + "x";
+      }
+
+      function layerColor(index) {
+        return COLORS[index % COLORS.length];
+      }
+
+      function spawnNextBlock() {
+        const top = stack[stack.length - 1];
+        const level = stack.length;
+        const y = canvas.height - 64 - level * BLOCK_H;
+        const fromLeft = level % 2 === 0;
+        const speed = Math.min(310, 145 + level * 5.5);
+
+        active = {
+          x: fromLeft ? -top.w : canvas.width,
+          y: y,
+          w: top.w,
+          h: BLOCK_H,
+          dir: fromLeft ? 1 : -1,
+          speed: speed,
+          color: layerColor(level)
+        };
+      }
+
+      function resetGame() {
+        stack = [{
+          x: (canvas.width - BASE_W) / 2,
+          y: canvas.height - 64,
+          w: BASE_W,
+          h: BLOCK_H,
+          color: layerColor(0)
+        }];
+        debris = [];
+        floatingText = null;
+        cameraY = 0;
+        targetCameraY = 0;
+        score = 0;
+        combo = 0;
+        updateHud();
+        spawnNextBlock();
+        draw();
+      }
+
+      function endGame() {
+        running = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        saveBest();
+        beep(185, 0.22, "sawtooth");
+        overlayTitle.textContent = "Tower Toppled!";
+        overlayDesc.textContent = "Score: " + score + " • Best: " + bestScore;
+        startBtn.textContent = "↻ Play Again";
+        overlay.classList.add("show");
+      }
+
+      function placeBlock() {
+        if (!running || !active) return;
+        const top = stack[stack.length - 1];
+        const diff = active.x - top.x;
+        const absDiff = Math.abs(diff);
+
+        if (absDiff >= active.w) {
+          debris.push({
+            x: active.x,
+            y: active.y,
+            w: active.w,
+            h: active.h,
+            vx: active.dir * 60,
+            vy: 40,
+            color: active.color,
+            alpha: 1
+          });
+          active = null;
+          endGame();
+          return;
+        }
+
+        if (absDiff <= 6) {
+          combo += 1;
+          const bonus = combo >= 3 ? combo : 1;
+          score += 1 + bonus;
+          floatingText = {
+            text: combo >= 3 ? "PERFECT " + combo + "x!" : "PERFECT!",
+            x: top.x + top.w / 2,
+            y: active.y - 8,
+            alpha: 1
+          };
+          beep(560 + Math.min(400, combo * 45), 0.07, "triangle");
+          stack.push({
+            x: top.x,
+            y: active.y,
+            w: top.w,
+            h: active.h,
+            color: active.color
+          });
+        } else {
+          combo = 0;
+          score += 1;
+          const newW = active.w - absDiff;
+          const newX = diff > 0 ? active.x : top.x;
+          const cutX = diff > 0 ? active.x + newW : active.x;
+
+          debris.push({
+            x: cutX,
+            y: active.y,
+            w: absDiff,
+            h: active.h,
+            vx: diff > 0 ? 75 : -75,
+            vy: 20,
+            color: active.color,
+            alpha: 1
+          });
+
+          floatingText = {
+            text: "+1",
+            x: newX + newW / 2,
+            y: active.y - 6,
+            alpha: 0.9
+          };
+
+          beep(430, 0.05, "sine");
+          stack.push({
+            x: newX,
+            y: active.y,
+            w: newW,
+            h: active.h,
+            color: active.color
+          });
+        }
+
+        saveBest();
+        updateHud();
+
+        if (stack.length > 9) {
+          targetCameraY = (stack.length - 9) * BLOCK_H;
+        }
+
+        spawnNextBlock();
+      }
+
+      function update(dt) {
+        if (dt <= 0) return;
+
+        cameraY += (targetCameraY - cameraY) * Math.min(1, dt * 10);
+
+        if (running && active) {
+          active.x += active.dir * active.speed * dt;
+          const margin = 24;
+          if (active.x + active.w > canvas.width - margin) {
+            active.x = canvas.width - margin - active.w;
+            active.dir = -1;
+          } else if (active.x < margin) {
+            active.x = margin;
+            active.dir = 1;
+          }
+        }
+
+        for (let i = debris.length - 1; i >= 0; i--) {
+          const d = debris[i];
+          d.x += d.vx * dt;
+          d.y += d.vy * dt;
+          d.vy += 420 * dt;
+          d.alpha -= dt * 1.4;
+          if (d.alpha <= 0 || d.y > canvas.height + 120) {
+            debris.splice(i, 1);
+          }
+        }
+
+        if (floatingText) {
+          floatingText.y -= 28 * dt;
+          floatingText.alpha -= dt * 1.5;
+          if (floatingText.alpha <= 0) floatingText = null;
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.save();
+        ctx.translate(0, cameraY);
+
+        for (let i = 0; i < stack.length; i++) {
+          const b = stack[i];
+          ctx.fillStyle = b.color;
+          ctx.fillRect(b.x, b.y, b.w, b.h);
+          ctx.fillStyle = "rgba(255, 255, 255, 0.22)";
+          ctx.fillRect(b.x, b.y, b.w, 4);
+        }
+
+        if (active) {
+          ctx.fillStyle = active.color;
+          ctx.fillRect(active.x, active.y, active.w, active.h);
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(active.x + 0.5, active.y + 0.5, active.w - 1, active.h - 1);
+        }
+
+        debris.forEach(function (d) {
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, d.alpha);
+          ctx.fillStyle = d.color;
+          ctx.fillRect(d.x, d.y, d.w, d.h);
+          ctx.restore();
+        });
+
+        if (floatingText) {
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, floatingText.alpha);
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 13px system-ui, sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(floatingText.text, floatingText.x, floatingText.y);
+          ctx.restore();
+        }
+
+        ctx.restore();
+      }
+
+      function loop(now) {
+        if (!running) return;
+        const dt = Math.min(0.05, Math.max(0.001, (now - lastTime) / 1000));
+        lastTime = now;
+        update(dt);
+        draw();
+        if (running) {
+          rafId = requestAnimationFrame(loop);
+        }
+      }
+
+      function startGame() {
+        resetGame();
+        overlay.classList.remove("show");
+        running = true;
+        lastTime = performance.now();
+        beep(520, 0.07, "sine");
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(loop);
+      }
+
+      canvas.addEventListener("pointerdown", function (e) {
+        if (!running) return;
+        e.preventDefault();
+        placeBlock();
+      });
+
+      dropBtn.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
+        placeBlock();
+      });
+
+      dropBtn.addEventListener("click", function () {
+        placeBlock();
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.code === "Space" || e.key === "Enter") {
+          if (running) {
+            e.preventDefault();
+            placeBlock();
+          }
+        }
+      });
+
+      startBtn.addEventListener("click", startGame);
+
+      soundBtn.addEventListener("click", function () {
+        soundOn = !soundOn;
+        soundBtn.textContent = soundOn ? "🔊" : "🔇";
+        if (soundOn) beep(520, 0.06, "sine");
+      });
+
+      loadBest();
+      resetGame();
+    })();
+  </script>
+</body>
+</html>
