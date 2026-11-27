@@ -24,4 +24,16 @@
     <loc>https://nishat628.github.io/Playnova/solitaire.html</loc>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://nishat628.github.io/Playnova/stack-tower.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nishat628.github.io/Playnova/swarm-surge.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nishat628.github.io/Playnova/lane-hopper.html</loc>
+    <priority>0.8</priority>
+  </url>
 </urlset>
