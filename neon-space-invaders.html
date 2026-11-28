@@ -1,0 +1,855 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#09051a">
+
+<title>Neon Space Invaders - Free Online Arcade Game | PlayNova</title>
+<meta name="description" content="Play Neon Space Invaders free online at PlayNova! Pilot your spaceship, shoot alien invaders, survive enemy waves and beat your high score.">
+<meta name="keywords" content="Neon Space Invaders, free space shooter game, online arcade game, alien shooting game, browser games, PlayNova">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nishat628.github.io/Playnova/neon-space-invaders.html">
+
+<meta property="og:title" content="Neon Space Invaders | PlayNova">
+<meta property="og:description" content="Defend the galaxy in this exciting free neon space shooter game.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nishat628.github.io/Playnova/neon-space-invaders.html">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Neon Space Invaders | PlayNova">
+<meta name="twitter:description" content="Shoot alien invaders and protect the galaxy. Play free!">
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"VideoGame",
+  "name":"Neon Space Invaders",
+  "description":"A free browser-based neon space shooter arcade game.",
+  "genre":["Arcade","Space Shooter"],
+  "gamePlatform":"Web Browser",
+  "applicationCategory":"Game",
+  "operatingSystem":"Any",
+  "url":"https://nishat628.github.io/Playnova/neon-space-invaders.html",
+  "publisher":{
+    "@type":"Organization",
+    "name":"PlayNova"
+  },
+  "offers":{
+    "@type":"Offer",
+    "price":"0",
+    "priceCurrency":"USD"
+  }
+}
+</script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+ background:#09051a;
+ color:#fff;
+ font-family:Arial,sans-serif;
+ min-height:100vh;
+ padding:18px 12px 35px;
+}
+
+.container{
+ max-width:760px;
+ margin:auto;
+}
+
+header{text-align:center;margin-bottom:18px}
+
+.logo{
+ color:#b794ff;
+ font-size:13px;
+ letter-spacing:4px;
+ font-weight:bold;
+ margin-bottom:9px;
+}
+
+h1{
+ font-size:clamp(25px,6vw,39px);
+ color:#fff;
+ text-shadow:0 0 15px #a855f7,0 0 30px #7c3aed;
+}
+
+.subtitle{
+ color:#aaa0c9;
+ font-size:13px;
+ margin-top:8px;
+}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:9px;
+ margin-bottom:13px;
+}
+
+.stat{
+ background:#17102d;
+ border:1px solid #38245f;
+ border-radius:12px;
+ text-align:center;
+ padding:11px 5px;
+}
+
+.stat small{
+ display:block;
+ color:#a99bc8;
+ font-size:10px;
+ letter-spacing:1px;
+ margin-bottom:5px;
+}
+
+.stat strong{
+ color:#67e8f9;
+ font-size:21px;
+}
+
+.game-box{
+ background:#08051a;
+ border:2px solid #8538e8;
+ border-radius:17px;
+ padding:8px;
+ box-shadow:0 0 22px #7c3aed55;
+ overflow:hidden;
+}
+
+canvas{
+ display:block;
+ width:100%;
+ max-width:440px;
+ height:auto;
+ aspect-ratio:400/560;
+ margin:auto;
+ background:#08051a;
+ border-radius:10px;
+ touch-action:none;
+}
+
+.controls{
+ display:flex;
+ flex-wrap:wrap;
+ justify-content:center;
+ gap:9px;
+ margin-top:13px;
+}
+
+button{
+ border:1px solid #7042bb;
+ background:#24133f;
+ color:#fff;
+ padding:11px 15px;
+ border-radius:10px;
+ font-weight:bold;
+ cursor:pointer;
+ font-size:13px;
+}
+
+button:active{
+ transform:scale(.95);
+ background:#6732a8;
+}
+
+#startBtn{
+ background:linear-gradient(135deg,#9333ea,#2563eb);
+ border:0;
+ padding:13px 24px;
+}
+
+.mobile-controls{
+ display:flex;
+ justify-content:center;
+ gap:14px;
+ margin-top:12px;
+}
+
+.mobile-controls button{
+ width:75px;
+ height:52px;
+ font-size:22px;
+ background:#1b1236;
+ border:1px solid #8b5cf6;
+ touch-action:none;
+ user-select:none;
+}
+
+.mobile-controls .fire{
+ width:115px;
+ background:linear-gradient(135deg,#7c3aed,#db2777);
+}
+
+.instructions{
+ background:#15102a;
+ border:1px solid #342353;
+ padding:18px;
+ border-radius:13px;
+ margin-top:25px;
+ line-height:1.7;
+}
+
+.instructions h2{
+ color:#c4a5fd;
+ font-size:20px;
+ margin-bottom:10px;
+}
+
+.instructions h3{
+ color:#67e8f9;
+ font-size:16px;
+ margin:17px 0 7px;
+}
+
+.instructions p,.instructions li{
+ color:#c1bad2;
+ font-size:14px;
+}
+
+.instructions ul{padding-left:20px}
+
+footer{
+ text-align:center;
+ margin-top:25px;
+ color:#817795;
+ font-size:12px;
+}
+
+footer a{
+ color:#b794ff;
+ text-decoration:none;
+ margin:0 7px;
+}
+
+:fullscreen .game-box{
+ width:100%;
+ height:100%;
+ border:0;
+ border-radius:0;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ background:#08051a;
+}
+
+:fullscreen canvas{
+ max-height:calc(100vh - 100px);
+ width:auto;
+ max-width:100%;
+}
+
+@media(max-width:420px){
+ body{padding:12px 8px 25px}
+ .game-box{padding:5px}
+ button{padding:10px 12px}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+ <div class="logo">PLAYNOVA ARCADE</div>
+ <h1>NEON SPACE INVADERS</h1>
+ <p class="subtitle">Defend the galaxy. Destroy the invaders.</p>
+</header>
+
+<div class="stats">
+ <div class="stat">
+  <small>SCORE</small>
+  <strong id="score">0</strong>
+ </div>
+ <div class="stat">
+  <small>BEST SCORE</small>
+  <strong id="best">0</strong>
+ </div>
+ <div class="stat">
+  <small>WAVE</small>
+  <strong id="wave">1</strong>
+ </div>
+</div>
+
+<div class="game-box" id="gameBox">
+ <canvas id="game" width="400" height="560"></canvas>
+</div>
+
+<div class="mobile-controls">
+ <button id="leftBtn" aria-label="Move left">◀</button>
+ <button id="fireBtn" class="fire">FIRE</button>
+ <button id="rightBtn" aria-label="Move right">▶</button>
+</div>
+
+<div class="controls">
+ <button id="startBtn">START GAME</button>
+ <button id="soundBtn">SOUND: ON</button>
+ <button id="restartBtn">RESTART</button>
+ <button id="fullscreenBtn">⛶ FULL SCREEN</button>
+</div>
+
+<section class="instructions">
+ <h2>About Neon Space Invaders</h2>
+ <p>
+ Neon Space Invaders is an exciting free online arcade shooter.
+ Take control of a powerful spaceship, fire neon lasers and
+ protect the galaxy from waves of alien invaders. Survive as
+ long as possible and challenge your highest score!
+ </p>
+
+ <h3>Game Features</h3>
+ <ul>
+  <li>Fast-paced space shooting action.</li>
+  <li>Multiple waves of alien enemies.</li>
+  <li>Increasing difficulty as you progress.</li>
+  <li>Score and personal best tracking.</li>
+  <li>Neon graphics and particle effects.</li>
+  <li>Mobile-friendly touch controls.</li>
+  <li>Sound controls and full-screen mode.</li>
+  <li>Free to play directly in your browser.</li>
+ </ul>
+
+ <h3>How to Play</h3>
+ <ul>
+  <li>Use the left and right arrow keys to move.</li>
+  <li>Press SPACE to shoot on a computer.</li>
+  <li>On mobile, use the arrow buttons to move.</li>
+  <li>Hold FIRE to continuously shoot.</li>
+  <li>Destroy enemies before they reach your spaceship.</li>
+  <li>Avoid enemy lasers and protect your lives.</li>
+ </ul>
+
+ <h3>Frequently Asked Questions</h3>
+
+ <h3>Is Neon Space Invaders free?</h3>
+ <p>Yes. You can play Neon Space Invaders free online without downloading anything.</p>
+
+ <h3>Can I play on mobile?</h3>
+ <p>Yes. The game includes touch controls for mobile phones and tablets.</p>
+
+ <h3>How do I get a higher score?</h3>
+ <p>Destroy as many alien invaders as possible, avoid enemy attacks and survive more waves.</p>
+
+ <h3>Does the game save my best score?</h3>
+ <p>Yes. Your best score is saved locally in your browser.</p>
+</section>
+
+<footer>
+ <p>© 2026 PlayNova. All rights reserved.</p>
+ <p style="margin-top:10px">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
+  <a href="privacy-policy.html">Privacy Policy</a>
+  <a href="terms.html">Terms</a>
+  <a href="disclaimer.html">Disclaimer</a>
+ </p>
+</footer>
+
+</div>
+
+<script>
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+const scoreEl=document.getElementById("score");
+const bestEl=document.getElementById("best");
+const waveEl=document.getElementById("wave");
+const startBtn=document.getElementById("startBtn");
+const soundBtn=document.getElementById("soundBtn");
+const gameBox=document.getElementById("gameBox");
+
+let score=0;
+let best=Number(localStorage.getItem("novaSpaceBest")||0);
+let wave=1;
+let lives=3;
+let running=false;
+let gameOver=false;
+let soundOn=true;
+let keys={};
+let bullets=[];
+let enemies=[];
+let enemyBullets=[];
+let particles=[];
+let stars=[];
+let enemyDirection=1;
+let enemySpeed=0.7;
+let lastShot=0;
+let lastEnemyShot=0;
+let animationId=0;
+let audioCtx=null;
+
+const player={
+ x:200,
+ y:505,
+ w:34,
+ h:30,
+ speed:5
+};
+
+bestEl.textContent=best;
+
+for(let i=0;i<75;i++){
+ stars.push({
+  x:Math.random()*400,
+  y:Math.random()*560,
+  size:Math.random()*2+0.4,
+  speed:Math.random()*1.2+0.3
+ });
+}
+
+function playTone(freq,duration=0.07,type="square"){
+ if(!soundOn)return;
+ try{
+  audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  osc.type=type;
+  osc.frequency.value=freq;
+  gain.gain.setValueAtTime(0.06,audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime+duration);
+ }catch(e){}
+}
+
+function updateStats(){
+ scoreEl.textContent=score;
+ bestEl.textContent=best;
+ waveEl.textContent=wave;
+}
+
+function createEnemies(){
+ enemies=[];
+ const rows=Math.min(3+Math.floor(wave/2),5);
+ const cols=8;
+ for(let r=0;r<rows;r++){
+  for(let c=0;c<cols;c++){
+   enemies.push({
+    x:38+c*46,
+    y:65+r*43,
+    w:27,
+    h:23,
+    row:r,
+    alive:true
+   });
+  }
+ }
+ enemySpeed=0.65+wave*0.13;
+}
+
+function resetGame(){
+ cancelAnimationFrame(animationId);
+ score=0;
+ wave=1;
+ lives=3;
+ bullets=[];
+ enemyBullets=[];
+ particles=[];
+ player.x=200;
+ enemyDirection=1;
+ gameOver=false;
+ running=true;
+ createEnemies();
+ updateStats();
+ startBtn.textContent="GAME RUNNING";
+ loop();
+}
+
+function drawBackground(){
+ ctx.fillStyle="#08051a";
+ ctx.fillRect(0,0,400,560);
+
+ stars.forEach(s=>{
+  ctx.fillStyle="rgba(190,170,255,.8)";
+  ctx.fillRect(s.x,s.y,s.size,s.size);
+  if(running){
+   s.y+=s.speed;
+   if(s.y>560){
+    s.y=0;
+    s.x=Math.random()*400;
+   }
+  }
+ });
+}
+
+function drawPlayer(){
+ ctx.save();
+ ctx.translate(player.x,player.y);
+
+ ctx.shadowBlur=18;
+ ctx.shadowColor="#22d3ee";
+
+ ctx.fillStyle="#22d3ee";
+ ctx.beginPath();
+ ctx.moveTo(0,-18);
+ ctx.lineTo(-17,14);
+ ctx.lineTo(-8,10);
+ ctx.lineTo(0,16);
+ ctx.lineTo(8,10);
+ ctx.lineTo(17,14);
+ ctx.closePath();
+ ctx.fill();
+
+ ctx.fillStyle="#fff";
+ ctx.beginPath();
+ ctx.ellipse(0,-3,5,8,0,0,Math.PI*2);
+ ctx.fill();
+
+ ctx.shadowColor="#fb923c";
+ ctx.fillStyle="#fb923c";
+ ctx.beginPath();
+ ctx.moveTo(-5,13);
+ ctx.lineTo(0,25+Math.random()*6);
+ ctx.lineTo(5,13);
+ ctx.fill();
+
+ ctx.restore();
+}
+
+function drawEnemy(e){
+ const colors=["#fb7185","#a78bfa","#facc15","#4ade80","#f97316"];
+ const color=colors[e.row%colors.length];
+
+ ctx.save();
+ ctx.translate(e.x,e.y);
+ ctx.shadowBlur=13;
+ ctx.shadowColor=color;
+ ctx.fillStyle=color;
+
+ ctx.fillRect(-13,-9,26,15);
+ ctx.fillRect(-17,-4,5,12);
+ ctx.fillRect(12,-4,5,12);
+ ctx.fillRect(-9,7,5,6);
+ ctx.fillRect(5,7,5,6);
+
+ ctx.fillStyle="#fff";
+ ctx.fillRect(-8,-4,4,4);
+ ctx.fillRect(5,-4,4,4);
+
+ ctx.restore();
+}
+
+function shoot(){
+ const now=Date.now();
+ if(now-lastShot<220)return;
+ lastShot=now;
+
+ bullets.push({
+  x:player.x,
+  y:player.y-20,
+  speed:8
+ });
+
+ playTone(550,0.05);
+}
+
+function enemyShoot(){
+ const now=Date.now();
+ if(now-lastEnemyShot<850)return;
+ lastEnemyShot=now;
+
+ const active=enemies.filter(e=>e.alive);
+ if(!active.length)return;
+
+ const e=active[Math.floor(Math.random()*active.length)];
+
+ enemyBullets.push({
+  x:e.x,
+  y:e.y+12,
+  speed:2.7+wave*0.22
+ });
+}
+
+function addParticles(x,y,color){
+ for(let i=0;i<9;i++){
+  particles.push({
+   x,y,
+   vx:(Math.random()-.5)*5,
+   vy:(Math.random()-.5)*5,
+   life:25,
+   color
+  });
+ }
+}
+
+function drawParticles(){
+ particles.forEach(p=>{
+  ctx.globalAlpha=Math.max(0,p.life/25);
+  ctx.fillStyle=p.color;
+  ctx.fillRect(p.x,p.y,4,4);
+ });
+ ctx.globalAlpha=1;
+}
+
+function updateParticles(){
+ particles.forEach(p=>{
+  p.x+=p.vx;
+  p.y+=p.vy;
+  p.life--;
+ });
+ particles=particles.filter(p=>p.life>0);
+}
+
+function collision(a,b){
+ return Math.abs(a.x-b.x)<(a.w+b.w)/2 &&
+        Math.abs(a.y-b.y)<(a.h+b.h)/2;
+}
+
+function loseLife(){
+ lives--;
+ playTone(130,0.25,"sawtooth");
+ addParticles(player.x,player.y,"#fb7185");
+ if(lives<=0){
+  endGame();
+ }
+}
+
+function endGame(){
+ running=false;
+ gameOver=true;
+ if(score>best){
+  best=score;
+  localStorage.setItem("novaSpaceBest",best);
+ }
+ updateStats();
+ startBtn.textContent="PLAY AGAIN";
+ drawOverlay("GAME OVER","Final Score: "+score);
+}
+
+function drawOverlay(title,message){
+ ctx.fillStyle="rgba(5,3,20,.82)";
+ ctx.fillRect(0,0,400,560);
+
+ ctx.textAlign="center";
+ ctx.shadowBlur=20;
+ ctx.shadowColor="#a855f7";
+ ctx.fillStyle="#fff";
+ ctx.font="bold 30px Arial";
+ ctx.fillText(title,200,245);
+
+ ctx.shadowBlur=0;
+ ctx.fillStyle="#c4b5fd";
+ ctx.font="16px Arial";
+ ctx.fillText(message,200,285);
+
+ ctx.fillStyle="#67e8f9";
+ ctx.font="14px Arial";
+ ctx.fillText("Tap START GAME to play again",200,325);
+}
+
+function updateGame(){
+ if(!running)return;
+
+ if(keys.left)player.x-=player.speed;
+ if(keys.right)player.x+=player.speed;
+
+ player.x=Math.max(20,Math.min(380,player.x));
+
+ if(keys.fire)shoot();
+
+ bullets.forEach(b=>b.y-=b.speed);
+ bullets=bullets.filter(b=>b.y>0);
+
+ enemyBullets.forEach(b=>b.y+=b.speed);
+ enemyBullets=enemyBullets.filter(b=>b.y<580);
+
+ if(enemies.length){
+  let hitEdge=false;
+
+  enemies.filter(e=>e.alive).forEach(e=>{
+   e.x+=enemyDirection*enemySpeed;
+   if(e.x>380||e.x<20)hitEdge=true;
+  });
+
+  if(hitEdge){
+   enemyDirection*=-1;
+   enemies.forEach(e=>{
+    if(e.alive)e.y+=13;
+   });
+  }
+ }
+
+ bullets.forEach(b=>{
+  enemies.forEach(e=>{
+   if(!e.alive)return;
+   if(Math.abs(b.x-e.x)<18&&Math.abs(b.y-e.y)<18){
+    e.alive=false;
+    b.y=-20;
+    score+=10*(e.row+1);
+    addParticles(e.x,e.y,"#a78bfa");
+    playTone(280,0.08);
+    updateStats();
+   }
+  });
+ });
+
+ enemyBullets.forEach(b=>{
+  if(Math.abs(b.x-player.x)<18&&Math.abs(b.y-player.y)<20){
+   b.y=600;
+   loseLife();
+  }
+ });
+
+ enemies.forEach(e=>{
+  if(e.alive&&e.y>player.y-24){
+   endGame();
+  }
+ });
+
+ if(!running)return;
+
+ const active=enemies.filter(e=>e.alive);
+ if(active.length===0){
+  wave++;
+  enemyBullets=[];
+  createEnemies();
+  updateStats();
+  playTone(800,0.25,"sine");
+ }
+
+ enemyShoot();
+ updateParticles();
+}
+
+function drawGame(){
+ drawBackground();
+
+ enemies.forEach(e=>{
+  if(e.alive)drawEnemy(e);
+ });
+
+ drawPlayer();
+
+ bullets.forEach(b=>{
+  ctx.save();
+  ctx.shadowBlur=15;
+  ctx.shadowColor="#67e8f9";
+  ctx.fillStyle="#67e8f9";
+  ctx.fillRect(b.x-2,b.y-9,4,15);
+  ctx.restore();
+ });
+
+ enemyBullets.forEach(b=>{
+  ctx.save();
+  ctx.shadowBlur=12;
+  ctx.shadowColor="#fb7185";
+  ctx.fillStyle="#fb7185";
+  ctx.fillRect(b.x-3,b.y-4,6,12);
+  ctx.restore();
+ });
+
+ drawParticles();
+
+ ctx.fillStyle="#c4b5fd";
+ ctx.font="13px Arial";
+ ctx.textAlign="left";
+ ctx.fillText("LIVES: "+"♥ ".repeat(Math.max(0,lives)),12,25);
+}
+
+function loop(){
+ if(!running)return;
+ updateGame();
+ drawGame();
+ if(running)animationId=requestAnimationFrame(loop);
+}
+
+function showStartScreen(){
+ drawBackground();
+ drawPlayer();
+ drawOverlay("SPACE INVADERS","Ready to defend the galaxy?");
+}
+
+startBtn.addEventListener("click",()=>{
+ if(!running)resetGame();
+});
+
+document.getElementById("restartBtn").addEventListener("click",resetGame);
+
+soundBtn.addEventListener("click",()=>{
+ soundOn=!soundOn;
+ soundBtn.textContent=soundOn?"SOUND: ON":"SOUND: OFF";
+});
+
+document.getElementById("fullscreenBtn").addEventListener("click",async()=>{
+ try{
+  if(!document.fullscreenElement){
+   await gameBox.requestFullscreen();
+  }else{
+   await document.exitFullscreen();
+  }
+ }catch(e){
+  alert("Full Screen is not supported on this device.");
+ }
+});
+
+document.addEventListener("fullscreenchange",()=>{
+ document.getElementById("fullscreenBtn").textContent=
+ document.fullscreenElement?"✕ EXIT FULL SCREEN":"⛶ FULL SCREEN";
+});
+
+document.addEventListener("keydown",e=>{
+ if(["ArrowLeft","ArrowRight","Space"].includes(e.code))e.preventDefault();
+ if(e.code==="ArrowLeft")keys.left=true;
+ if(e.code==="ArrowRight")keys.right=true;
+ if(e.code==="Space")keys.fire=true;
+ if(e.code==="Enter"&&!running)resetGame();
+});
+
+document.addEventListener("keyup",e=>{
+ if(e.code==="ArrowLeft")keys.left=false;
+ if(e.code==="ArrowRight")keys.right=false;
+ if(e.code==="Space")keys.fire=false;
+});
+
+function holdButton(id,key){
+ const btn=document.getElementById(id);
+ btn.addEventListener("pointerdown",e=>{
+  e.preventDefault();
+  keys[key]=true;
+  btn.setPointerCapture(e.pointerId);
+ });
+ ["pointerup","pointercancel","lostpointercapture"].forEach(event=>{
+  btn.addEventListener(event,()=>keys[key]=false);
+ });
+}
+
+holdButton("leftBtn","left");
+holdButton("rightBtn","right");
+holdButton("fireBtn","fire");
+
+canvas.addEventListener("pointermove",e=>{
+ if(!running)return;
+ if(e.pointerType==="mouse"&&e.buttons===0)return;
+ const rect=canvas.getBoundingClientRect();
+ const scale=400/rect.width;
+ player.x=Math.max(20,Math.min(380,(e.clientX-rect.left)*scale));
+});
+
+canvas.addEventListener("pointerdown",e=>{
+ if(!running)return;
+ if(e.pointerType==="touch"){
+  const rect=canvas.getBoundingClientRect();
+  const scale=400/rect.width;
+  player.x=Math.max(20,Math.min(380,(e.clientX-rect.left)*scale));
+  keys.fire=true;
+ }
+});
+
+canvas.addEventListener("pointerup",()=>{
+ keys.fire=false;
+});
+
+canvas.addEventListener("pointercancel",()=>{
+ keys.fire=false;
+});
+
+showStartScreen();
+</script>
+</body>
+</html>
