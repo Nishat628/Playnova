@@ -561,3 +561,373 @@ function loadSettings() {
     if (saved && typeof saved === "object") {
       settings = { ...settings, ...saved };
     }
+  } catch (e) {}
+
+  soundToggleEl.checked = Boolean(settings.sound);
+  previewToggleEl.checked = Boolean(settings.preview);
+  lowGlowToggleEl.checked = Boolean(settings.lowGlow);
+  applySettingsVisuals();
+}
+
+function saveSettings() {
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  } catch (e) {}
+  applySettingsVisuals();
+}
+
+function applySettingsVisuals() {
+  document.body.classList.toggle("low-glow", Boolean(settings.lowGlow));
+  if (!settings.preview) {
+    hoverCell = null;
+    renderBoard();
+  }
+}
+
+function playTone(freq, duration = 0.08, type = "triangle") {
+  if (!settings.sound) return;
+  try {
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) audioCtx = new AudioContextClass();
+    }
+    if (!audioCtx) return;
+    if (audioCtx.state === "suspended") audioCtx.resume();
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch (e) {}
+}
+
+function createEmptyGrid() {
+  return Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0));
+}
+
+function randomPiece() {
+  const base = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+  return {
+    matrix: base.matrix.map(row => [...row]),
+    color: base.color
+  };
+}
+
+function refillDockIfNeeded() {
+  const allEmpty = dockPieces.every(item => item === null);
+  if (allEmpty) {
+    dockPieces = [randomPiece(), randomPiece(), randomPiece()];
+    selectedIndex = dockPieces.findIndex(p => p !== null);
+  }
+}
+
+function canPlacePiece(matrix, startRow, startCol) {
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+
+  if (startRow < 0 || startCol < 0 || startRow + rows > GRID_SIZE || startCol + cols > GRID_SIZE) {
+    return false;
+  }
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (matrix[r][c] === 1 && grid[startRow + r][startCol + c] !== 0) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+function hasAnyValidMove() {
+  for (let i = 0; i < dockPieces.length; i++) {
+    const piece = dockPieces[i];
+    if (!piece) continue;
+    for (let r = 0; r < GRID_SIZE; r++) {
+      for (let c = 0; c < GRID_SIZE; c++) {
+        if (canPlacePiece(piece.matrix, r, c)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function clearFullLines() {
+  const fullRows = [];
+  const fullCols = [];
+
+  for (let r = 0; r < GRID_SIZE; r++) {
+    if (grid[r].every(val => val !== 0)) fullRows.push(r);
+  }
+
+  for (let c = 0; c < GRID_SIZE; c++) {
+    let colFull = true;
+    for (let r = 0; r < GRID_SIZE; r++) {
+      if (grid[r][c] === 0) {
+        colFull = false;
+        break;
+      }
+    }
+    if (colFull) fullCols.push(c);
+  }
+
+  const clearedCells = new Set();
+  fullRows.forEach(r => {
+    for (let c = 0; c < GRID_SIZE; c++) clearedCells.add(`${r},${c}`);
+  });
+  fullCols.forEach(c => {
+    for (let r = 0; r < GRID_SIZE; r++) clearedCells.add(`${r},${c}`);
+  });
+
+  const lineCount = fullRows.length + fullCols.length;
+  if (lineCount > 0) {
+    combo += 1;
+    linesClearedTotal += lineCount;
+    const linePoints = lineCount * 100 * combo;
+    score += linePoints;
+    playTone(520 + combo * 90, 0.14, "sine");
+
+    clearedCells.forEach(key => {
+      const [r, c] = key.split(",").map(Number);
+      grid[r][c] = 0;
+    });
+  } else {
+    combo = 0;
+  }
+
+  return lineCount;
+}
+
+function placeSelectedAt(row, col) {
+  if (isGameOver || selectedIndex === null) return;
+  const piece = dockPieces[selectedIndex];
+  if (!piece) return;
+
+  if (!canPlacePiece(piece.matrix, row, col)) {
+    playTone(190, 0.08, "sawtooth");
+    return;
+  }
+
+  let placedBlocks = 0;
+  for (let r = 0; r < piece.matrix.length; r++) {
+    for (let c = 0; c < piece.matrix[0].length; c++) {
+      if (piece.matrix[r][c] === 1) {
+        grid[row + r][col + c] = piece.color;
+        placedBlocks++;
+      }
+    }
+  }
+
+  score += placedBlocks * 10;
+  playTone(360, 0.06, "triangle");
+
+  dockPieces[selectedIndex] = null;
+  refillDockIfNeeded();
+
+  if (selectedIndex === null || !dockPieces[selectedIndex]) {
+    const nextIdx = dockPieces.findIndex(p => p !== null);
+    selectedIndex = nextIdx >= 0 ? nextIdx : null;
+  }
+
+  clearFullLines();
+
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem(BEST_SCORE_KEY, String(bestScore));
+  }
+
+  if (!hasAnyValidMove()) {
+    isGameOver = true;
+    finalScoreTextEl.textContent = `Final Score: ${score} • Best: ${bestScore}`;
+    gameOverOverlayEl.classList.add("show");
+  }
+
+  updateHud();
+  renderBoard();
+  renderDock();
+}
+
+function updateHud() {
+  scoreEl.textContent = String(score);
+  bestEl.textContent = String(bestScore);
+  comboEl.textContent = `${combo}x`;
+  linesEl.textContent = String(linesClearedTotal);
+}
+
+function renderBoard() {
+  gridBoardEl.innerHTML = "";
+
+  const previewMap = new Map();
+  if (!isGameOver && settings.preview && hoverCell && selectedIndex !== null && dockPieces[selectedIndex]) {
+    const piece = dockPieces[selectedIndex];
+    const valid = canPlacePiece(piece.matrix, hoverCell.row, hoverCell.col);
+
+    for (let r = 0; r < piece.matrix.length; r++) {
+      for (let c = 0; c < piece.matrix[0].length; c++) {
+        if (piece.matrix[r][c] === 1) {
+          const tr = hoverCell.row + r;
+          const tc = hoverCell.col + c;
+          if (tr >= 0 && tr < GRID_SIZE && tc >= 0 && tc < GRID_SIZE) {
+            previewMap.set(`${tr},${tc}`, valid ? "preview-valid" : "preview-invalid");
+          }
+        }
+      }
+    }
+  }
+
+  for (let r = 0; r < GRID_SIZE; r++) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      const val = grid[r][c];
+      if (val) {
+        cell.classList.add("filled");
+        cell.style.backgroundColor = val;
+        cell.style.color = val;
+      }
+
+      const previewClass = previewMap.get(`${r},${c}`);
+      if (previewClass) {
+        cell.classList.add(previewClass);
+      }
+
+      cell.addEventListener("mouseenter", () => {
+        if (!settings.preview) return;
+        hoverCell = { row: r, col: c };
+        renderBoard();
+      });
+
+      cell.addEventListener("click", () => {
+        placeSelectedAt(r, c);
+      });
+
+      gridBoardEl.appendChild(cell);
+    }
+  }
+}
+
+gridBoardEl.addEventListener("mouseleave", () => {
+  if (hoverCell) {
+    hoverCell = null;
+    renderBoard();
+  }
+});
+
+function renderDock() {
+  pieceDockEl.innerHTML = "";
+
+  dockPieces.forEach((piece, idx) => {
+    const slot = document.createElement("div");
+    slot.className = "piece-slot";
+
+    if (!piece) {
+      slot.classList.add("used");
+      pieceDockEl.appendChild(slot);
+      return;
+    }
+
+    if (idx === selectedIndex) {
+      slot.classList.add("selected");
+    }
+
+    const cols = piece.matrix[0].length;
+    const mini = document.createElement("div");
+    mini.className = "mini-matrix";
+    mini.style.gridTemplateColumns = `repeat(${cols}, auto)`;
+
+    piece.matrix.forEach(row => {
+      row.forEach(val => {
+        const mc = document.createElement("div");
+        mc.className = "mini-cell";
+        if (val === 1) {
+          mc.style.backgroundColor = piece.color;
+        } else {
+          mc.classList.add("empty");
+        }
+        mini.appendChild(mc);
+      });
+    });
+
+    slot.appendChild(mini);
+    slot.addEventListener("click", () => {
+      if (isGameOver) return;
+      selectedIndex = idx;
+      renderDock();
+      renderBoard();
+    });
+
+    pieceDockEl.appendChild(slot);
+  });
+}
+
+function startNewGame() {
+  grid = createEmptyGrid();
+  dockPieces = [randomPiece(), randomPiece(), randomPiece()];
+  selectedIndex = 0;
+  hoverCell = null;
+  score = 0;
+  combo = 0;
+  linesClearedTotal = 0;
+  isGameOver = false;
+  gameOverOverlayEl.classList.remove("show");
+  updateHud();
+  renderBoard();
+  renderDock();
+}
+
+document.getElementById("restartBtn").addEventListener("click", startNewGame);
+document.getElementById("playAgainBtn").addEventListener("click", startNewGame);
+
+document.getElementById("settingsBtn").addEventListener("click", () => {
+  settingsDrawerEl.classList.toggle("open");
+});
+
+soundToggleEl.addEventListener("change", () => {
+  settings.sound = soundToggleEl.checked;
+  saveSettings();
+});
+
+previewToggleEl.addEventListener("change", () => {
+  settings.preview = previewToggleEl.checked;
+  saveSettings();
+});
+
+lowGlowToggleEl.addEventListener("change", () => {
+  settings.lowGlow = lowGlowToggleEl.checked;
+  saveSettings();
+});
+
+document.getElementById("fullscreenBtn").addEventListener("click", async () => {
+  try {
+    if (!document.fullscreenElement) {
+      await gameStageEl.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  } catch (e) {}
+});
+
+window.addEventListener("keydown", e => {
+  if (e.key === "1" || e.key === "2" || e.key === "3") {
+    const idx = Number(e.key) - 1;
+    if (dockPieces[idx] && !isGameOver) {
+      selectedIndex = idx;
+      renderDock();
+      renderBoard();
+    }
+  }
+});
+
+loadSettings();
+startNewGame();
+</script>
+</body>
+</html>
