@@ -1,10 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Contact PlayNova | Get in Touch</title>
-  <meta name="description" content="Contact PlayNova for game feedback, bug reports, new game suggestions, or general inquiries." />
+
+  <meta name="description" content="Contact PlayNova for game feedback, technical support, bug reports, new game suggestions, business inquiries or general questions." />
+
+  <meta name="robots" content="index, follow" />
+
+  <link rel="canonical" href="https://nishat628.github.io/Playnova/contact.html" />
+
   <style>
     :root {
       --bg: #0b0714;
@@ -115,7 +123,7 @@
     .lead {
       color: var(--muted);
       font-size: 15px;
-      max-width: 680px;
+      max-width: 700px;
       margin-bottom: 32px;
     }
 
@@ -145,7 +153,7 @@
     }
 
     .info-item {
-      margin-bottom: 14px;
+      margin-bottom: 18px;
       font-size: 14px;
       color: var(--muted);
     }
@@ -153,7 +161,24 @@
     .info-item strong {
       display: block;
       color: #ffffff;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
+    }
+
+    .email-link {
+      color: #d8b4fe;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .email-btn {
+      display: inline-block;
+      padding: 11px 19px;
+      margin-top: 8px;
+      border-radius: 9px;
+      background: linear-gradient(100deg, #873bf4, #a855f7);
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
     }
 
     .field {
@@ -188,12 +213,18 @@
       border-color: #b66af2;
     }
 
+    select option {
+      background: #171120;
+      color: #ffffff;
+    }
+
     textarea {
-      min-height: 115px;
+      min-height: 125px;
       resize: vertical;
     }
 
     .btn-submit {
+      display: block;
       width: 100%;
       padding: 13px 20px;
       border: none;
@@ -205,10 +236,34 @@
       cursor: pointer;
     }
 
+    .btn-submit:hover,
+    .email-btn:hover {
+      opacity: 0.9;
+    }
+
     .note {
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 12px;
       color: var(--muted);
+    }
+
+    .extra-section {
+      margin-top: 28px;
+      padding: 24px;
+      background: linear-gradient(150deg, #1c142b, #140e21);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .extra-section h2 {
+      font-size: 19px;
+      margin-bottom: 10px;
+      color: #f3e8ff;
+    }
+
+    .extra-section p {
+      color: var(--muted);
+      font-size: 14px;
     }
 
     footer {
@@ -232,96 +287,237 @@
     }
 
     @media (max-width: 600px) {
+      header {
+        padding: 14px 5%;
+      }
+
       nav {
-        gap: 12px;
+        gap: 10px;
         font-size: 12px;
       }
+
       .nav-btn {
         display: none;
+      }
+
+      main {
+        padding-top: 35px;
+      }
+
+      .card {
+        padding: 20px;
       }
     }
   </style>
 </head>
+
 <body>
+
   <header>
     <a href="index.html" class="logo">PLAY<span>NOVA</span></a>
+
     <nav>
       <a href="index.html">Home</a>
       <a href="index.html#games">Games</a>
       <a href="about.html">About</a>
       <a href="contact.html" class="active">Contact</a>
     </nav>
+
     <a href="index.html#games" class="nav-btn">EXPLORE</a>
   </header>
 
   <main>
+
     <div class="eyebrow">Contact Us</div>
+
     <h1>Get in Touch with <span>PlayNova</span></h1>
+
     <p class="lead">
-      Have a suggestion for a new game, spotted a bug, or want to reach out about PlayNova?
-      Send us a message anytime.
+      We value your feedback and suggestions. Whether you have
+      discovered a technical issue, want to suggest a new game,
+      or have a general question about PlayNova, we would be
+      happy to hear from you.
     </p>
 
     <div class="contact-grid">
+
       <div class="card">
-        <h2>Direct Information</h2>
-        <p>Reach out for support, feedback, or collaboration inquiries:</p>
+
+        <h2>Contact Information</h2>
+
+        <p>
+          You can reach PlayNova through the email address below
+          for questions, feedback and support inquiries.
+        </p>
+
         <div class="info-item">
-          <strong>Email</strong>
-          <span>contact@playnova.example</span>
+          <strong>Email Address</strong>
+
+          <a class="email-link"
+             href="mailto:nishatwaqas122@gmail.com">
+            nishatwaqas122@gmail.com
+          </a>
         </div>
+
         <div class="info-item">
           <strong>Platform</strong>
-          <span>PlayNova Web Games</span>
+          <span>PlayNova Online Browser Games</span>
         </div>
+
+        <div class="info-item">
+          <strong>Support Topics</strong>
+          <span>Game feedback, bug reports, suggestions and general inquiries.</span>
+        </div>
+
         <div class="info-item">
           <strong>Response Time</strong>
-          <span>We aim to reply within a few business days.</span>
+          <span>We aim to respond to messages within a few business days.</span>
         </div>
+
+        <a class="email-btn"
+           href="mailto:nishatwaqas122@gmail.com?subject=PlayNova%20Inquiry">
+          Send Us an Email
+        </a>
+
       </div>
 
       <div class="card">
+
         <h2>Send a Message</h2>
-        <form action="mailto:contact@playnova.example" method="post" enctype="text/plain">
+
+        <p>
+          Complete the details below. Your default email application
+          will open with your message prepared for sending.
+        </p>
+
+        <form id="contactForm">
+
           <div class="field">
             <label for="name">Your Name</label>
-            <input id="name" name="Name" type="text" placeholder="Enter your name" required />
+
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Enter your name"
+              maxlength="80"
+              required
+            />
           </div>
+
           <div class="field">
             <label for="email">Your Email</label>
-            <input id="email" name="Email" type="email" placeholder="you@example.com" required />
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              maxlength="120"
+              required
+            />
           </div>
+
           <div class="field">
             <label for="topic">Topic</label>
-            <select id="topic" name="Topic">
+
+            <select id="topic" name="topic" required>
               <option value="Game Suggestion">Game Suggestion</option>
               <option value="Bug Report">Bug Report</option>
               <option value="General Inquiry">General Inquiry</option>
               <option value="Business / Partnership">Business / Partnership</option>
+              <option value="Other Feedback">Other Feedback</option>
             </select>
           </div>
+
           <div class="field">
-            <label for="message">Message</label>
-            <textarea id="message" name="Message" placeholder="Write your message here..." required></textarea>
+            <label for="message">Your Message</label>
+
+            <textarea
+              id="message"
+              name="message"
+              placeholder="Write your message here..."
+              maxlength="3000"
+              required
+            ></textarea>
           </div>
-          <button type="submit" class="btn-submit">Send Message</button>
+
+          <button type="submit" class="btn-submit">
+            Prepare Email Message
+          </button>
+
           <p class="note">
-            Tip: On mobile or desktop, submitting opens your default email app with your message ready.
+            This form opens your email application. Your message
+            is not submitted or stored on PlayNova's website.
           </p>
+
         </form>
+
       </div>
+
     </div>
+
+    <section class="extra-section">
+
+      <h2>We Welcome Your Feedback</h2>
+
+      <p>
+        Your suggestions help us understand what visitors enjoy
+        and what could be improved. If you experience a problem
+        while playing a game, please mention the game name and
+        describe the issue in your message. This helps us
+        investigate it more effectively.
+      </p>
+
+    </section>
+
   </main>
 
   <footer>
+
     <div><strong>PLAYNOVA</strong> — A New World of Play.</div>
+
     <div class="footer-links">
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
       <a href="privacy-policy.html">Privacy Policy</a>
     </div>
+
     <div>© 2026 PlayNova. All rights reserved.</div>
+
   </footer>
+
+  <script>
+    document.getElementById("contactForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const topic = document.getElementById("topic").value;
+      const message = document.getElementById("message").value.trim();
+
+      if (!name || !email || !message) {
+        alert("Please complete all required fields.");
+        return;
+      }
+
+      const subject = encodeURIComponent("PlayNova - " + topic);
+
+      const body = encodeURIComponent(
+        "Name: " + name + "\n" +
+        "Email: " + email + "\n" +
+        "Topic: " + topic + "\n\n" +
+        "Message:\n" + message
+      );
+
+      const mailtoLink =
+        "mailto:nishatwaqas122@gmail.com?subject=" +
+        subject + "&body=" + body;
+
+      window.location.href = mailtoLink;
+    });
+  </script>
+
 </body>
 </html>
