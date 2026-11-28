@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Play Hexa Stack VS free online on PlayNova. Place color stacks, merge matching neighbor tiles, trigger 10-tile blasts against your opponent, and win gold stars in Daily Challenges." />
+  <meta name="description" content="Play Hexa Stack VS free online on PlayNova. Place color stacks on empty or existing slots up to 10 tiles, merge matching neighbor tiles, trigger 10-tile blasts against your opponent, and win gold stars in Daily Challenges." />
   <title>Hexa Stack VS — PlayNova Arcade</title>
   <style>
     :root {
@@ -279,9 +279,13 @@
       box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.35);
     }
 
+    .slot-cell.no-fit {
+      opacity: 0.45;
+    }
+
     .mini-chip {
       width: 84%;
-      height: 7px;
+      height: 6px;
       border-radius: 4px;
       border: 1px solid rgba(255, 255, 255, 0.25);
       flex: 0 0 auto;
@@ -295,7 +299,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.64rem;
+      font-size: 0.62rem;
       font-weight: 800;
       color: var(--muted);
     }
@@ -600,7 +604,7 @@
       </section>
 
       <section class="board-wrap">
-        <div id="boardHint" class="board-hint">Tap a stack below, then tap an open slot. Same-color neighbors merge &amp; 10 tiles blast (+100)!</div>
+        <div id="boardHint" class="board-hint">Tap a stack below, then tap any slot up to 10 tiles. Gold = neighbor merge!</div>
         <div id="gridBoard" class="grid-board"></div>
       </section>
 
@@ -658,8 +662,8 @@
           </button>
           <button type="button" class="option-row" id="toggleHintsRow">
             <div>
-              <div>Merge &amp; Open Slot Hints</div>
-              <div class="option-sub">Highlight open slots &amp; neighbor merges</div>
+              <div>Merge &amp; Slot Fit Hints</div>
+              <div class="option-sub">Highlight fitting slots &amp; neighbor merges</div>
             </div>
             <span id="hintsStateLabel" style="color:var(--good);font-weight:800;">ON</span>
           </button>
@@ -669,7 +673,7 @@
           <button type="button" class="option-row" id="openHelpFromOpt">
             <div>
               <div>Help</div>
-              <div class="option-sub">Neighbor merge &amp; 10-tile blast rules</div>
+              <div class="option-sub">Stacking up to 10, merge &amp; blast rules</div>
             </div>
             <span>›</span>
           </button>
@@ -706,18 +710,18 @@
     <section class="seo-card" aria-label="Play Hexa Stack VS Online on PlayNova">
       <h2>Play Hexa Stack VS Online — Color Stack Merge Puzzle</h2>
       <p>
-        Play Hexa Stack VS free in your browser on PlayNova. Place colorful stacks on open slots, pull matching tiles from up, down, left, and right neighbors, blast 10-tile stacks for big bonuses, and outscore your opponent.
+        Play Hexa Stack VS free in your browser on PlayNova. Stack colorful tiles up to 10 layers on empty or existing slots, pull matching tiles from up, down, left, and right neighbors, blast 10-tile stacks for big bonuses, and outscore your opponent.
       </p>
 
       <h3>How to Play &amp; Features</h3>
       <p>
-        Select one of your three stacks below and tap an open slot on the 4×3 grid. Adjacent slots with the same top color send their matching top tiles over to merge, and reaching 10+ tiles in a slot blasts the stack for +100 bonus points.
+        Select one of your three stacks below and tap any slot where the stack fits within the 10-tile limit. Adjacent slots with the same top color send matching top tiles over to merge, and reaching 10 tiles in a slot blasts the stack for +100 bonus points.
       </p>
 
       <h3>Puzzle Tips</h3>
       <ul>
         <li>Look for gold-outlined slots—they indicate an immediate neighbor color merge.</li>
-        <li>Build toward 10 tiles on a single stack to trigger a +100 blast and free up space.</li>
+        <li>Stack onto existing slots when total tiles stay 10 or fewer to build faster 10-tile blasts.</li>
         <li>Complete Daily Challenges to collect gold stars and grow your daily streak.</li>
       </ul>
 
@@ -745,7 +749,7 @@
       const BLAST_SIZE = 10;
       const GOAL = 260;
       const DAILY_TARGET = 180;
-      const STORAGE_KEY = "playnova_hexa_stack_v2";
+      const STORAGE_KEY = "playnova_hexa_stack_v3";
 
       const COLORS = [
         { name: "Rose", hex: "#f43f5e" },
@@ -858,6 +862,11 @@
         return list;
       }
 
+      function canFitPiece(slotIdx, piece) {
+        if (!piece) return false;
+        return board[slotIdx].length + piece.length <= BLAST_SIZE;
+      }
+
       function countMergeableFromNeighbors(targetIdx, incomingTopColor) {
         let total = 0;
         for (const nIdx of neighborsOf(targetIdx)) {
@@ -886,7 +895,7 @@
           const nStack = board[nIdx];
           if (!nStack.length) continue;
           if (nStack[nStack.length - 1] === topColor) {
-            while (nStack.length > 0 && nStack[nStack.length - 1] === topColor) {
+            while (nStack.length > 0 && board[slotIdx].length < BLAST_SIZE && nStack[nStack.length - 1] === topColor) {
               board[slotIdx].push(nStack.pop());
               mergedCount++;
             }
@@ -958,13 +967,17 @@
 
       function opponentMove() {
         if (gameOver) return;
-        const openIndices = board.map((s, i) => ({ s, i })).filter(item => item.s.length === 0);
-        if (!openIndices.length) {
-          board = Array.from({ length: TOTAL_SLOTS }, () => []);
-        }
-        const avail = board.map((s, i) => ({ s, i })).filter(item => item.s.length === 0);
-        const pick = avail[Math.floor(Math.random() * avail.length)];
         const botPiece = randomStack();
+        let fitting = board
+          .map((s, i) => ({ s, i }))
+          .filter(item => item.s.length + botPiece.length <= BLAST_SIZE);
+
+        if (!fitting.length) {
+          board = Array.from({ length: TOTAL_SLOTS }, () => []);
+          fitting = board.map((s, i) => ({ s, i }));
+        }
+
+        const pick = fitting[Math.floor(Math.random() * fitting.length)];
         const res = applyPlacement(pick.i, botPiece, false);
         playerTurn = true;
         if (!checkMatchEnd()) {
@@ -978,8 +991,8 @@
         if (!playerTurn || gameOver) return;
         const piece = hand[selectedIdx];
         if (!piece) return;
-        if (board[slotIdx].length > 0) {
-          boardHintEl.textContent = "That slot is already occupied! Tap an empty slot.";
+        if (!canFitPiece(slotIdx, piece)) {
+          boardHintEl.textContent = "Too tall for 10-tile limit! Pick another slot or stack.";
           return;
         }
 
@@ -1002,7 +1015,7 @@
         const extra = res.blasted ? " 10-TILE BLAST (+100)! " : (res.mergedCount > 0 ? " Pulled " + res.mergedCount + " matching tiles! " : " ");
         boardHintEl.textContent = "You +" + res.gained + "." + extra + "Opponent turn...";
         renderAll();
-        setTimeout(opponentMove, 560);
+        setTimeout(opponentMove, 520);
       }
 
       function renderAll() {
@@ -1016,18 +1029,26 @@
           cell.type = "button";
           cell.className = "slot-cell";
 
-          const isEmpty = stack.length === 0;
-          const mergeCount = (isEmpty && previewTop) ? countMergeableFromNeighbors(idx, previewTop) : 0;
+          const fits = activePiece ? canFitPiece(idx, activePiece) : false;
+          const mergeCount = (fits && previewTop) ? countMergeableFromNeighbors(idx, previewTop) : 0;
 
-          if (state.hints && isEmpty && activePiece && playerTurn && !gameOver) {
-            cell.classList.add(mergeCount > 0 ? "will-merge" : "can-place");
+          if (activePiece && playerTurn && !gameOver) {
+            if (!fits) {
+              cell.classList.add("no-fit");
+            } else if (state.hints) {
+              cell.classList.add(mergeCount > 0 ? "will-merge" : "can-place");
+            }
           }
 
           const badge = document.createElement("div");
           badge.className = "slot-badge";
           const countSpan = document.createElement("span");
-          countSpan.textContent = stack.length > 0 ? (stack.length + "/" + BLAST_SIZE) : (mergeCount > 0 ? "+" + mergeCount + " merge" : "Empty");
-          if (mergeCount > 0 && state.hints) countSpan.style.color = "#fbbf24";
+          if (stack.length > 0) {
+            countSpan.textContent = mergeCount > 0 ? (stack.length + "/10 • +" + mergeCount) : (stack.length + "/" + BLAST_SIZE);
+          } else {
+            countSpan.textContent = mergeCount > 0 ? ("+" + mergeCount + " merge") : "Empty";
+          }
+          if (mergeCount > 0 && state.hints && fits) countSpan.style.color = "#fbbf24";
           badge.appendChild(countSpan);
 
           if (stack.length > 0) {
@@ -1038,7 +1059,7 @@
           }
           cell.appendChild(badge);
 
-          stack.slice(-6).forEach(col => {
+          stack.slice(-10).forEach(col => {
             const chip = document.createElement("span");
             chip.className = "mini-chip";
             chip.style.background = col;
@@ -1085,7 +1106,7 @@
         playerTurn = true;
         gameOver = false;
         dealHand();
-        boardHintEl.textContent = "Tap a stack below, then tap an open slot. Gold border = neighbor merge!";
+        boardHintEl.textContent = "Tap a stack below, then tap any slot up to 10 tiles. Gold = neighbor merge!";
         renderAll();
       }
 
@@ -1132,17 +1153,17 @@
       });
 
       document.getElementById("openHelpFromOpt").addEventListener("click", () => {
-        showOptionNote("Help", "Pick a stack below and tap an empty slot. Up/down/left/right neighbors with the same top color send matching tiles over to merge. Reaching 10 tiles in a slot blasts it for +100 points! First to " + GOAL + " wins.");
+        showOptionNote("Help", "Pick a stack below and tap any slot where total tiles stay 10 or fewer. Matching top-colored neighbors merge over, and 10 tiles in a slot blast for +100 points! First to " + GOAL + " wins.");
       });
 
       quickHelpBtn.addEventListener("click", () => {
         optionDetailBox.style.display = "none";
         openModal("optionsModal");
-        showOptionNote("How to Play", "Tap a stack below and place it on an empty slot. Same-color neighbors merge automatically, and 10 tiles in a stack blast for +100 bonus points. Reach " + GOAL + " points first!");
+        showOptionNote("How to Play", "Tap a stack below and place it on any slot up to 10 tiles. Same-color neighbors merge automatically, and 10 tiles in a stack blast for +100 bonus points. Reach " + GOAL + " points first!");
       });
 
       document.getElementById("openAboutFromOpt").addEventListener("click", () => {
-        showOptionNote("About Game", "Hexa Stack VS is a free browser puzzle game on PlayNova Arcade featuring neighbor color merging, 10-tile blasts, Daily Challenges, and fullscreen support.");
+        showOptionNote("About Game", "Hexa Stack VS is a free browser puzzle game on PlayNova Arcade featuring stacking up to 10 tiles, neighbor color merging, 10-tile blasts, Daily Challenges, and fullscreen support.");
       });
 
       document.getElementById("openPrivacyFromOpt").addEventListener("click", () => {
