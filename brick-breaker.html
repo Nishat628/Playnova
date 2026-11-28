@@ -983,6 +983,32 @@
 
       loadBest();
       prepareIdleBoard();
+      const fsBtn = document.getElementById("fullscreen-btn");
+const gameStage = document.getElementById("game-stage") || document.querySelector("canvas");
+
+if (fsBtn && gameStage) {
+  fsBtn.addEventListener("click", async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await gameStage.requestFullscreen();
+        fsBtn.textContent = "✕ Exit Fullscreen";
+      } else {
+        await document.exitFullscreen();
+        fsBtn.textContent = "⛶ Fullscreen";
+      }
+    } catch (err) {
+      // Agar browser fullscreen block kare to fallback class se bada view dikhayein
+      gameStage.classList.toggle("mobile-expanded");
+    }
+  });
+
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+      fsBtn.textContent = "⛶ Fullscreen";
+    }
+  });
+}
+
     })();
   </script>
 </body>
