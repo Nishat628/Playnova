@@ -303,6 +303,27 @@ footer a{
   padding:10px 12px;
  }
 }
+/* Keep mobile controls visible in fullscreen */
+.game-box:fullscreen .controls,
+.game-box:fullscreen .mobile-controls {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 99999 !important;
+  position: absolute !important;
+  bottom: 15px !important;
+  left: 0 !important;
+  right: 0 !important;
+  justify-content: space-around !important;
+  pointer-events: auto !important;
+}
+
+.game-box:fullscreen .controls button,
+.game-box:fullscreen .mobile-controls button {
+  display: inline-flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+} 
 </style>
 </head>
 
