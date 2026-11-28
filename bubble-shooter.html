@@ -1,0 +1,1092 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#10091f">
+
+<title>Bubble Shooter - Free Online Arcade Game | PlayNova</title>
+<meta name="description" content="Play Bubble Shooter free online on PlayNova! Aim, shoot and match 3 or more colorful bubbles. Enjoy this fun mobile-friendly bubble popping arcade game.">
+<meta name="keywords" content="Bubble Shooter, free bubble shooter game, bubble pop game, online arcade games, match 3 bubbles, PlayNova">
+<meta name="author" content="PlayNova">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nishat628.github.io/Playnova/bubble-shooter.html">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bubble Shooter | PlayNova">
+<meta property="og:description" content="Aim, shoot and pop colorful bubbles in this free online arcade game.">
+<meta property="og:url" content="https://nishat628.github.io/Playnova/bubble-shooter.html">
+<meta property="og:site_name" content="PlayNova">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bubble Shooter | PlayNova">
+<meta name="twitter:description" content="Match colorful bubbles and clear the board. Play free on PlayNova!">
+
+<script type="application/ld+json">
+{
+ "@context":"https://schema.org",
+ "@type":"VideoGame",
+ "name":"Bubble Shooter",
+ "description":"A free online bubble shooter game. Aim and shoot colorful bubbles to match three or more of the same color.",
+ "genre":["Arcade","Puzzle"],
+ "gamePlatform":"Web Browser",
+ "applicationCategory":"Game",
+ "operatingSystem":"Any",
+ "url":"https://nishat628.github.io/Playnova/bubble-shooter.html",
+ "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+ "publisher":{
+   "@type":"Organization",
+   "name":"PlayNova",
+   "url":"https://nishat628.github.io/Playnova/"
+ }
+}
+</script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+ background:#10091f;
+ color:#fff;
+ font-family:Arial,sans-serif;
+ min-height:100vh;
+ overflow-x:hidden;
+}
+
+button{font:inherit;cursor:pointer}
+
+.page{
+ max-width:760px;
+ margin:auto;
+ padding:16px;
+}
+
+header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:20px;
+}
+
+.logo{
+ font-size:23px;
+ font-weight:900;
+ color:white;
+ text-decoration:none;
+}
+
+.logo span{color:#c084fc}
+
+.back{
+ color:#e9d5ff;
+ text-decoration:none;
+ border:1px solid #56356d;
+ padding:9px 12px;
+ border-radius:9px;
+ font-size:12px;
+}
+
+.heading{
+ text-align:center;
+ margin:15px 0 20px;
+}
+
+.heading h1{
+ font-size:clamp(27px,6vw,42px);
+ font-weight:900;
+}
+
+.heading h1 span{color:#67e8f9}
+
+.heading p{
+ color:#bcaecb;
+ font-size:13px;
+ margin-top:8px;
+}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:9px;
+ margin-bottom:15px;
+}
+
+.stat{
+ background:#211432;
+ border:1px solid #54316e;
+ border-radius:12px;
+ padding:12px;
+ text-align:center;
+}
+
+.stat small{
+ display:block;
+ color:#bcaecb;
+ font-size:10px;
+ margin-bottom:6px;
+}
+
+.stat strong{
+ font-size:21px;
+ color:#67e8f9;
+}
+
+.game-box{
+ max-width:440px;
+ margin:auto;
+ background:#211432;
+ border:2px solid #75449b;
+ border-radius:18px;
+ padding:12px;
+ box-shadow:0 0 30px #22d3ee22;
+}
+
+.game-top{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ color:#d8b4fe;
+ font-size:12px;
+ margin-bottom:10px;
+}
+
+.next-bubble{
+ display:flex;
+ align-items:center;
+ gap:7px;
+}
+
+.next-bubble span{
+ font-size:25px;
+}
+
+canvas{
+ display:block;
+ width:100%;
+ height:auto;
+ border-radius:12px;
+ background:#180e29;
+ touch-action:none;
+ cursor:crosshair;
+}
+
+.game-buttons{
+ display:flex;
+ justify-content:center;
+ gap:9px;
+ flex-wrap:wrap;
+ margin:14px 0 3px;
+}
+
+.btn{
+ border:1px solid #674183;
+ background:#251637;
+ color:#f3d9ff;
+ border-radius:10px;
+ padding:11px 14px;
+ font-size:12px;
+}
+
+.btn.primary{
+ background:linear-gradient(100deg,#0891b2,#7c3aed);
+ border:0;
+ color:white;
+ font-weight:900;
+}
+
+.overlay{
+ position:fixed;
+ inset:0;
+ background:#080414ed;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+ z-index:10;
+}
+
+.overlay.hidden{display:none}
+
+.panel{
+ max-width:340px;
+ width:100%;
+ background:#211432;
+ border:1px solid #8751a6;
+ border-radius:18px;
+ padding:28px 20px;
+ text-align:center;
+ box-shadow:0 0 40px #a855f755;
+}
+
+.panel h2{
+ font-size:27px;
+ color:#67e8f9;
+ margin-bottom:12px;
+}
+
+.panel p{
+ font-size:13px;
+ color:#cbbbd5;
+ line-height:1.7;
+ margin-bottom:18px;
+}
+
+.content{
+ background:#1b1029;
+ border:1px solid #422957;
+ border-radius:14px;
+ padding:21px;
+ margin-top:25px;
+}
+
+.content h2{
+ font-size:20px;
+ color:#67e8f9;
+ margin-bottom:12px;
+}
+
+.content h3{
+ font-size:15px;
+ color:#e9b5ff;
+ margin:16px 0 7px;
+}
+
+.content p,.content li{
+ font-size:14px;
+ color:#cbbbd5;
+ line-height:1.8;
+}
+
+.content ul{padding-left:20px}
+
+.faq{
+ padding:12px 0;
+ border-bottom:1px solid #422957;
+}
+
+.faq:last-child{border:0}
+
+.site-links{
+ display:flex;
+ justify-content:center;
+ flex-wrap:wrap;
+ gap:15px;
+ margin:22px 0;
+}
+
+.site-links a{
+ color:#d8b4fe;
+ font-size:12px;
+ text-decoration:none;
+}
+
+footer{
+ text-align:center;
+ color:#8b7898;
+ font-size:11px;
+ padding:20px;
+}
+
+.game-box:fullscreen{
+ max-width:none;
+ width:100%;
+ height:100%;
+ border:0;
+ border-radius:0;
+ padding:12px;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ background:#10091f;
+}
+
+.game-box:fullscreen canvas{
+ width:auto;
+ height:auto;
+ max-width:100%;
+ max-height:calc(100vh - 145px);
+ object-fit:contain;
+ margin:auto;
+}
+
+@media(min-width:600px){
+ .page{padding:24px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<header>
+<a href="index.html" class="logo">PLAY<span>NOVA</span></a>
+<a href="index.html" class="back">← Back to Games</a>
+</header>
+
+<div class="heading">
+<h1>BUBBLE <span>SHOOTER</span></h1>
+<p>Aim carefully. Match bubbles. Clear the board!</p>
+</div>
+
+<div class="stats">
+<div class="stat">
+<small>SCORE</small>
+<strong id="score">0</strong>
+</div>
+<div class="stat">
+<small>BEST SCORE</small>
+<strong id="best">0</strong>
+</div>
+<div class="stat">
+<small>LEVEL</small>
+<strong id="level">1</strong>
+</div>
+</div>
+
+<div class="game-box" id="gameBox">
+
+<div class="game-top">
+<span>POP 3 OR MORE MATCHING BUBBLES</span>
+<div class="next-bubble">
+NEXT <span id="nextBubble">🔵</span>
+</div>
+</div>
+
+<canvas id="game" width="400" height="540"></canvas>
+
+<div class="game-buttons">
+<button class="btn" id="soundBtn">♫ Sound: On</button>
+<button class="btn" id="restartBtn">↻ Restart</button>
+<button class="btn primary" id="fullscreenBtn">⛶ Full Screen</button>
+</div>
+
+</div>
+
+<div class="content">
+<h2>About Bubble Shooter</h2>
+<p>Welcome to Bubble Shooter, a fun and colorful free online arcade game on PlayNova. Aim your bubble launcher, shoot colorful bubbles and match three or more bubbles of the same color to pop them.</p>
+<p>Plan your shots carefully, use the walls to reach difficult places and clear the board before the bubbles reach the bottom. Challenge yourself to earn a high score!</p>
+
+<h3>Game Features</h3>
+<ul>
+<li>Colorful glossy bubble graphics.</li>
+<li>Match three or more bubbles to pop them.</li>
+<li>Mouse and mobile touch controls.</li>
+<li>Score and best-score tracking.</li>
+<li>Next bubble preview.</li>
+<li>Sound effects and restart option.</li>
+<li>Full screen gameplay.</li>
+<li>Free browser game with no download required.</li>
+</ul>
+</div>
+
+<div class="content">
+<h2>How to Play</h2>
+<p>1. Move your mouse or finger to aim the launcher.</p>
+<p>2. Tap or click to shoot a bubble.</p>
+<p>3. Match three or more bubbles of the same color.</p>
+<p>4. Use wall rebounds to reach tricky areas.</p>
+<p>5. Clear the board and try to beat your best score!</p>
+</div>
+
+<div class="content">
+<h2>Frequently Asked Questions</h2>
+
+<div class="faq">
+<h3>Is Bubble Shooter free?</h3>
+<p>Yes. Bubble Shooter is free to play on PlayNova.</p>
+</div>
+
+<div class="faq">
+<h3>Can I play on my mobile phone?</h3>
+<p>Yes. The game supports touch controls on compatible mobile devices.</p>
+</div>
+
+<div class="faq">
+<h3>How do I pop bubbles?</h3>
+<p>Connect three or more bubbles of the same color to pop them.</p>
+</div>
+
+<div class="faq">
+<h3>Can I play without downloading?</h3>
+<p>Yes. Open the game in your browser and start playing.</p>
+</div>
+</div>
+
+<div class="site-links">
+<a href="index.html">Home</a>
+<a href="about.html">About Us</a>
+<a href="contact.html">Contact Us</a>
+<a href="privacy-policy.html">Privacy Policy</a>
+<a href="terms.html">Terms &amp; Conditions</a>
+<a href="disclaimer.html">Disclaimer</a>
+</div>
+
+</div>
+
+<footer>© 2026 PlayNova. All rights reserved.</footer>
+
+<div class="overlay" id="overlay">
+<div class="panel">
+<h2 id="overlayTitle">BUBBLE SHOOTER</h2>
+<p id="overlayText">Aim, shoot and match three or more bubbles of the same color. Clear the board and get the highest score!</p>
+<button class="btn primary" id="startBtn">START GAME</button>
+</div>
+</div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const W = 400;
+const H = 540;
+const R = 17;
+const STEP_X = 36;
+const STEP_Y = 31;
+
+const COLORS = [
+ "#22d3ee",
+ "#fb7185",
+ "#facc15",
+ "#a78bfa",
+ "#4ade80"
+];
+
+const EMOJIS = ["🔵","🔴","🟡","🟣","🟢"];
+
+const scoreEl = document.getElementById("score");
+const bestEl = document.getElementById("best");
+const levelEl = document.getElementById("level");
+const nextEl = document.getElementById("nextBubble");
+const overlay = document.getElementById("overlay");
+
+let grid = [];
+let score = 0;
+let best = 0;
+let level = 1;
+let currentColor = 0;
+let nextColor = 0;
+let angle = -Math.PI / 2;
+let projectile = null;
+let particles = [];
+let gameActive = false;
+let gameEnded = false;
+let soundOn = true;
+let audio = null;
+let lastTime = 0;
+let shotCount = 0;
+
+const shooterX = 200;
+const shooterY = 485;
+
+try {
+ best = Number(localStorage.getItem("bubbleShooterBest")) || 0;
+} catch(e) {}
+
+bestEl.textContent = best;
+
+function center(row,col){
+ return {
+  x: 20 + col * STEP_X + (row % 2 ? STEP_X / 2 : 0),
+  y: 28 + row * STEP_Y
+ };
+}
+
+function randomColor(){
+ return Math.floor(Math.random() * COLORS.length);
+}
+
+function sound(freq=500){
+ if(!soundOn) return;
+
+ try{
+  audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+
+  if(audio.state === "suspended") audio.resume();
+
+  const osc = audio.createOscillator();
+  const gain = audio.createGain();
+
+  osc.connect(gain);
+  gain.connect(audio.destination);
+
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(.07,audio.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.14);
+
+  osc.start();
+  osc.stop(audio.currentTime+.14);
+ }catch(e){}
+}
+
+function makeGrid(){
+ grid = [];
+
+ for(let r=0;r<7;r++){
+  grid[r] = [];
+
+  for(let c=0;c<10;c++){
+   grid[r][c] = randomColor();
+  }
+ }
+}
+
+function reset(){
+ score = 0;
+ level = 1;
+ shotCount = 0;
+ particles = [];
+ projectile = null;
+ gameEnded = false;
+
+ makeGrid();
+
+ currentColor = randomColor();
+ nextColor = randomColor();
+
+ updateUI();
+}
+
+function updateUI(){
+ scoreEl.textContent = score;
+ bestEl.textContent = best;
+ levelEl.textContent = level;
+ nextEl.textContent = EMOJIS[nextColor];
+}
+
+function start(){
+ reset();
+ gameActive = true;
+ overlay.classList.add("hidden");
+ lastTime = performance.now();
+ requestAnimationFrame(loop);
+}
+
+function getPosition(e){
+ const rect = canvas.getBoundingClientRect();
+
+ return {
+  x: (e.clientX - rect.left) * W / rect.width,
+  y: (e.clientY - rect.top) * H / rect.height
+ };
+}
+
+function setAim(x,y){
+ let dx = x - shooterX;
+ let dy = y - shooterY;
+
+ angle = Math.atan2(dy,dx);
+
+ if(angle > -0.12) angle = -0.12;
+ if(angle < -Math.PI + 0.12) angle = -Math.PI + 0.12;
+}
+
+function getNeighbors(row,col){
+ const odd = row % 2 === 1;
+
+ const offsets = odd
+ ? [[0,-1],[0,1],[-1,0],[-1,1],[1,0],[1,1]]
+ : [[0,-1],[0,1],[-1,-1],[-1,0],[1,-1],[1,0]];
+
+ return offsets.map(([dr,dc])=>[row+dr,col+dc]);
+}
+
+function findGroup(row,col,color){
+ const stack = [[row,col]];
+ const visited = new Set();
+ const group = [];
+
+ while(stack.length){
+  const [r,c] = stack.pop();
+  const key = r+","+c;
+
+  if(visited.has(key)) continue;
+  visited.add(key);
+
+  if(r<0 || r>=16 || c<0 || c>=10) continue;
+  if(!grid[r] || grid[r][c] !== color) continue;
+
+  group.push([r,c]);
+
+  for(const [nr,nc] of getNeighbors(r,c)){
+   stack.push([nr,nc]);
+  }
+ }
+
+ return group;
+}
+
+function findFloating(){
+ const connected = new Set();
+ const stack = [];
+
+ for(let c=0;c<10;c++){
+  if(grid[0] && grid[0][c] !== null){
+   stack.push([0,c]);
+  }
+ }
+
+ while(stack.length){
+  const [r,c] = stack.pop();
+  const key = r+","+c;
+
+  if(connected.has(key)) continue;
+  if(r<0 || r>=16 || c<0 || c>=10) continue;
+  if(!grid[r] || grid[r][c] === null) continue;
+
+  connected.add(key);
+
+  for(const [nr,nc] of getNeighbors(r,c)){
+   stack.push([nr,nc]);
+  }
+ }
+
+ const floating = [];
+
+ for(let r=0;r<16;r++){
+  for(let c=0;c<10;c++){
+   if(grid[r] && grid[r][c] !== null &&
+      !connected.has(r+","+c)){
+    floating.push([r,c]);
+   }
+  }
+ }
+
+ return floating;
+}
+
+function addParticles(x,y,color){
+ for(let i=0;i<12;i++){
+  particles.push({
+   x:x,
+   y:y,
+   vx:(Math.random()-.5)*5,
+   vy:(Math.random()-.5)*5,
+   life:1,
+   color:COLORS[color]
+  });
+ }
+}
+
+function findNearestCell(x,y){
+ let bestCell = null;
+ let bestDistance = Infinity;
+
+ for(let r=0;r<16;r++){
+  for(let c=0;c<10;c++){
+   if(!grid[r]) grid[r] = [];
+
+   if(grid[r][c] !== null && grid[r][c] !== undefined) continue;
+
+   const p = center(r,c);
+   const d = Math.hypot(p.x-x,p.y-y);
+
+   if(d<bestDistance){
+    bestDistance = d;
+    bestCell = [r,c];
+   }
+  }
+ }
+
+ return bestCell;
+}
+
+function placeBubble(x,y,color){
+ const cell = findNearestCell(x,y);
+
+ if(!cell){
+  endGame();
+  return;
+ }
+
+ const [r,c] = cell;
+ grid[r][c] = color;
+
+ const p = center(r,c);
+ const group = findGroup(r,c,color);
+
+ if(group.length >= 3){
+  group.forEach(([gr,gc])=>{
+   const pos = center(gr,gc);
+   addParticles(pos.x,pos.y,color);
+   grid[gr][gc] = null;
+  });
+
+  score += group.length * 10;
+  sound(700);
+
+  const floating = findFloating();
+
+  floating.forEach(([fr,fc])=>{
+   const pos = center(fr,fc);
+   addParticles(pos.x,pos.y,grid[fr][fc]);
+   grid[fr][fc] = null;
+  });
+
+  score += floating.length * 15;
+ }else{
+  sound(350);
+ }
+
+ if(score > best){
+  best = score;
+
+  try{
+   localStorage.setItem("bubbleShooterBest",best);
+  }catch(e){}
+ }
+
+ shotCount++;
+
+ if(shotCount % 12 === 0){
+  level++;
+  addNewRow();
+ }
+
+ updateUI();
+ checkGameEnd();
+}
+
+function addNewRow(){
+ for(let r=14;r>0;r--){
+  grid[r] = grid[r-1] ? [...grid[r-1]] : Array(10).fill(null);
+ }
+
+ grid[0] = [];
+
+ for(let c=0;c<10;c++){
+  grid[0][c] = randomColor();
+ }
+
+}
+
+function shoot(){
+ if(!gameActive || gameEnded || projectile) return;
+
+ projectile = {
+  x:shooterX,
+  y:shooterY,
+  vx:Math.cos(angle)*8,
+  vy:Math.sin(angle)*8,
+  color:currentColor
+ };
+
+ currentColor = nextColor;
+ nextColor = randomColor();
+ updateUI();
+
+ sound(450);
+}
+
+function updateProjectile(){
+ if(!projectile) return;
+
+ projectile.x += projectile.vx;
+ projectile.y += projectile.vy;
+
+ if(projectile.x < R || projectile.x > W-R){
+  projectile.vx *= -1;
+  projectile.x = Math.max(R,Math.min(W-R,projectile.x));
+ }
+
+ let hit = projectile.y < 20;
+
+ for(let r=0;r<16 && !hit;r++){
+  for(let c=0;c<10;c++){
+   if(!grid[r] || grid[r][c] === null || grid[r][c] === undefined) continue;
+
+   const p = center(r,c);
+
+   if(Math.hypot(projectile.x-p.x,projectile.y-p.y) < R*2-2){
+    hit = true;
+    break;
+   }
+  }
+ }
+
+ if(hit){
+  const p = projectile;
+  projectile = null;
+  placeBubble(p.x,p.y,p.color);
+ }
+}
+
+function checkGameEnd(){
+ let remaining = 0;
+
+ for(let r=0;r<16;r++){
+  if(!grid[r]) continue;
+
+  for(let c=0;c<10;c++){
+   if(grid[r][c] !== null && grid[r][c] !== undefined){
+    remaining++;
+
+    const p = center(r,c);
+
+    if(p.y > 415){
+     endGame();
+     return;
+    }
+   }
+  }
+ }
+
+ if(remaining === 0){
+  gameActive = false;
+  gameEnded = true;
+
+  document.getElementById("overlayTitle").textContent = "LEVEL CLEARED!";
+  document.getElementById("overlayText").textContent =
+   "Amazing! You cleared the board with "+score+" points. Start again for another challenge.";
+
+  document.getElementById("startBtn").textContent = "PLAY AGAIN";
+  overlay.classList.remove("hidden");
+  sound(850);
+ }
+}
+
+function endGame(){
+ gameActive = false;
+ gameEnded = true;
+
+ document.getElementById("overlayTitle").textContent = "GAME OVER!";
+ document.getElementById("overlayText").textContent =
+  "Your score: "+score+". Keep practicing and beat your best score!";
+
+ document.getElementById("startBtn").textContent = "PLAY AGAIN";
+ overlay.classList.remove("hidden");
+ sound(180);
+}
+
+function drawBubble(x,y,color,r=R){
+ ctx.save();
+
+ ctx.shadowBlur = 10;
+ ctx.shadowColor = COLORS[color];
+
+ const gradient = ctx.createRadialGradient(
+  x-r*.35,y-r*.4,2,
+  x,y,r
+ );
+
+ gradient.addColorStop(0,"#ffffff");
+ gradient.addColorStop(.18,COLORS[color]);
+ gradient.addColorStop(1,"#241432");
+
+ ctx.fillStyle = gradient;
+ ctx.beginPath();
+ ctx.arc(x,y,r,0,Math.PI*2);
+ ctx.fill();
+
+ ctx.shadowBlur = 0;
+ ctx.fillStyle = "#ffffff88";
+ ctx.beginPath();
+ ctx.arc(x-r*.32,y-r*.35,r*.23,0,Math.PI*2);
+ ctx.fill();
+
+ ctx.restore();
+}
+
+function draw(){
+ ctx.clearRect(0,0,W,H);
+
+ const bg = ctx.createLinearGradient(0,0,0,H);
+ bg.addColorStop(0,"#211234");
+ bg.addColorStop(1,"#10091f");
+
+ ctx.fillStyle = bg;
+ ctx.fillRect(0,0,W,H);
+
+ ctx.strokeStyle = "#ffffff12";
+ ctx.lineWidth = 1;
+
+ for(let x=20;x<W;x+=40){
+  ctx.beginPath();
+  ctx.moveTo(x,0);
+  ctx.lineTo(x,H);
+  ctx.stroke();
+ }
+
+ ctx.strokeStyle = "#f43f5e";
+ ctx.setLineDash([6,6]);
+ ctx.beginPath();
+ ctx.moveTo(0,425);
+ ctx.lineTo(W,425);
+ ctx.stroke();
+ ctx.setLineDash([]);
+
+ for(let r=0;r<16;r++){
+  if(!grid[r]) continue;
+
+  for(let c=0;c<10;c++){
+   const color = grid[r][c];
+
+   if(color === null || color === undefined) continue;
+
+   const p = center(r,c);
+   drawBubble(p.x,p.y,color);
+  }
+ }
+
+ if(gameActive && !projectile){
+  let x=shooterX;
+  let y=shooterY;
+  let dx=Math.cos(angle);
+  let dy=Math.sin(angle);
+
+  ctx.strokeStyle="#ffffff99";
+  ctx.setLineDash([5,7]);
+  ctx.lineWidth=2;
+
+  ctx.beginPath();
+  ctx.moveTo(x,y);
+
+  for(let i=0;i<45;i++){
+   x+=dx*7;
+   y+=dy*7;
+
+   if(x<R || x>W-R){
+    dx *= -1;
+   }
+
+   if(y<20) break;
+
+   ctx.lineTo(x,y);
+  }
+
+  ctx.stroke();
+  ctx.setLineDash([]);
+ }
+
+ ctx.fillStyle="#ffffff18";
+ ctx.beginPath();
+ ctx.arc(shooterX,shooterY,27,0,Math.PI*2);
+ ctx.fill();
+
+ ctx.strokeStyle="#c084fc";
+ ctx.lineWidth=4;
+ ctx.beginPath();
+ ctx.arc(shooterX,shooterY,27,0,Math.PI*2);
+ ctx.stroke();
+
+ drawBubble(shooterX,shooterY,currentColor,18);
+
+ if(projectile){
+  drawBubble(projectile.x,projectile.y,projectile.color);
+ }
+
+ particles.forEach(p=>{
+  ctx.globalAlpha=p.life;
+  ctx.fillStyle=p.color;
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,3,0,Math.PI*2);
+  ctx.fill();
+  ctx.globalAlpha=1;
+ });
+
+ ctx.fillStyle="#c4b5fd";
+ ctx.font="11px Arial";
+ ctx.textAlign="center";
+ ctx.fillText("AIM & SHOOT",200,525);
+}
+
+function updateParticles(dt){
+ const f=dt/16.67;
+
+ particles.forEach(p=>{
+  p.x += p.vx*f;
+  p.y += p.vy*f;
+  p.life -= .035*f;
+ });
+
+ particles = particles.filter(p=>p.life>0);
+}
+
+function loop(time){
+ if(!gameActive) return;
+
+ const dt = Math.min(time-lastTime,35);
+ lastTime = time;
+
+ updateProjectile();
+ updateParticles(dt);
+ draw();
+
+ if(gameActive){
+  requestAnimationFrame(loop);
+ }
+}
+
+canvas.addEventListener("pointermove",e=>{
+ if(!gameActive || projectile) return;
+
+ const p = getPosition(e);
+ setAim(p.x,p.y);
+ draw();
+});
+
+canvas.addEventListener("pointerdown",e=>{
+ if(!gameActive || projectile) return;
+
+ e.preventDefault();
+
+ const p = getPosition(e);
+ setAim(p.x,p.y);
+ shoot();
+});
+
+document.getElementById("startBtn").addEventListener("click",()=>{
+ document.getElementById("overlayTitle").textContent = "BUBBLE SHOOTER";
+ document.getElementById("overlayText").textContent =
+  "Aim, shoot and match three or more bubbles of the same color. Clear the board and get the highest score!";
+
+ document.getElementById("startBtn").textContent = "START GAME";
+ start();
+});
+
+document.getElementById("restartBtn").addEventListener("click",()=>{
+ gameActive = false;
+
+ document.getElementById("overlayTitle").textContent = "BUBBLE SHOOTER";
+ document.getElementById("overlayText").textContent =
+  "Ready for a fresh challenge? Start shooting bubbles again!";
+
+ document.getElementById("startBtn").textContent = "START GAME";
+ overlay.classList.remove("hidden");
+});
+
+document.getElementById("soundBtn").addEventListener("click",e=>{
+ soundOn = !soundOn;
+ e.target.textContent = soundOn ? "♫ Sound: On" : "♫ Sound: Off";
+
+ if(soundOn) sound();
+});
+
+const gameBox = document.getElementById("gameBox");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+fullscreenBtn.addEventListener("click",async()=>{
+ try{
+  if(!document.fullscreenElement){
+   await gameBox.requestFullscreen();
+  }else{
+   await document.exitFullscreen();
+  }
+ }catch(e){
+  alert("Full Screen is not supported on this device.");
+ }
+});
+
+document.addEventListener("fullscreenchange",()=>{
+ fullscreenBtn.textContent = document.fullscreenElement
+  ? "✕ Exit Full Screen"
+  : "⛶ Full Screen";
+});
+
+reset();
+draw();
+</script>
+
+</body>
+</html>
