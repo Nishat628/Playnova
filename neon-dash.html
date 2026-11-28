@@ -1,0 +1,1057 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080817">
+
+<title>Neon Dash | PlayNova</title>
+
+<meta name="description" content="Play Neon Dash, a fast neon arcade runner by PlayNova. Jump over obstacles, beat your high score and enjoy this free mobile-friendly game.">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #080817;
+  --panel: #11112a;
+  --purple: #8b5cf6;
+  --cyan: #22d3ee;
+  --pink: #ec4899;
+  --text: #f8fafc;
+  --muted: #a5b4fc;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background:
+    radial-gradient(circle at top, #1e1645 0%, #080817 55%);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: var(--cyan);
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 12px 17px;
+  color: white;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  transition: transform .2s, filter .2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.15);
+}
+
+button:active {
+  transform: scale(.97);
+}
+
+.fullscreen-btn {
+  background: #20203e;
+  border: 1px solid #444477;
+}
+
+.hero {
+  text-align: center;
+  margin: 25px 0;
+}
+
+.hero h1 {
+  font-size: clamp(32px, 6vw, 58px);
+  font-weight: 900;
+  background: linear-gradient(90deg, #22d3ee, #a78bfa, #f472b6);
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  color: #c4b5fd;
+  line-height: 1.6;
+}
+
+.game-card {
+  background: rgba(17, 17, 42, .95);
+  border: 1px solid #34345f;
+  border-radius: 22px;
+  padding: 15px;
+  box-shadow: 0 0 35px #6d28d933;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.stat {
+  flex: 1;
+  text-align: center;
+  background: #09091d;
+  border: 1px solid #29294f;
+  border-radius: 13px;
+  padding: 12px;
+}
+
+.stat small {
+  display: block;
+  color: #a5b4fc;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.stat strong {
+  font-size: 24px;
+  color: var(--cyan);
+}
+
+.canvas-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 15px;
+  background: #070714;
+  border: 1px solid #33335c;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  touch-action: manipulation;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 5, 20, .78);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+}
+
+.overlay h2 {
+  font-size: clamp(25px, 5vw, 42px);
+  color: var(--cyan);
+  margin-bottom: 12px;
+  text-shadow: 0 0 20px #22d3ee66;
+}
+
+.overlay p {
+  color: #ddd6fe;
+  line-height: 1.6;
+  max-width: 450px;
+  margin-bottom: 20px;
+}
+
+.overlay button {
+  font-size: 17px;
+  padding: 14px 30px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.jump-btn {
+  background: linear-gradient(135deg, #db2777, #9333ea);
+  min-width: 150px;
+  font-size: 16px;
+}
+
+.description {
+  margin-top: 25px;
+  background: var(--panel);
+  border: 1px solid #34345f;
+  border-radius: 18px;
+  padding: 22px;
+}
+
+.description h2,
+.more-games h2 {
+  color: var(--cyan);
+  margin-bottom: 12px;
+}
+
+.description p {
+  color: #cbd5e1;
+  line-height: 1.8;
+}
+
+.description ul {
+  padding-left: 22px;
+  margin-top: 12px;
+  color: #cbd5e1;
+  line-height: 1.9;
+}
+
+.more-games {
+  margin-top: 30px;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.game-link {
+  display: block;
+  text-decoration: none;
+  color: white;
+  background: #14142e;
+  border: 1px solid #36365f;
+  border-radius: 14px;
+  padding: 16px 12px;
+  text-align: center;
+  transition: .2s;
+}
+
+.game-link:hover {
+  background: #24204b;
+  border-color: var(--cyan);
+  transform: translateY(-3px);
+}
+
+.game-link strong {
+  display: block;
+  margin-bottom: 9px;
+  font-size: 14px;
+}
+
+.game-link span {
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  color: #8181ad;
+  padding: 30px 10px 15px;
+  font-size: 13px;
+}
+
+footer a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  .logo {
+    font-size: 23px;
+  }
+
+  .game-card {
+    padding: 9px;
+  }
+
+  .stat {
+    padding: 9px 5px;
+  }
+
+  .stat strong {
+    font-size: 20px;
+  }
+
+  .description {
+    padding: 16px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <div class="logo">PLAY<span>NOVA</span></div>
+
+  <div class="header-buttons">
+    <button class="fullscreen-btn" id="fullscreenBtn">
+      ⛶ Full Screen
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>NEON DASH</h1>
+  <p>Run fast. Jump high. Beat your best score.</p>
+</section>
+
+<section class="game-card" id="gameCard">
+
+  <div class="stats">
+    <div class="stat">
+      <small>SCORE</small>
+      <strong id="score">0</strong>
+    </div>
+
+    <div class="stat">
+      <small>BEST</small>
+      <strong id="best">0</strong>
+    </div>
+
+    <div class="stat">
+      <small>SPEED</small>
+      <strong id="speed">1x</strong>
+    </div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="gameCanvas" width="960" height="540"></canvas>
+
+    <div class="overlay" id="startOverlay">
+      <h2>NEON DASH</h2>
+      <p>
+        Jump over glowing obstacles and survive as long as possible.
+        How far can you go?
+      </p>
+      <button id="startBtn">START GAME</button>
+    </div>
+
+    <div class="overlay hidden" id="gameOverOverlay">
+      <h2>GAME OVER</h2>
+      <p id="finalScore">Your score: 0</p>
+      <button id="restartBtn">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="jump-btn" id="jumpBtn">⬆ JUMP</button>
+    <button class="fullscreen-btn" id="restartSmallBtn">↻ Restart</button>
+  </div>
+
+</section>
+
+<section class="description">
+  <h2>About Neon Dash</h2>
+
+  <p>
+    Neon Dash is a fast-paced arcade runner created by PlayNova.
+    Dodge dangerous obstacles, jump across the neon world and
+    challenge yourself to achieve a new high score. The game gets
+    faster as you progress, so stay alert and keep moving!
+  </p>
+
+  <h2 style="margin-top:20px">How to Play</h2>
+
+  <ul>
+    <li>Tap the screen or press the Space key to jump.</li>
+    <li>Avoid the glowing obstacles.</li>
+    <li>Survive longer to earn a higher score.</li>
+    <li>Try to beat your saved best score.</li>
+  </ul>
+</section>
+
+<section class="more-games">
+  <h2>More Games by PlayNova</h2>
+  <p style="color:#a5b4fc; margin-bottom:15px">
+    Choose another game and keep playing!
+  </p>
+
+  <div class="games-grid" id="gamesGrid"></div>
+</section>
+
+<footer>
+  © 2026 <a href="./">PlayNova</a> ·
+  All games are free to play
+</footer>
+
+</div>
+
+<script>
+"use strict";
+
+/* =========================
+   GAME SETUP
+========================= */
+
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+const scoreElement = document.getElementById("score");
+const bestElement = document.getElementById("best");
+const speedElement = document.getElementById("speed");
+
+const startOverlay = document.getElementById("startOverlay");
+const gameOverOverlay = document.getElementById("gameOverOverlay");
+const finalScoreElement = document.getElementById("finalScore");
+
+const startBtn = document.getElementById("startBtn");
+const restartBtn = document.getElementById("restartBtn");
+const jumpBtn = document.getElementById("jumpBtn");
+const restartSmallBtn = document.getElementById("restartSmallBtn");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+const WIDTH = canvas.width;
+const HEIGHT = canvas.height;
+const GROUND = 430;
+
+let player;
+let obstacles = [];
+let particles = [];
+
+let score = 0;
+let best = Number(localStorage.getItem("playnovaNeonDashBest")) || 0;
+
+let gameRunning = false;
+let gameStarted = false;
+let gameOver = false;
+
+let frame = 0;
+let speed = 6;
+let obstacleTimer = 0;
+let animationId = null;
+
+bestElement.textContent = best;
+
+/* =========================
+   PLAYER
+========================= */
+
+function createPlayer() {
+  return {
+    x: 125,
+    y: GROUND - 54,
+    width: 44,
+    height: 54,
+    velocityY: 0,
+    jumping: false,
+    rotation: 0
+  };
+}
+
+/* =========================
+   RESET GAME
+========================= */
+
+function resetGame() {
+  player = createPlayer();
+
+  obstacles = [];
+  particles = [];
+
+  score = 0;
+  speed = 6;
+  frame = 0;
+  obstacleTimer = 0;
+
+  gameOver = false;
+  gameRunning = true;
+  gameStarted = true;
+
+  scoreElement.textContent = "0";
+  speedElement.textContent = "1x";
+
+  startOverlay.classList.add("hidden");
+  gameOverOverlay.classList.add("hidden");
+
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+  }
+
+  gameLoop();
+}
+
+/* =========================
+   JUMP
+========================= */
+
+function jump() {
+  if (!gameRunning || gameOver) return;
+
+  if (!player.jumping) {
+    player.velocityY = -17;
+    player.jumping = true;
+
+    createParticles(
+      player.x + player.width / 2,
+      player.y + player.height,
+      8
+    );
+  }
+}
+
+/* =========================
+   OBSTACLES
+========================= */
+
+function createObstacle() {
+  const height = 35 + Math.random() * 35;
+  const width = 25 + Math.random() * 25;
+
+  obstacles.push({
+    x: WIDTH + 30,
+    y: GROUND - height,
+    width,
+    height,
+    color: Math.random() > 0.5 ? "#ec4899" : "#8b5cf6"
+  });
+}
+
+/* =========================
+   PARTICLES
+========================= */
+
+function createParticles(x, y, amount) {
+  for (let i = 0; i < amount; i++) {
+    particles.push({
+      x,
+      y,
+      vx: (Math.random() - 0.5) * 6,
+      vy: (Math.random() - 0.5) * 6,
+      life: 30 + Math.random() * 20,
+      size: 2 + Math.random() * 4
+    });
+  }
+}
+
+/* =========================
+   UPDATE GAME
+========================= */
+
+function update() {
+  if (!gameRunning) return;
+
+  frame++;
+
+  score += 0.1;
+  scoreElement.textContent = Math.floor(score);
+
+  speed = Math.min(6 + score / 80, 16);
+  speedElement.textContent =
+    (speed / 6).toFixed(1) + "x";
+
+  /* Player physics */
+
+  player.velocityY += 0.75;
+  player.y += player.velocityY;
+
+  if (player.y + player.height >= GROUND) {
+    player.y = GROUND - player.height;
+    player.velocityY = 0;
+    player.jumping = false;
+  }
+
+  /* Spawn obstacles */
+
+  obstacleTimer++;
+
+  const spawnRate = Math.max(45, 100 - speed * 3);
+
+  if (obstacleTimer > spawnRate) {
+    createObstacle();
+    obstacleTimer = 0;
+  }
+
+  /* Move obstacles */
+
+  obstacles.forEach(obstacle => {
+    obstacle.x -= speed;
+  });
+
+  obstacles = obstacles.filter(
+    obstacle => obstacle.x + obstacle.width > 0
+  );
+
+  /* Collision detection */
+
+  obstacles.forEach(obstacle => {
+    const padding = 7;
+
+    if (
+      player.x + player.width - padding > obstacle.x &&
+      player.x + padding < obstacle.x + obstacle.width &&
+      player.y + player.height - padding > obstacle.y &&
+      player.y + padding < obstacle.y + obstacle.height
+    ) {
+      endGame();
+    }
+  });
+
+  /* Update particles */
+
+  particles.forEach(particle => {
+    particle.x += particle.vx;
+    particle.y += particle.vy;
+    particle.life--;
+  });
+
+  particles = particles.filter(
+    particle => particle.life > 0
+  );
+}
+
+/* =========================
+   DRAW BACKGROUND
+========================= */
+
+function drawBackground() {
+  const gradient = ctx.createLinearGradient(
+    0, 0, 0, HEIGHT
+  );
+
+  gradient.addColorStop(0, "#09091d");
+  gradient.addColorStop(1, "#171033");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+  /* Stars */
+
+  for (let i = 0; i < 50; i++) {
+    const x = (i * 173 - frame * 0.4) % WIDTH;
+    const y = (i * 97) % GROUND;
+
+    ctx.fillStyle = "#7777bb";
+    ctx.globalAlpha = 0.4;
+    ctx.fillRect(
+      x < 0 ? x + WIDTH : x,
+      y,
+      2,
+      2
+    );
+  }
+
+  ctx.globalAlpha = 1;
+
+  /* Neon ground */
+
+  ctx.shadowBlur = 18;
+  ctx.shadowColor = "#22d3ee";
+  ctx.strokeStyle = "#22d3ee";
+  ctx.lineWidth = 3;
+
+  ctx.beginPath();
+  ctx.moveTo(0, GROUND);
+  ctx.lineTo(WIDTH, GROUND);
+  ctx.stroke();
+
+  ctx.shadowBlur = 0;
+
+  /* Moving ground lines */
+
+  ctx.strokeStyle = "#373763";
+  ctx.lineWidth = 2;
+
+  for (let i = 0; i < 20; i++) {
+    let x = (i * 70 - frame * speed) % WIDTH;
+
+    if (x < 0) x += WIDTH;
+
+    ctx.beginPath();
+    ctx.moveTo(x, GROUND + 20);
+    ctx.lineTo(x - 35, HEIGHT);
+    ctx.stroke();
+  }
+}
+
+/* =========================
+   DRAW PLAYER
+========================= */
+
+function drawPlayer() {
+  if (!player) return;
+
+  ctx.save();
+
+  ctx.shadowBlur = 22;
+  ctx.shadowColor = "#22d3ee";
+
+  /* Body */
+
+  const gradient = ctx.createLinearGradient(
+    player.x,
+    player.y,
+    player.x + player.width,
+    player.y + player.height
+  );
+
+  gradient.addColorStop(0, "#22d3ee");
+  gradient.addColorStop(1, "#6366f1");
+
+  ctx.fillStyle = gradient;
+
+  ctx.beginPath();
+  ctx.roundRect(
+    player.x,
+    player.y,
+    player.width,
+    player.height,
+    10
+  );
+
+  ctx.fill();
+
+  /* Eye */
+
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = "#ffffff";
+
+  ctx.fillRect(
+    player.x + 27,
+    player.y + 12,
+    8,
+    8
+  );
+
+  /* Feet */
+
+  ctx.fillStyle = "#ec4899";
+
+  ctx.fillRect(
+    player.x + 3,
+    player.y + player.height - 5,
+    14,
+    10
+  );
+
+  ctx.fillRect(
+    player.x + 27,
+    player.y + player.height - 5,
+    14,
+    10
+  );
+
+  ctx.restore();
+}
+
+/* =========================
+   DRAW OBSTACLES
+========================= */
+
+function drawObstacles() {
+  obstacles.forEach(obstacle => {
+    ctx.save();
+
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = obstacle.color;
+
+    ctx.fillStyle = obstacle.color;
+
+    ctx.beginPath();
+    ctx.roundRect(
+      obstacle.x,
+      obstacle.y,
+      obstacle.width,
+      obstacle.height,
+      7
+    );
+
+    ctx.fill();
+
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.restore();
+  });
+}
+
+/* =========================
+   DRAW PARTICLES
+========================= */
+
+function drawParticles() {
+  particles.forEach(particle => {
+    ctx.globalAlpha = particle.life / 50;
+
+    ctx.fillStyle = "#22d3ee";
+
+    ctx.fillRect(
+      particle.x,
+      particle.y,
+      particle.size,
+      particle.size
+    );
+  });
+
+  ctx.globalAlpha = 1;
+}
+
+/* =========================
+   DRAW GAME
+========================= */
+
+function draw() {
+  drawBackground();
+  drawParticles();
+
+  if (player) {
+    drawPlayer();
+  }
+
+  drawObstacles();
+
+  /* Game title */
+
+  if (!gameStarted) {
+    ctx.fillStyle = "#7777aa";
+    ctx.font = "bold 28px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillText(
+      "PLAY NOVA ARCADE",
+      WIDTH / 2,
+      100
+    );
+  }
+}
+
+/* =========================
+   GAME LOOP
+========================= */
+
+function gameLoop() {
+  update();
+  draw();
+
+  if (gameRunning) {
+    animationId = requestAnimationFrame(gameLoop);
+  }
+}
+
+/* =========================
+   GAME OVER
+========================= */
+
+function endGame() {
+  if (gameOver) return;
+
+  gameOver = true;
+  gameRunning = false;
+
+  const finalScore = Math.floor(score);
+
+  if (finalScore > best) {
+    best = finalScore;
+
+    localStorage.setItem(
+      "playnovaNeonDashBest",
+      best
+    );
+  }
+
+  bestElement.textContent = best;
+
+  finalScoreElement.textContent =
+    "Your score: " + finalScore +
+    " | Best: " + best;
+
+  gameOverOverlay.classList.remove("hidden");
+
+  createParticles(
+    player.x + player.width / 2,
+    player.y + player.height / 2,
+    25
+  );
+
+  draw();
+}
+
+/* =========================
+   BUTTON EVENTS
+========================= */
+
+startBtn.addEventListener("click", resetGame);
+restartBtn.addEventListener("click", resetGame);
+restartSmallBtn.addEventListener("click", resetGame);
+
+jumpBtn.addEventListener("click", jump);
+
+canvas.addEventListener("pointerdown", jump);
+
+/* Keyboard controls */
+
+document.addEventListener("keydown", event => {
+  if (
+    event.code === "Space" ||
+    event.code === "ArrowUp"
+  ) {
+    event.preventDefault();
+
+    if (!gameStarted || gameOver) {
+      resetGame();
+    } else {
+      jump();
+    }
+  }
+});
+
+/* =========================
+   FULLSCREEN
+========================= */
+
+fullscreenBtn.addEventListener("click", async () => {
+  const gameCard = document.getElementById("gameCard");
+
+  try {
+    if (!document.fullscreenElement) {
+      await gameCard.requestFullscreen();
+
+      fullscreenBtn.textContent = "✕ Exit Fullscreen";
+    } else {
+      await document.exitFullscreen();
+
+      fullscreenBtn.textContent = "⛶ Full Screen";
+    }
+  } catch (error) {
+    alert(
+      "Fullscreen is not supported by this browser."
+    );
+  }
+});
+
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement) {
+    fullscreenBtn.textContent = "⛶ Full Screen";
+  }
+});
+
+/* =========================
+   MORE PLAYNOVA GAMES
+========================= */
+
+const otherGames = [
+  {
+    name: "2048 Puzzle",
+    url: "nova-2048.html"
+  },
+  {
+    name: "Match 3",
+    url: "match-3.html"
+  },
+  {
+    name: "City Tycoon",
+    url: "city-tycoon.html"
+  },
+  {
+    name: "Typing Challenge",
+    url: "typing-challenge.html"
+  },
+  {
+    name: "Solitaire",
+    url: "solitaire.html"
+  },
+  {
+    name: "Neon Brick Breaker",
+    url: "brick-breaker.html"
+  },
+  {
+    name: "Color Reflex Rush",
+    url: "color-reflex.html"
+  },
+  {
+    name: "Hexa Stack VS",
+    url: "hexa-stack-vs.html"
+  },
+  {
+    name: "Block Blast",
+    url: "block-blast.html"
+  },
+  {
+    name: "Nova Snake Dash",
+    url: "snake-dash.html"
+  },
+  {
+    name: "Nova Lane Hopper",
+    url: "lane-hopper.html"
+  },
+  {
+    name: "Stack Tower",
+    url: "stack-tower.html"
+  },
+  {
+    name: "Swarm Surge",
+    url: "swarm-surge.html"
+  }
+];
+
+const gamesGrid = document.getElementById("gamesGrid");
+
+otherGames.forEach(game => {
+  const link = document.createElement("a");
+
+  link.className = "game-link";
+  link.href = game.url;
+
+  link.innerHTML = `
+    <strong>${game.name}</strong>
+    <span>PLAY NOW →</span>
+  `;
+
+  gamesGrid.appendChild(link);
+});
+
+/* =========================
+   INITIAL SCREEN
+========================= */
+
+player = createPlayer();
+
+draw();
+
+</script>
+
+</body>
+</html>
