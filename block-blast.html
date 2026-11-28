@@ -577,6 +577,17 @@ const soundToggleEl = document.getElementById("soundToggle");
 const previewToggleEl = document.getElementById("previewToggle");
 const lowGlowToggleEl = document.getElementById("lowGlowToggle");
 
+function syncGhostContainer() {
+  const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+  const targetParent = fsEl === gameStageEl ? gameStageEl : document.body;
+  if (dragGhostEl.parentElement !== targetParent) {
+    targetParent.appendChild(dragGhostEl);
+  }
+}
+
+document.addEventListener("fullscreenchange", syncGhostContainer);
+document.addEventListener("webkitfullscreenchange", syncGhostContainer);
+
 function loadSettings() {
   try {
     const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY));
@@ -835,6 +846,7 @@ function updateGhostPosition(clientX, clientY) {
 
 function startPieceDrag(idx, e) {
   if (isGameOver || !dockPieces[idx]) return;
+  syncGhostContainer();
   selectedIndex = idx;
   renderDock();
 
@@ -1021,10 +1033,19 @@ lowGlowToggleEl.addEventListener("change", () => {
 
 document.getElementById("fullscreenBtn").addEventListener("click", async () => {
   try {
-    if (!document.fullscreenElement) {
-      await gameStageEl.requestFullscreen();
+    const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+    if (!fsEl) {
+      if (gameStageEl.requestFullscreen) {
+        await gameStageEl.requestFullscreen();
+      } else if (gameStageEl.webkitRequestFullscreen) {
+        gameStageEl.webkitRequestFullscreen();
+      }
     } else {
-      await document.exitFullscreen();
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
     }
   } catch (e) {}
 });
