@@ -1,10 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About PlayNova | A New World of Play</title>
-  <meta name="description" content="Learn about PlayNova, our mission to build fast, free browser games, and our growing catalog of puzzle, strategy, and skill challenges." />
+
+  <title>About PlayNova | Free Online Browser Games</title>
+
+  <meta name="description" content="Discover PlayNova, an online gaming platform offering free browser games, puzzles, arcade challenges, strategy games and fun experiences on mobile and desktop." />
+
+  <meta name="robots" content="index, follow" />
+
+  <link rel="canonical" href="https://nishat628.github.io/Playnova/about.html" />
+
   <style>
     :root {
       --bg: #0b0714;
@@ -89,7 +97,7 @@
     }
 
     main {
-      max-width: 980px;
+      max-width: 1000px;
       margin: 0 auto;
       padding: 48px 6% 72px;
     }
@@ -116,8 +124,24 @@
     .lead {
       color: var(--muted);
       font-size: 16px;
-      max-width: 720px;
+      max-width: 780px;
       margin-bottom: 34px;
+    }
+
+    .section {
+      margin-top: 38px;
+    }
+
+    .section-heading {
+      font-size: 25px;
+      margin-bottom: 14px;
+      color: #f3e8ff;
+    }
+
+    .section-text {
+      color: var(--muted);
+      font-size: 15px;
+      margin-bottom: 18px;
     }
 
     .grid-2 {
@@ -148,21 +172,47 @@
 
     .box ul {
       padding-left: 18px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     .box li {
+      margin-bottom: 8px;
+    }
+
+    .game-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .game-item {
+      background: rgba(28, 20, 43, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 17px;
+    }
+
+    .game-item h3 {
+      font-size: 16px;
+      color: #f3e8ff;
       margin-bottom: 6px;
+    }
+
+    .game-item p {
+      font-size: 13px;
+      color: var(--muted);
     }
 
     .cta-row {
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
-      margin-top: 28px;
+      margin-top: 24px;
     }
 
     .btn-primary {
+      display: inline-block;
       padding: 13px 24px;
       border-radius: 10px;
       background: linear-gradient(100deg, #873bf4, #a855f7);
@@ -172,6 +222,7 @@
     }
 
     .btn-secondary {
+      display: inline-block;
       padding: 13px 22px;
       border-radius: 10px;
       border: 1px solid var(--border);
@@ -179,6 +230,24 @@
       font-size: 13px;
       font-weight: 700;
       color: #f3e8ff;
+    }
+
+    .closing-box {
+      margin-top: 38px;
+      background: linear-gradient(135deg, #25123d, #171120);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+    }
+
+    .closing-box h2 {
+      font-size: 23px;
+      margin-bottom: 12px;
+    }
+
+    .closing-box p {
+      color: var(--muted);
+      font-size: 14px;
     }
 
     footer {
@@ -202,82 +271,312 @@
     }
 
     @media (max-width: 600px) {
+      header {
+        padding: 14px 5%;
+      }
+
       nav {
-        gap: 12px;
+        gap: 10px;
         font-size: 12px;
       }
+
       .nav-btn {
         display: none;
+      }
+
+      main {
+        padding-top: 36px;
+      }
+
+      .box {
+        padding: 20px;
       }
     }
   </style>
 </head>
+
 <body>
+
   <header>
     <a href="index.html" class="logo">PLAY<span>NOVA</span></a>
+
     <nav>
       <a href="index.html">Home</a>
       <a href="index.html#games">Games</a>
       <a href="about.html" class="active">About</a>
       <a href="contact.html">Contact</a>
     </nav>
-    <a href="index.html#games" class="nav-btn">EXPLORE</a>
+
+    <a href="index.html#games" class="nav-btn">EXPLORE GAMES</a>
   </header>
 
   <main>
+
     <div class="eyebrow">About PlayNova</div>
-    <h1>A Growing World of <span>Instant Play</span></h1>
+
+    <h1>A Growing World of <span>Online Play</span></h1>
+
     <p class="lead">
-      PlayNova is an online browser gaming hub built for players who enjoy quick mental challenges,
-      relaxing classics, and skill-based fun—playable smoothly without heavy downloads.
+      Welcome to PlayNova, an online browser gaming platform created for
+      people who enjoy puzzles, arcade challenges, strategy games and
+      quick moments of entertainment. Our goal is to make discovering
+      and playing simple games easy, accessible and enjoyable.
+      Players can explore our growing collection directly through
+      their web browsers without installing a separate game application.
     </p>
 
-    <div class="grid-2">
+    <section class="grid-2">
+
       <div class="box">
         <h2>Our Mission</h2>
+
         <p>
-          Our goal is to make fun, accessible games easy to jump into anytime on mobile or desktop.
-          Whether you have two minutes for a quick puzzle or want to beat your personal best, PlayNova
-          keeps things fast, clean, and engaging.
+          Our mission is to provide a simple place where players can
+          discover different types of browser games and enjoy them
+          at their own pace. We want to make online gaming accessible
+          for people who prefer quick entertainment, mental challenges
+          or casual gameplay during their free time.
         </p>
       </div>
 
       <div class="box">
-        <h2>Featured Games</h2>
-        <p>Explore our growing lineup across multiple categories:</p>
+        <h2>Our Vision</h2>
+
+        <p>
+          We aim to grow PlayNova into a useful and enjoyable destination
+          for casual online gaming. As the platform develops, we plan
+          to introduce more game categories, improve existing experiences
+          and make navigation easier for visitors on different devices.
+        </p>
+      </div>
+
+    </section>
+
+    <section class="section">
+
+      <h2 class="section-heading">What You Can Find on PlayNova</h2>
+
+      <p class="section-text">
+        PlayNova brings together different styles of casual browser
+        games. Each category offers a different type of experience,
+        so visitors can choose a game according to their interests
+        and available time.
+      </p>
+
+      <div class="game-list">
+
+        <div class="game-item">
+          <h3>Puzzle Games</h3>
+          <p>
+            Solve problems, combine matching pieces and think through
+            your next move with number and matching puzzles.
+          </p>
+        </div>
+
+        <div class="game-item">
+          <h3>Arcade Games</h3>
+          <p>
+            Enjoy fast-paced challenges that test timing, movement,
+            concentration and quick decision-making.
+          </p>
+        </div>
+
+        <div class="game-item">
+          <h3>Strategy Games</h3>
+          <p>
+            Plan your actions, manage resources and make decisions
+            as you progress through different game challenges.
+          </p>
+        </div>
+
+        <div class="game-item">
+          <h3>Skill-Based Games</h3>
+          <p>
+            Practice coordination, accuracy, reaction time and
+            other skills through interactive gameplay.
+          </p>
+        </div>
+
+        <div class="game-item">
+          <h3>Classic Games</h3>
+          <p>
+            Explore familiar casual experiences that are easy to
+            understand and enjoyable to play.
+          </p>
+        </div>
+
+        <div class="game-item">
+          <h3>New Game Experiences</h3>
+          <p>
+            Discover new additions as our collection grows and
+            different game ideas become available.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="section">
+
+      <h2 class="section-heading">Our Growing Game Collection</h2>
+
+      <p class="section-text">
+        Our collection includes different games for different interests.
+        Some focus on logical thinking, while others are built around
+        quick reactions, timing, planning or casual entertainment.
+      </p>
+
+      <div class="box">
+
+        <h2>Explore Some of Our Games</h2>
+
         <ul>
-          <li><strong>2048 Puzzle:</strong> Merge tiles and chase high scores.</li>
-          <li><strong>Match 3:</strong> Match colorful blocks and clear challenges.</li>
-          <li><strong>City Tycoon:</strong> Build, grow, and manage resources.</li>
-          <li><strong>Typing Challenge:</strong> Boost typing speed and accuracy.</li>
-          <li><strong>Solitaire:</strong> Plan smart card moves and clear the deck.</li>
+          <li><strong>2048 Puzzle:</strong> Combine numbered tiles and work towards higher scores.</li>
+
+          <li><strong>Match 3:</strong> Match colorful pieces and complete puzzle challenges.</li>
+
+          <li><strong>City Tycoon:</strong> Build and expand a virtual city while managing resources.</li>
+
+          <li><strong>Typing Challenge:</strong> Practice typing speed and accuracy.</li>
+
+          <li><strong>Solitaire:</strong> Organize cards and plan moves in a classic card game.</li>
+
+          <li><strong>Neon Brick Breaker:</strong> Break blocks and keep the ball in play.</li>
+
+          <li><strong>Color Reflex Rush:</strong> Test your focus and reaction speed.</li>
+
+          <li><strong>Hexa Stack VS:</strong> Enjoy a challenging hexagonal stacking experience.</li>
+
+          <li><strong>Block Blast:</strong> Arrange blocks and complete board challenges.</li>
+
+          <li><strong>Nova Snake Dash:</strong> Navigate and avoid obstacles in an arcade-style challenge.</li>
+
+          <li><strong>Nova Lane Hopper:</strong> Test your timing while moving through lanes.</li>
+
+          <li><strong>Stack Tower:</strong> Build a tower by placing blocks carefully.</li>
+
+          <li><strong>Neon Dash:</strong> Jump over obstacles and try to beat your best score.</li>
+        </ul>
+
+      </div>
+
+    </section>
+
+    <section class="section">
+
+      <h2 class="section-heading">Designed for Browser-Based Play</h2>
+
+      <div class="grid-2">
+
+        <div class="box">
+          <h2>Play on Different Devices</h2>
+
+          <p>
+            PlayNova is designed for browser access on supported
+            mobile phones, tablets and desktop computers. The
+            experience may vary depending on the device, browser
+            and internet connection.
+          </p>
+        </div>
+
+        <div class="box">
+          <h2>Simple and Accessible</h2>
+
+          <p>
+            We aim to keep our website easy to navigate, with
+            clearly presented game options and straightforward
+            gameplay instructions wherever needed.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="section">
+
+      <h2 class="section-heading">Our Approach to Improvement</h2>
+
+      <p class="section-text">
+        PlayNova is an evolving project. We continue to work on
+        improving the website, refining game controls, checking
+        gameplay experiences and making the platform easier to use.
+        We also value useful feedback from visitors because it helps
+        us identify problems and understand what can be improved.
+      </p>
+
+      <div class="box">
+        <h2>What We Focus On</h2>
+
+        <ul>
+          <li>Making games easier to discover and access.</li>
+          <li>Improving the website experience on mobile and desktop.</li>
+          <li>Working towards clear controls and understandable gameplay.</li>
+          <li>Adding new game ideas and categories over time.</li>
+          <li>Reviewing visitor feedback and fixing reported issues.</li>
         </ul>
       </div>
+
+    </section>
+
+    <section class="section">
+
+      <h2 class="section-heading">A Note to Our Visitors</h2>
+
+      <p class="section-text">
+        Whether you enjoy solving puzzles, improving your reaction
+        time, planning strategies or simply playing a casual game,
+        we hope you find something interesting on PlayNova.
+        We appreciate every visitor who takes the time to explore
+        the website and share constructive feedback.
+      </p>
+
+    </section>
+
+    <div class="closing-box">
+
+      <h2>Explore, Play and Discover Something New</h2>
+
+      <p>
+        Thank you for visiting PlayNova. Explore our available games,
+        discover different challenges and check back as our collection
+        continues to grow. If you have a question, suggestion or
+        experience you would like to share, feel free to contact us.
+      </p>
+
+      <div class="cta-row">
+        <a href="index.html#games" class="btn-primary">
+          Explore Games
+        </a>
+
+        <a href="contact.html" class="btn-secondary">
+          Contact Us
+        </a>
+
+        <a href="privacy-policy.html" class="btn-secondary">
+          Privacy Policy
+        </a>
+      </div>
+
     </div>
 
-    <div class="box">
-      <h2>What’s Next</h2>
-      <p>
-        PlayNova is actively growing. We plan to add more interactive games, improve gameplay polish,
-        and listen closely to community feedback as the platform expands.
-      </p>
-      <div class="cta-row">
-        <a href="index.html#games" class="btn-primary">Play Games Now →</a>
-        <a href="contact.html" class="btn-secondary">Send Feedback or Contact</a>
-        <a href="privacy-policy.html" class="btn-secondary">Privacy Policy</a>
-      </div>
-    </div>
   </main>
 
   <footer>
+
     <div><strong>PLAYNOVA</strong> — A New World of Play.</div>
+
     <div class="footer-links">
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
       <a href="privacy-policy.html">Privacy Policy</a>
     </div>
+
     <div>© 2026 PlayNova. All rights reserved.</div>
+
   </footer>
+
 </body>
 </html>
