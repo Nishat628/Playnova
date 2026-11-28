@@ -111,6 +111,13 @@
       flex: 0 0 auto;
     }
 
+    #typing-stage {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -145,6 +152,7 @@
 
     .controls-row {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
@@ -189,6 +197,24 @@
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       white-space: nowrap;
       flex: 0 0 auto;
+    }
+
+    .fs-btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .fs-btn:active {
+      background: #2b214d;
+      border-color: rgba(168, 85, 247, 0.55);
     }
 
     .prompt-card {
@@ -282,6 +308,27 @@
       font-size: 0.88rem;
       color: var(--muted);
     }
+
+    #typing-stage:fullscreen,
+    #typing-stage.mobile-expanded {
+      width: 100vw;
+      min-height: 100dvh;
+      max-width: none;
+      background: #0b0914;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 14px;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    #typing-stage:fullscreen > *,
+    #typing-stage.mobile-expanded > * {
+      width: 100%;
+      max-width: 680px;
+    }
   </style>
 </head>
 <body>
@@ -296,56 +343,55 @@
       </div>
       <a href="index.html" class="back-btn">← Games</a>
     </header>
-<div id="typing-stage">
 
-    <section class="stats-grid">
-      <div class="stat">
-        <div class="stat-label">WPM</div>
-        <div id="wpmEl" class="stat-value good">0</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Accuracy</div>
-        <div id="accEl" class="stat-value">100%</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Time Left</div>
-        <div id="timeEl" class="stat-value warn">30s</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Best WPM</div>
-        <div id="bestEl" class="stat-value">0</div>
-      </div>
-    </section>
+    <div id="typing-stage">
+      <section class="stats-grid">
+        <div class="stat">
+          <div class="stat-label">WPM</div>
+          <div id="wpmEl" class="stat-value good">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Accuracy</div>
+          <div id="accEl" class="stat-value">100%</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Time Left</div>
+          <div id="timeEl" class="stat-value warn">30s</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Best WPM</div>
+          <div id="bestEl" class="stat-value">0</div>
+        </div>
+      </section>
 
-    <div class="controls-row">
-      <div class="mode-group">
-        <button id="mode30" class="mode-btn active" type="button">30s</button>
-        <button id="mode60" class="mode-btn" type="button">60s</button>
+      <div class="controls-row">
+        <div class="mode-group">
+          <button id="mode30" class="mode-btn active" type="button">30s</button>
+          <button id="mode60" class="mode-btn" type="button">60s</button>
+        </div>
+        <button id="restartBtn" class="btn" type="button">↻ Restart</button>
+        <button type="button" id="fullscreen-btn" class="fs-btn">⛶ Fullscreen</button>
       </div>
-      <button id="restartBtn" class="btn" type="button">↻ Restart</button>
-      <button type="button" id="fullscreen-btn" class="fs-btn">⛶ Fullscreen</button>
 
+      <section class="prompt-card">
+        <div id="promptText" class="prompt-text"></div>
+        <input
+          id="typingInput"
+          class="typing-input"
+          type="text"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          placeholder="Type the text shown above..."
+        />
+      </section>
+
+      <section id="resultBox" class="result-box">
+        <div id="resultTitle" class="result-title">Round Complete!</div>
+        <div id="resultSub" class="result-sub"></div>
+      </section>
     </div>
-
-    <section class="prompt-card">
-      <div id="promptText" class="prompt-text"></div>
-      <input
-        id="typingInput"
-        class="typing-input"
-        type="text"
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="off"
-        spellcheck="false"
-        placeholder="Type the text shown above..."
-      />
-    </section>
-
-    <section id="resultBox" class="result-box">
-      <div id="resultTitle" class="result-title">Round Complete!</div>
-      <div id="resultSub" class="result-sub"></div>
-    </section>
-</div>
 
     <section aria-label="Play Typing Challenge Online on PlayNova" style="width:100%;flex-basis:100%;grid-column:1 / -1;box-sizing:border-box;background:#151126;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px;margin-top:4px;line-height:1.65;color:#f5f3ff">
       <h2 style="font-size:18px;margin:0 0 8px">Play Typing Challenge Online — Free WPM &amp; Accuracy Test</h2>
@@ -412,6 +458,8 @@
       const mode30Btn = document.getElementById("mode30");
       const mode60Btn = document.getElementById("mode60");
       const restartBtn = document.getElementById("restartBtn");
+      const fsBtn = document.getElementById("fullscreen-btn");
+      const typingStage = document.getElementById("typing-stage");
 
       function loadBest() {
         try {
@@ -550,6 +598,30 @@
       restartBtn.addEventListener("click", function () {
         resetGame(duration);
       });
+
+      if (fsBtn && typingStage) {
+        fsBtn.addEventListener("click", async function () {
+          try {
+            if (!document.fullscreenElement) {
+              await typingStage.requestFullscreen();
+              fsBtn.textContent = "✕ Exit Fullscreen";
+            } else {
+              await document.exitFullscreen();
+              fsBtn.textContent = "⛶ Fullscreen";
+            }
+          } catch (err) {
+            const expanded = typingStage.classList.toggle("mobile-expanded");
+            fsBtn.textContent = expanded ? "✕ Exit Fullscreen" : "⛶ Fullscreen";
+          }
+        });
+
+        document.addEventListener("fullscreenchange", function () {
+          if (!document.fullscreenElement) {
+            typingStage.classList.remove("mobile-expanded");
+            fsBtn.textContent = "⛶ Fullscreen";
+          }
+        });
+      }
 
       loadBest();
       resetGame(30);
