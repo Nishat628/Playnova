@@ -9,6 +9,16 @@
 
 <meta name="description" content="Play Neon Dash, a fast neon arcade runner by PlayNova. Jump over obstacles, beat your high score and enjoy this free mobile-friendly game.">
 
+<!-- Thumbnail / Link Preview Meta Tags -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Neon Dash | PlayNova">
+<meta property="og:description" content="Play Neon Dash, a fast neon arcade runner by PlayNova. Jump over obstacles, beat your high score and enjoy this free mobile-friendly game.">
+<meta property="og:image" content="neon-dash-thumbnail.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Neon Dash | PlayNova">
+<meta name="twitter:description" content="Play Neon Dash, a fast neon arcade runner by PlayNova. Jump over obstacles, beat your high score and enjoy this free mobile-friendly game.">
+<meta name="twitter:image" content="neon-dash-thumbnail.jpg">
+
 <style>
 * {
   box-sizing: border-box;
@@ -116,26 +126,16 @@ canvas {
   display: none;
 }
 
-.thumb-preview {
-  width: min(260px, 68%);
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid #00f5ff66;
-  box-shadow: 0 0 18px #00f5ff33;
-  margin-bottom: 14px;
-}
-
 .overlay h2 {
   color: #00f5ff;
-  font-size: clamp(24px, 4.5vw, 44px);
+  font-size: clamp(25px, 5vw, 48px);
   text-shadow: 0 0 20px #00f5ff;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .overlay p {
   color: #ddd;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   line-height: 1.6;
 }
 
@@ -384,7 +384,6 @@ footer {
       <canvas id="gameCanvas" width="960" height="540"></canvas>
 
       <div class="overlay" id="startOverlay">
-        <img class="thumb-preview" src="neon-dash-thumbnail.jpg" alt="Neon Dash Game Thumbnail">
         <h2>NEON DASH</h2>
         <p>Jump over obstacles and survive as long as possible!</p>
         <button id="startBtn">START GAME</button>
@@ -564,7 +563,6 @@ function createObstacle() {
   if (isFloating) {
     const w = 36;
     const h = 36;
-    // Low hover obstacle that can be jumped over cleanly
     obstacles.push({
       type: "hover",
       x: W + 30,
@@ -610,7 +608,6 @@ function drawBackground() {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, W, H);
 
-  // Stars
   for (let i = 0; i < 70; i++) {
     const x = ((i * 137 - elapsedTime * (18 + (i % 4) * 8)) % W + W) % W;
     const y = (i * 79) % 350;
@@ -622,7 +619,6 @@ function drawBackground() {
 
   ctx.globalAlpha = 1;
 
-  // Ground line
   ctx.strokeStyle = "#00f5ff";
   ctx.lineWidth = 4;
   ctx.shadowColor = "#00f5ff";
@@ -635,7 +631,6 @@ function drawBackground() {
 
   ctx.shadowBlur = 0;
 
-  // Moving ground grid lines
   ctx.strokeStyle = "#252550";
   ctx.lineWidth = 2;
 
@@ -677,11 +672,9 @@ function drawPlayer() {
 
   ctx.shadowBlur = 0;
 
-  // Face / Eye
   ctx.fillStyle = "#080817";
   ctx.fillRect(4, -player.h + 12, 8, 8);
 
-  // Running legs
   ctx.fillStyle = "#ff35d3";
   const legSwing = running && !player.jumping
     ? Math.sin(player.legPhase) * 9
@@ -703,7 +696,6 @@ function drawObstacles() {
 
     ctx.fillRect(obstacle.x, obstacle.y, obstacle.w, obstacle.h);
 
-    // Inner bright core
     ctx.shadowBlur = 0;
     ctx.fillStyle = "#ff8ce8";
     ctx.fillRect(obstacle.x + 4, obstacle.y + 4, Math.max(4, obstacle.w - 8), Math.max(4, obstacle.h - 8));
@@ -739,7 +731,6 @@ function updatePlayer(dt) {
     }
   }
 
-  // Smoothly return scale to (1, 1)
   player.scaleX += (1 - player.scaleX) * Math.min(1, dt * 14);
   player.scaleY += (1 - player.scaleY) * Math.min(1, dt * 14);
 
@@ -819,7 +810,6 @@ function updateScore(dt) {
   score = Math.floor(scoreFloat);
   scoreEl.textContent = score;
 
-  // Gradually increase speed every 100 points up to 2.2x
   speedMultiplier = Math.min(2.2, 1 + Math.floor(score / 100) * 0.1);
   speedEl.textContent = speedMultiplier.toFixed(1) + "x";
 }
@@ -882,7 +872,6 @@ function loop(timestamp) {
   }
 }
 
-// Buttons
 startBtn.addEventListener("click", resetGame);
 restartBtn.addEventListener("click", resetGame);
 restartControl.addEventListener("click", resetGame);
@@ -892,10 +881,8 @@ jumpBtn.addEventListener("pointerdown", e => {
   jump();
 });
 
-// Tap game area to jump
 canvas.addEventListener("pointerdown", jump);
 
-// Keyboard controls
 document.addEventListener("keydown", event => {
   if (event.code === "Space" || event.code === "ArrowUp") {
     event.preventDefault();
@@ -913,7 +900,6 @@ document.addEventListener("keydown", event => {
   }
 });
 
-// Fullscreen
 fullscreenBtn.addEventListener("click", async () => {
   try {
     if (!document.fullscreenElement) {
@@ -926,7 +912,6 @@ fullscreenBtn.addEventListener("click", async () => {
   }
 });
 
-// Update fullscreen button text
 document.addEventListener("fullscreenchange", () => {
   fullscreenBtn.textContent =
     document.fullscreenElement
@@ -934,7 +919,6 @@ document.addEventListener("fullscreenchange", () => {
       : "FULLSCREEN";
 });
 
-// Initial display
 player = createInitialPlayer();
 draw();
 </script>
