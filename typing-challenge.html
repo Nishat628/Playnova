@@ -311,23 +311,91 @@
 
     #typing-stage:fullscreen,
     #typing-stage.mobile-expanded {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
       width: 100vw;
-      min-height: 100dvh;
+      height: var(--stage-height, 100dvh);
+      min-height: 0;
+      max-height: var(--stage-height, 100dvh);
       max-width: none;
       background: #0b0914;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
-      padding: 14px;
-      gap: 12px;
+      padding: 8px 10px 14px;
+      gap: 6px;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
 
     #typing-stage:fullscreen > *,
     #typing-stage.mobile-expanded > * {
       width: 100%;
       max-width: 680px;
+      flex-shrink: 0;
+    }
+
+    #typing-stage:fullscreen .stats-grid,
+    #typing-stage.mobile-expanded .stats-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    #typing-stage:fullscreen .stat,
+    #typing-stage.mobile-expanded .stat {
+      padding: 5px 4px;
+      border-radius: 9px;
+    }
+
+    #typing-stage:fullscreen .stat-label,
+    #typing-stage.mobile-expanded .stat-label {
+      font-size: 0.6rem;
+    }
+
+    #typing-stage:fullscreen .stat-value,
+    #typing-stage.mobile-expanded .stat-value {
+      font-size: 0.88rem;
+      margin-top: 1px;
+    }
+
+    #typing-stage:fullscreen .controls-row,
+    #typing-stage.mobile-expanded .controls-row {
+      gap: 6px;
+    }
+
+    #typing-stage:fullscreen .mode-btn,
+    #typing-stage.mobile-expanded .mode-btn,
+    #typing-stage:fullscreen .btn,
+    #typing-stage.mobile-expanded .btn,
+    #typing-stage:fullscreen .fs-btn,
+    #typing-stage.mobile-expanded .fs-btn {
+      padding: 6px 9px;
+      font-size: 0.76rem;
+    }
+
+    #typing-stage:fullscreen .prompt-card,
+    #typing-stage.mobile-expanded .prompt-card {
+      padding: 8px;
+      gap: 6px;
+    }
+
+    #typing-stage:fullscreen .prompt-text,
+    #typing-stage.mobile-expanded .prompt-text {
+      min-height: 54px;
+      max-height: 104px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      padding: 8px;
+    }
+
+    #typing-stage:fullscreen .typing-input,
+    #typing-stage.mobile-expanded .typing-input {
+      padding: 8px 10px;
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -461,6 +529,13 @@
       const fsBtn = document.getElementById("fullscreen-btn");
       const typingStage = document.getElementById("typing-stage");
 
+      function syncStageViewport() {
+        if (!typingStage) return;
+        const vv = window.visualViewport;
+        const h = vv ? Math.round(vv.height) : window.innerHeight;
+        typingStage.style.setProperty("--stage-height", h + "px");
+      }
+
       function loadBest() {
         try {
           const val = parseInt(localStorage.getItem(BEST_KEY) || "0", 10);
@@ -587,6 +662,14 @@
         refreshStats();
       });
 
+      typingInput.addEventListener("focus", function () {
+        syncStageViewport();
+        setTimeout(function () {
+          syncStageViewport();
+          typingInput.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }, 180);
+      });
+
       mode30Btn.addEventListener("click", function () {
         resetGame(30);
       });
@@ -601,6 +684,7 @@
 
       if (fsBtn && typingStage) {
         fsBtn.addEventListener("click", async function () {
+          syncStageViewport();
           try {
             if (!document.fullscreenElement) {
               await typingStage.requestFullscreen();
@@ -613,6 +697,7 @@
             const expanded = typingStage.classList.toggle("mobile-expanded");
             fsBtn.textContent = expanded ? "✕ Exit Fullscreen" : "⛶ Fullscreen";
           }
+          syncStageViewport();
         });
 
         document.addEventListener("fullscreenchange", function () {
@@ -620,9 +705,17 @@
             typingStage.classList.remove("mobile-expanded");
             fsBtn.textContent = "⛶ Fullscreen";
           }
+          syncStageViewport();
         });
       }
 
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", syncStageViewport);
+        window.visualViewport.addEventListener("scroll", syncStageViewport);
+      }
+      window.addEventListener("resize", syncStageViewport);
+
+      syncStageViewport();
       loadBest();
       resetGame(30);
     })();
