@@ -1006,7 +1006,8 @@
       loadBest();
       prepareIdleBoard();
       const fsBtn = document.getElementById("fullscreen-btn");
-const gameStage = document.getElementById("game-stage") || document.querySelector("canvas");
+const gameStage = document.getElementById("game-stage");
+
 
 if (fsBtn && gameStage) {
   fsBtn.addEventListener("click", async () => {
