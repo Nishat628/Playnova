@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,25 +108,43 @@ canvas {
   flex-direction: column;
   text-align: center;
   padding: 20px;
-  background: #080817c9;
-  backdrop-filter: blur(4px);
+  background: #080817d4;
+  backdrop-filter: blur(5px);
 }
 
 .overlay.hidden {
   display: none;
 }
 
+.thumb-preview {
+  width: min(260px, 68%);
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #00f5ff66;
+  box-shadow: 0 0 18px #00f5ff33;
+  margin-bottom: 14px;
+}
+
 .overlay h2 {
   color: #00f5ff;
-  font-size: clamp(25px, 5vw, 48px);
+  font-size: clamp(24px, 4.5vw, 44px);
   text-shadow: 0 0 20px #00f5ff;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .overlay p {
   color: #ddd;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   line-height: 1.6;
+}
+
+.best-badge {
+  color: #ff35d3;
+  font-weight: bold;
+  margin-top: -8px;
+  margin-bottom: 14px;
+  font-size: 14px;
 }
 
 button {
@@ -142,9 +159,16 @@ button {
   transition: 0.2s;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 0 24px #00f5ff99;
+}
+
+button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .controls {
@@ -153,6 +177,10 @@ button:hover {
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 15px;
+}
+
+.controls.game-over-hidden {
+  display: none;
 }
 
 .controls button {
@@ -348,7 +376,7 @@ footer {
 
       <div class="stat">
         <small>SPEED</small>
-        <strong id="speed">1x</strong>
+        <strong id="speed">1.0x</strong>
       </div>
     </div>
 
@@ -356,6 +384,7 @@ footer {
       <canvas id="gameCanvas" width="960" height="540"></canvas>
 
       <div class="overlay" id="startOverlay">
+        <img class="thumb-preview" src="neon-dash-thumbnail.jpg" alt="Neon Dash Game Thumbnail">
         <h2>NEON DASH</h2>
         <p>Jump over obstacles and survive as long as possible!</p>
         <button id="startBtn">START GAME</button>
@@ -364,13 +393,14 @@ footer {
       <div class="overlay hidden" id="gameOverOverlay">
         <h2>GAME OVER</h2>
         <p>Your Score: <strong id="finalScore">0</strong></p>
+        <div class="best-badge hidden" id="newBestBadge">NEW BEST SCORE!</div>
         <button id="restartBtn">PLAY AGAIN</button>
       </div>
     </div>
 
-    <div class="controls">
-      <button id="jumpBtn">JUMP</button>
-      <button id="restartControl">RESTART</button>
+    <div class="controls" id="controlsBar">
+      <button id="jumpBtn" disabled>JUMP</button>
+      <button id="restartControl" disabled>RESTART</button>
       <button id="fullscreenBtn">FULLSCREEN</button>
     </div>
 
@@ -426,97 +456,154 @@ const speedEl = document.getElementById("speed");
 const startOverlay = document.getElementById("startOverlay");
 const gameOverOverlay = document.getElementById("gameOverOverlay");
 const finalScoreEl = document.getElementById("finalScore");
+const newBestBadge = document.getElementById("newBestBadge");
 
 const startBtn = document.getElementById("startBtn");
 const restartBtn = document.getElementById("restartBtn");
 const restartControl = document.getElementById("restartControl");
 const jumpBtn = document.getElementById("jumpBtn");
 const fullscreenBtn = document.getElementById("fullscreenBtn");
+const controlsBar = document.getElementById("controlsBar");
 const gameCard = document.getElementById("gameCard");
 
 const W = canvas.width;
 const H = canvas.height;
 const ground = 430;
 
+// Normalized to 60fps reference
+const BASE_SPEED = 320;      // px per second
+const GRAVITY = 2880;        // px per second^2
+const JUMP_VELOCITY = -1020; // px per second
+
 let player;
 let obstacles = [];
 let particles = [];
+let trail = [];
 
+let scoreFloat = 0;
 let score = 0;
 let best = Number(localStorage.getItem("neonDashBest")) || 0;
-let speed = 5;
-let frame = 0;
+let speedMultiplier = 1.0;
+let elapsedTime = 0;
+let spawnTimer = 0;
 let running = false;
 let gameOver = false;
 let animationId;
+let lastTimestamp = 0;
 
 bestEl.textContent = best;
 
-function resetGame() {
-  player = {
+function setControlsState(activePlay) {
+  if (activePlay) {
+    controlsBar.classList.remove("game-over-hidden");
+    jumpBtn.disabled = false;
+    restartControl.disabled = false;
+  } else {
+    controlsBar.classList.add("game-over-hidden");
+    jumpBtn.disabled = true;
+    restartControl.disabled = true;
+  }
+}
+
+function createInitialPlayer() {
+  return {
     x: 100,
     y: ground - 58,
     w: 42,
     h: 58,
     vy: 0,
-    jumping: false
+    jumping: false,
+    scaleX: 1,
+    scaleY: 1,
+    legPhase: 0
   };
+}
 
+function resetGame() {
+  player = createInitialPlayer();
   obstacles = [];
   particles = [];
+  trail = [];
 
+  scoreFloat = 0;
   score = 0;
-  speed = 5;
-  frame = 0;
+  speedMultiplier = 1.0;
+  elapsedTime = 0;
+  spawnTimer = 0.65;
   running = true;
   gameOver = false;
+  lastTimestamp = performance.now();
 
   scoreEl.textContent = "0";
-  speedEl.textContent = "1x";
+  speedEl.textContent = "1.0x";
+  newBestBadge.classList.add("hidden");
 
   startOverlay.classList.add("hidden");
   gameOverOverlay.classList.add("hidden");
+  setControlsState(true);
 
   cancelAnimationFrame(animationId);
-  loop();
+  animationId = requestAnimationFrame(loop);
 }
 
 function jump() {
   if (!running || gameOver) return;
 
   if (!player.jumping) {
-    player.vy = -17;
+    player.vy = JUMP_VELOCITY;
     player.jumping = true;
+    player.scaleX = 0.82;
+    player.scaleY = 1.2;
+    createParticles(player.x + player.w / 2, ground, 6, "#00f5ff");
   }
 }
 
 function createObstacle() {
-  const height = 35 + Math.random() * 55;
-  const width = 25 + Math.random() * 25;
+  const isFloating = score > 120 && Math.random() < 0.25;
 
-  obstacles.push({
-    x: W + 20,
-    y: ground - height,
-    w: width,
-    h: height
-  });
+  if (isFloating) {
+    const w = 36;
+    const h = 36;
+    // Low hover obstacle that can be jumped over cleanly
+    obstacles.push({
+      type: "hover",
+      x: W + 30,
+      y: ground - h - 8,
+      w,
+      h
+    });
+  } else {
+    const h = 38 + Math.random() * 52;
+    const w = 26 + Math.random() * 20;
+    obstacles.push({
+      type: "pillar",
+      x: W + 30,
+      y: ground - h,
+      w,
+      h
+    });
+  }
 }
 
-function createParticles(x, y) {
-  for (let i = 0; i < 12; i++) {
+function createParticles(x, y, count = 14, color = "#00f5ff") {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 60 + Math.random() * 260;
     particles.push({
-      x: x,
-      y: y,
-      vx: (Math.random() - 0.5) * 8,
-      vy: (Math.random() - 0.5) * 8,
-      life: 30
+      x,
+      y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 60,
+      life: 0.45 + Math.random() * 0.25,
+      maxLife: 0.7,
+      size: 4 + Math.random() * 4,
+      color
     });
   }
 }
 
 function drawBackground() {
   const gradient = ctx.createLinearGradient(0, 0, 0, H);
-
   gradient.addColorStop(0, "#080817");
   gradient.addColorStop(1, "#151535");
 
@@ -525,17 +612,17 @@ function drawBackground() {
 
   // Stars
   for (let i = 0; i < 70; i++) {
-    const x = (i * 137 + frame * 0.3) % W;
+    const x = ((i * 137 - elapsedTime * (18 + (i % 4) * 8)) % W + W) % W;
     const y = (i * 79) % 350;
 
     ctx.fillStyle = "#ffffff";
-    ctx.globalAlpha = 0.3 + (i % 5) * 0.1;
+    ctx.globalAlpha = 0.25 + (i % 5) * 0.12;
     ctx.fillRect(x, y, 2, 2);
   }
 
   ctx.globalAlpha = 1;
 
-  // Ground
+  // Ground line
   ctx.strokeStyle = "#00f5ff";
   ctx.lineWidth = 4;
   ctx.shadowColor = "#00f5ff";
@@ -548,15 +635,15 @@ function drawBackground() {
 
   ctx.shadowBlur = 0;
 
-  // Moving ground lines
+  // Moving ground grid lines
   ctx.strokeStyle = "#252550";
   ctx.lineWidth = 2;
 
-  for (let i = 0; i < 20; i++) {
-    let x = (i * 70 - frame * speed) % W;
+  const currentSpeed = BASE_SPEED * speedMultiplier;
+  const spacing = 70;
+  const offset = (elapsedTime * currentSpeed) % spacing;
 
-    if (x < 0) x += W;
-
+  for (let x = -offset; x < W + spacing; x += spacing) {
     ctx.beginPath();
     ctx.moveTo(x, ground + 20);
     ctx.lineTo(x - 40, H);
@@ -564,121 +651,145 @@ function drawBackground() {
   }
 }
 
+function drawTrail() {
+  for (const t of trail) {
+    ctx.fillStyle = "#00f5ff";
+    ctx.globalAlpha = Math.max(0, t.alpha * 0.25);
+    ctx.fillRect(t.x, t.y, t.w, t.h);
+  }
+  ctx.globalAlpha = 1;
+}
+
 function drawPlayer() {
   ctx.save();
+
+  const pivotX = player.x + player.w / 2;
+  const pivotY = player.y + player.h;
+
+  ctx.translate(pivotX, pivotY);
+  ctx.scale(player.scaleX, player.scaleY);
 
   ctx.shadowColor = "#00f5ff";
   ctx.shadowBlur = 20;
 
   ctx.fillStyle = "#00f5ff";
-  ctx.fillRect(
-    player.x,
-    player.y,
-    player.w,
-    player.h
-  );
+  ctx.fillRect(-player.w / 2, -player.h, player.w, player.h);
 
   ctx.shadowBlur = 0;
 
-  // Face
+  // Face / Eye
   ctx.fillStyle = "#080817";
-  ctx.fillRect(
-    player.x + 25,
-    player.y + 12,
-    8,
-    8
-  );
+  ctx.fillRect(4, -player.h + 12, 8, 8);
 
   // Running legs
   ctx.fillStyle = "#ff35d3";
-
-  const legMove = running && !player.jumping
-    ? Math.sin(frame * 0.3) * 10
+  const legSwing = running && !player.jumping
+    ? Math.sin(player.legPhase) * 9
     : 0;
 
-  ctx.fillRect(
-    player.x + 5,
-    player.y + player.h - 5,
-    12,
-    15 + legMove
-  );
-
-  ctx.fillRect(
-    player.x + 25,
-    player.y + player.h - 5,
-    12,
-    15 - legMove
-  );
+  ctx.fillRect(-player.w / 2 + 5, -5, 12, Math.max(6, 15 + legSwing));
+  ctx.fillRect(player.w / 2 - 17, -5, 12, Math.max(6, 15 - legSwing));
 
   ctx.restore();
 }
 
 function drawObstacles() {
-  obstacles.forEach(obstacle => {
+  for (const obstacle of obstacles) {
     ctx.save();
 
     ctx.fillStyle = "#ff35d3";
     ctx.shadowColor = "#ff35d3";
     ctx.shadowBlur = 20;
 
-    ctx.fillRect(
-      obstacle.x,
-      obstacle.y,
-      obstacle.w,
-      obstacle.h
-    );
+    ctx.fillRect(obstacle.x, obstacle.y, obstacle.w, obstacle.h);
+
+    // Inner bright core
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#ff8ce8";
+    ctx.fillRect(obstacle.x + 4, obstacle.y + 4, Math.max(4, obstacle.w - 8), Math.max(4, obstacle.h - 8));
 
     ctx.restore();
-  });
+  }
 }
 
 function drawParticles() {
-  particles.forEach(p => {
-    ctx.fillStyle = "#00f5ff";
-    ctx.globalAlpha = p.life / 30;
-
-    ctx.fillRect(
-      p.x,
-      p.y,
-      5,
-      5
-    );
-  });
-
+  for (const p of particles) {
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+    ctx.fillRect(p.x, p.y, p.size, p.size);
+  }
   ctx.globalAlpha = 1;
 }
 
-function updatePlayer() {
-  player.vy += 0.8;
-  player.y += player.vy;
+function updatePlayer(dt) {
+  const wasJumping = player.jumping;
+
+  player.vy += GRAVITY * dt;
+  player.y += player.vy * dt;
 
   if (player.y + player.h >= ground) {
     player.y = ground - player.h;
     player.vy = 0;
     player.jumping = false;
+
+    if (wasJumping) {
+      player.scaleX = 1.18;
+      player.scaleY = 0.84;
+      createParticles(player.x + player.w / 2, ground, 5, "#00f5ff");
+    }
   }
+
+  // Smoothly return scale to (1, 1)
+  player.scaleX += (1 - player.scaleX) * Math.min(1, dt * 14);
+  player.scaleY += (1 - player.scaleY) * Math.min(1, dt * 14);
+
+  if (running && !player.jumping) {
+    player.legPhase += dt * 18 * speedMultiplier;
+  }
+
+  if (running && speedMultiplier >= 1.2) {
+    trail.push({
+      x: player.x,
+      y: player.y,
+      w: player.w,
+      h: player.h,
+      alpha: 0.7
+    });
+  }
+
+  for (const t of trail) {
+    t.x -= BASE_SPEED * speedMultiplier * dt;
+    t.alpha -= dt * 3.5;
+  }
+  trail = trail.filter(t => t.alpha > 0);
 }
 
-function updateObstacles() {
-  if (frame % Math.max(45, 90 - Math.floor(speed * 3)) === 0) {
+function updateObstacles(dt) {
+  spawnTimer -= dt;
+
+  if (spawnTimer <= 0) {
     createObstacle();
+    const minInterval = Math.max(0.62, 1.15 - (speedMultiplier - 1) * 0.25);
+    const maxInterval = Math.max(1.05, 1.75 - (speedMultiplier - 1) * 0.35);
+    spawnTimer = minInterval + Math.random() * (maxInterval - minInterval);
   }
 
-  obstacles.forEach(obstacle => {
-    obstacle.x -= speed;
-  });
+  const moveDelta = BASE_SPEED * speedMultiplier * dt;
 
-  obstacles = obstacles.filter(
-    obstacle => obstacle.x + obstacle.w > 0
-  );
+  for (const obstacle of obstacles) {
+    obstacle.x -= moveDelta;
+  }
+
+  obstacles = obstacles.filter(obstacle => obstacle.x + obstacle.w > -20);
 }
 
-function updateParticles() {
-  particles.forEach(p => {
-    p.x += p.vx;
-    p.y += p.vy;
-    p.life--;
-  });
+function updateParticles(dt) {
+  for (const p of particles) {
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.vy += 450 * dt;
+    p.life -= dt;
+  }
 
   particles = particles.filter(p => p.life > 0);
 }
@@ -703,39 +814,39 @@ function checkCollision() {
   }
 }
 
-function updateScore() {
-  score++;
-
+function updateScore(dt) {
+  scoreFloat += dt * 65 * speedMultiplier;
+  score = Math.floor(scoreFloat);
   scoreEl.textContent = score;
 
-  speed = 5 + Math.floor(score / 500);
-
-  speedEl.textContent =
-    (speed / 5).toFixed(1) + "x";
+  // Gradually increase speed every 100 points up to 2.2x
+  speedMultiplier = Math.min(2.2, 1 + Math.floor(score / 100) * 0.1);
+  speedEl.textContent = speedMultiplier.toFixed(1) + "x";
 }
 
 function endGame() {
   running = false;
   gameOver = true;
+  cancelAnimationFrame(animationId);
 
   createParticles(
     player.x + player.w / 2,
-    player.y + player.h / 2
+    player.y + player.h / 2,
+    20,
+    "#ff35d3"
   );
 
+  let isNewBest = false;
   if (score > best) {
     best = score;
-
-    localStorage.setItem(
-      "neonDashBest",
-      best
-    );
-
+    isNewBest = true;
+    localStorage.setItem("neonDashBest", best);
     bestEl.textContent = best;
   }
 
   finalScoreEl.textContent = score;
-
+  newBestBadge.classList.toggle("hidden", !isNewBest);
+  setControlsState(false);
   gameOverOverlay.classList.remove("hidden");
 
   draw();
@@ -743,20 +854,25 @@ function endGame() {
 
 function draw() {
   drawBackground();
+  drawTrail();
   drawPlayer();
   drawObstacles();
   drawParticles();
 }
 
-function loop() {
+function loop(timestamp) {
   if (!running) return;
 
-  frame++;
+  const rawDt = (timestamp - lastTimestamp) / 1000;
+  lastTimestamp = timestamp;
+  const dt = Math.min(rawDt, 0.05);
 
-  updatePlayer();
-  updateObstacles();
-  updateParticles();
-  updateScore();
+  elapsedTime += dt;
+
+  updatePlayer(dt);
+  updateObstacles(dt);
+  updateParticles(dt);
+  updateScore(dt);
   checkCollision();
 
   draw();
@@ -771,27 +887,28 @@ startBtn.addEventListener("click", resetGame);
 restartBtn.addEventListener("click", resetGame);
 restartControl.addEventListener("click", resetGame);
 
-jumpBtn.addEventListener("click", jump);
+jumpBtn.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  jump();
+});
 
 // Tap game area to jump
 canvas.addEventListener("pointerdown", jump);
 
 // Keyboard controls
 document.addEventListener("keydown", event => {
-  if (
-    event.code === "Space" ||
-    event.code === "ArrowUp"
-  ) {
+  if (event.code === "Space" || event.code === "ArrowUp") {
     event.preventDefault();
 
     if (!running && !gameOver) {
       resetGame();
-    } else {
+    } else if (running && !gameOver) {
       jump();
     }
   }
 
   if (event.code === "Enter" && gameOver) {
+    event.preventDefault();
     resetGame();
   }
 });
@@ -818,18 +935,8 @@ document.addEventListener("fullscreenchange", () => {
 });
 
 // Initial display
-drawBackground();
-
-player = {
-  x: 100,
-  y: ground - 58,
-  w: 42,
-  h: 58,
-  vy: 0,
-  jumping: false
-};
-
-drawPlayer();
+player = createInitialPlayer();
+draw();
 </script>
 
 </body>
