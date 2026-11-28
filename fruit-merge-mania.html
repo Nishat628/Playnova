@@ -1,0 +1,462 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#10091f">
+
+<title>Fruit Merge Mania - Free Online Puzzle Game | PlayNova</title>
+<meta name="description" content="Play Fruit Merge Mania free online! Drop colorful fruits, merge matching fruits, unlock bigger fruits and beat your highest score in this fun mobile-friendly puzzle game.">
+<meta name="keywords" content="Fruit Merge Mania, fruit merge game, free online puzzle game, fruit puzzle, merge games, browser games, PlayNova">
+<meta name="author" content="PlayNova">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nishat628.github.io/Playnova/fruit-merge-mania.html">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fruit Merge Mania | PlayNova">
+<meta property="og:description" content="Drop, merge and grow! Play this colorful free fruit puzzle game on PlayNova.">
+<meta property="og:url" content="https://nishat628.github.io/Playnova/fruit-merge-mania.html">
+<meta property="og:site_name" content="PlayNova">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Fruit Merge Mania | PlayNova">
+<meta name="twitter:description" content="Merge colorful fruits and beat your high score. Play free on PlayNova!">
+
+<script type="application/ld+json">
+{
+ "@context":"https://schema.org",
+ "@type":"VideoGame",
+ "name":"Fruit Merge Mania",
+ "description":"A free browser puzzle game where players drop and merge matching fruits to create bigger fruits and earn points.",
+ "genre":["Puzzle","Casual"],
+ "gamePlatform":"Web Browser",
+ "applicationCategory":"Game",
+ "operatingSystem":"Any",
+ "url":"https://nishat628.github.io/Playnova/fruit-merge-mania.html",
+ "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+ "publisher":{"@type":"Organization","name":"PlayNova","url":"https://nishat628.github.io/Playnova/"}
+}
+</script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ background:#10091f;color:#fff;font-family:Arial,sans-serif;
+ min-height:100vh;overflow-x:hidden
+}
+button{font:inherit;cursor:pointer}
+.page{max-width:760px;margin:auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.logo{font-size:23px;font-weight:900;color:white;text-decoration:none}
+.logo span{color:#c084fc}
+.back{color:#e9d5ff;text-decoration:none;border:1px solid #56356d;padding:9px 12px;border-radius:9px;font-size:12px}
+.heading{text-align:center;margin:15px 0 20px}
+.heading h1{font-size:clamp(27px,6vw,42px);font-weight:900}
+.heading h1 span{color:#f9a8d4}
+.heading p{color:#bcaecb;font-size:13px;margin-top:8px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:15px}
+.stat{background:#211432;border:1px solid #54316e;border-radius:12px;padding:12px;text-align:center}
+.stat small{display:block;color:#bcaecb;font-size:10px;margin-bottom:6px}
+.stat strong{font-size:21px;color:#f9a8d4}
+.game-box{max-width:440px;margin:auto;background:#211432;border:2px solid #75449b;border-radius:18px;padding:12px;box-shadow:0 0 30px #c026d333}
+.next-box{text-align:center;color:#d8b4fe;font-size:12px;margin-bottom:9px}
+.next-box span{font-size:28px;display:block;margin-top:5px}
+canvas{display:block;width:100%;height:auto;border-radius:12px;background:#180e29;touch-action:none;cursor:crosshair}
+.game-buttons{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:15px 0}
+.btn{border:1px solid #674183;background:#251637;color:#f3d9ff;border-radius:10px;padding:11px 17px;font-size:12px}
+.btn.primary{background:linear-gradient(100deg,#a21caf,#db2777);border:0;color:white;font-weight:900}
+.overlay{position:fixed;inset:0;background:#080414eF;display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
+.overlay.hidden{display:none}
+.panel{max-width:330px;width:100%;background:#211432;border:1px solid #8751a6;border-radius:18px;padding:28px 20px;text-align:center;box-shadow:0 0 40px #a855f755}
+.panel h2{font-size:27px;color:#f9a8d4;margin-bottom:12px}
+.panel p{font-size:13px;color:#cbbbd5;line-height:1.7;margin-bottom:18px}
+.content{background:#1b1029;border:1px solid #422957;border-radius:14px;padding:21px;margin-top:25px}
+.content h2{font-size:20px;color:#f9a8d4;margin-bottom:12px}
+.content h3{font-size:15px;color:#e9b5ff;margin:16px 0 7px}
+.content p,.content li{font-size:14px;color:#cbbbd5;line-height:1.8}
+.content ul{padding-left:20px}
+.faq{padding:12px 0;border-bottom:1px solid #422957}
+.faq:last-child{border:0}
+.site-links{display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin:22px 0}
+.site-links a{color:#d8b4fe;font-size:12px;text-decoration:none}
+footer{text-align:center;color:#8b7898;font-size:11px;padding:20px}
+@media(min-width:600px){.page{padding:24px}}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+<header>
+<a href="index.html" class="logo">PLAY<span>NOVA</span></a>
+<a href="index.html" class="back">← Back to Games</a>
+</header>
+
+<div class="heading">
+<h1>FRUIT <span>MERGE MANIA</span></h1>
+<p>Drop fruits. Merge them. Create something bigger!</p>
+</div>
+
+<div class="stats">
+<div class="stat"><small>SCORE</small><strong id="score">0</strong></div>
+<div class="stat"><small>BEST SCORE</small><strong id="best">0</strong></div>
+<div class="stat"><small>MERGES</small><strong id="merges">0</strong></div>
+</div>
+
+<div class="game-box">
+<div class="next-box">NEXT FRUIT <span id="nextFruit">🍇</span></div>
+<canvas id="game" width="400" height="540"></canvas>
+<div class="game-buttons">
+<button class="btn" id="soundBtn">♫ Sound: On</button>
+<button class="btn" id="restartBtn">↻ Restart</button>
+</div>
+</div>
+
+<div class="content">
+<h2>About Fruit Merge Mania</h2>
+<p>Welcome to Fruit Merge Mania, a colorful and exciting free online puzzle game on PlayNova. Drop fruits into the game board and combine matching fruits to create bigger ones. Every successful merge earns points and helps you build an impressive fruit collection.</p>
+<p>Plan your moves carefully, avoid filling the board and try to reach the biggest fruit possible. Can you beat your highest score?</p>
+
+<h3>Game Features</h3>
+<ul>
+<li>10 fruit evolution levels.</li>
+<li>Colorful fruit graphics and smooth animations.</li>
+<li>Score and best-score tracking.</li>
+<li>Merge combos and bonus points.</li>
+<li>Simple mouse and mobile touch controls.</li>
+<li>Sound effects and restart option.</li>
+<li>Free browser gameplay without downloads.</li>
+</ul>
+</div>
+
+<div class="content">
+<h2>How to Play</h2>
+<p>1. Tap or click anywhere inside the game board to drop a fruit.</p>
+<p>2. Match two fruits of the same type to merge them.</p>
+<p>3. Create bigger fruits to earn more points.</p>
+<p>4. Keep the board from filling up completely.</p>
+<p>5. Try to achieve your highest score!</p>
+</div>
+
+<div class="content">
+<h2>Frequently Asked Questions</h2>
+<div class="faq">
+<h3>Is Fruit Merge Mania free?</h3>
+<p>Yes, you can play Fruit Merge Mania free on PlayNova.</p>
+</div>
+<div class="faq">
+<h3>Can I play on my phone?</h3>
+<p>Yes, the game supports touch controls on compatible mobile devices.</p>
+</div>
+<div class="faq">
+<h3>How do I merge fruits?</h3>
+<p>Drop two matching fruits close together to combine them into a bigger fruit.</p>
+</div>
+<div class="faq">
+<h3>Does the game need downloading?</h3>
+<p>No. Play directly in your browser without installing an app.</p>
+</div>
+</div>
+
+<div class="site-links">
+<a href="index.html">Home</a>
+<a href="about.html">About Us</a>
+<a href="contact.html">Contact Us</a>
+<a href="privacy-policy.html">Privacy Policy</a>
+<a href="terms.html">Terms &amp; Conditions</a>
+<a href="disclaimer.html">Disclaimer</a>
+</div>
+
+</div>
+
+<footer>© 2026 PlayNova. All rights reserved.</footer>
+
+<div class="overlay" id="overlay">
+<div class="panel">
+<h2 id="overlayTitle">FRUIT MERGE MANIA</h2>
+<p id="overlayText">Drop matching fruits, merge them into bigger fruits and aim for the highest score!</p>
+<button class="btn primary" id="startBtn">START GAME</button>
+</div>
+</div>
+
+<script>
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+const W=400,H=540;
+const scoreEl=document.getElementById("score");
+const bestEl=document.getElementById("best");
+const mergesEl=document.getElementById("merges");
+const nextEl=document.getElementById("nextFruit");
+const overlay=document.getElementById("overlay");
+const fruits=["🍇","🍒","🍓","🍊","🍋","🍏","🍐","🍑","🍍","🍉"];
+const radii=[17,20,23,26,29,32,35,38,42,47];
+const points=[2,4,8,16,32,64,128,256,512,1024];
+const floorY=495;
+let items=[],score=0,merges=0,best=0;
+let current=0,dropX=200,gameActive=false,gameEnded=false;
+let soundOn=true,audio=null,lastTime=0;
+let particles=[];
+
+try{best=Number(localStorage.getItem("fruitMergeBest"))||0}catch(e){}
+bestEl.textContent=best;
+
+function sound(freq=500){
+ if(!soundOn)return;
+ try{
+  audio=audio||new (window.AudioContext||window.webkitAudioContext)();
+  if(audio.state==="suspended")audio.resume();
+  let osc=audio.createOscillator();
+  let gain=audio.createGain();
+  osc.connect(gain);gain.connect(audio.destination);
+  osc.frequency.value=freq;
+  gain.gain.setValueAtTime(.06,audio.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.12);
+  osc.start();osc.stop(audio.currentTime+.12);
+ }catch(e){}
+}
+
+function randomFruit(){return Math.floor(Math.random()*4)}
+function nextFruit(){current=randomFruit();nextEl.textContent=fruits[current]}
+
+function reset(){
+ items=[];particles=[];
+ score=0;merges=0;
+ dropX=200;gameEnded=false;
+ scoreEl.textContent=0;
+ mergesEl.textContent=0;
+ nextFruit();
+}
+
+function start(){
+ reset();
+ gameActive=true;
+ overlay.classList.add("hidden");
+ lastTime=performance.now();
+ requestAnimationFrame(loop);
+}
+
+function addFruit(x){
+ if(!gameActive||gameEnded)return;
+ let r=radii[current];
+ x=Math.max(30+r,Math.min(W-30-r,x));
+ if(items.some(a=>Math.abs(a.x-x)<r+a.r*.7&&a.y<75))return;
+
+ items.push({
+  x:x,y:55,r:r,level:current,
+  vy:0,vx:0,settled:false
+ });
+ sound(350);
+ nextFruit();
+}
+
+function createParticles(x,y,color){
+ for(let i=0;i<9;i++){
+  particles.push({
+   x:x,y:y,
+   vx:(Math.random()-.5)*5,
+   vy:(Math.random()-.5)*5,
+   life:1,color:color
+  });
+ }
+}
+
+function mergeCheck(){
+ for(let i=0;i<items.length;i++){
+  for(let j=i+1;j<items.length;j++){
+   let a=items[i],b=items[j];
+   if(a.level!==b.level||a.level>=fruits.length-1)continue;
+   let dx=b.x-a.x,dy=b.y-a.y;
+   let distance=Math.sqrt(dx*dx+dy*dy);
+   if(distance<a.r+b.r-3){
+    let x=(a.x+b.x)/2;
+    let y=(a.y+b.y)/2;
+    let level=a.level+1;
+    createParticles(x,y,"#f9a8d4");
+    items.splice(j,1);
+    items.splice(i,1);
+    items.push({
+     x:x,y:y,r:radii[level],
+     level:level,vy:-2,vx:0,settled:false
+    });
+    score+=points[level];
+    merges++;
+    scoreEl.textContent=score;
+    mergesEl.textContent=merges;
+    sound(500+level*70);
+    if(score>best){
+     best=score;
+     bestEl.textContent=best;
+     try{localStorage.setItem("fruitMergeBest",best)}catch(e){}
+    }
+    return true;
+   }
+  }
+ }
+ return false;
+}
+
+function update(dt){
+ let f=dt/16.67;
+
+ items.forEach(a=>{
+  a.vy+=.38*f;
+  a.x+=a.vx*f;
+  a.y+=a.vy*f;
+  a.vx*=.98;
+
+  if(a.x-a.r<0){a.x=a.r;a.vx=Math.abs(a.vx)*.35}
+  if(a.x+a.r>W){a.x=W-a.r;a.vx=-Math.abs(a.vx)*.35}
+  if(a.y+a.r>floorY){
+   a.y=floorY-a.r;
+   a.vy=0;a.vx*=.85;
+   a.settled=true;
+  }
+ });
+
+ for(let k=0;k<3;k++){
+  for(let i=0;i<items.length;i++){
+   for(let j=i+1;j<items.length;j++){
+    let a=items[i],b=items[j];
+    let dx=b.x-a.x,dy=b.y-a.y;
+    let d=Math.sqrt(dx*dx+dy*dy);
+    let min=a.r+b.r;
+    if(d<min&&d>0){
+     let overlap=(min-d)/2;
+     let nx=dx/d,ny=dy/d;
+     a.x-=nx*overlap*.5;
+     a.y-=ny*overlap*.5;
+     b.x+=nx*overlap*.5;
+     b.y+=ny*overlap*.5;
+     if(a.y+a.r>floorY)a.y=floorY-a.r;
+     if(b.y+b.r>floorY)b.y=floorY-b.r;
+    }
+   }
+  }
+ }
+
+ for(let i=0;i<particles.length;i++){
+  let p=particles[i];
+  p.x+=p.vx*f;p.y+=p.vy*f;
+  p.life-=.035*f;
+ }
+ particles=particles.filter(p=>p.life>0);
+
+ for(let a of items){
+  if(a.y-a.r<0&&a.settled){
+   endGame();return;
+  }
+ }
+
+ mergeCheck();
+}
+
+function draw(){
+ ctx.clearRect(0,0,W,H);
+ ctx.fillStyle="#180e29";
+ ctx.fillRect(0,0,W,H);
+
+ ctx.strokeStyle="#5b3475";
+ ctx.lineWidth=3;
+ ctx.strokeRect(2,2,W-4,H-4);
+
+ ctx.strokeStyle="#4c3560";
+ ctx.setLineDash([6,7]);
+ ctx.beginPath();
+ ctx.moveTo(0,floorY+2);ctx.lineTo(W,floorY+2);
+ ctx.stroke();
+ ctx.setLineDash([]);
+
+ ctx.fillStyle="#c084fc";
+ ctx.font="12px Arial";
+ ctx.fillText("DROP HERE",dropX-29,24);
+
+ items.forEach(a=>{
+  ctx.save();
+  ctx.shadowBlur=15;
+  ctx.shadowColor="#c084fc";
+  ctx.fillStyle="#30203e";
+  ctx.beginPath();
+  ctx.arc(a.x,a.y,a.r+2,0,Math.PI*2);
+  ctx.fill();
+  ctx.shadowBlur=0;
+  ctx.font=(a.r*1.45)+"px Arial";
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+  ctx.fillText(fruits[a.level],a.x,a.y+2);
+  ctx.restore();
+ });
+
+ particles.forEach(p=>{
+  ctx.globalAlpha=p.life;
+  ctx.fillStyle=p.color;
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,3,0,Math.PI*2);
+  ctx.fill();
+  ctx.globalAlpha=1;
+ });
+}
+
+function loop(time){
+ if(!gameActive||gameEnded)return;
+ let dt=Math.min(time-lastTime,35);
+ lastTime=time;
+ update(dt);
+ draw();
+ if(!gameEnded)requestAnimationFrame(loop);
+}
+
+function endGame(){
+ gameActive=false;
+ gameEnded=true;
+ document.getElementById("overlayTitle").textContent="GAME OVER!";
+ document.getElementById("overlayText").textContent=
+ "Your score: "+score+" | Merges: "+merges+". Try again and beat your best score!";
+ document.getElementById("startBtn").textContent="PLAY AGAIN";
+ overlay.classList.remove("hidden");
+ sound(180);
+}
+
+function pointerX(e){
+ const rect=canvas.getBoundingClientRect();
+ return (e.clientX-rect.left)*(W/rect.width);
+}
+
+canvas.addEventListener("pointermove",e=>{
+ if(!gameActive)return;
+ dropX=pointerX(e);
+});
+
+canvas.addEventListener("pointerdown",e=>{
+ if(!gameActive)return;
+ e.preventDefault();
+ addFruit(pointerX(e));
+});
+
+document.getElementById("startBtn").addEventListener("click",()=>{
+ document.getElementById("overlayTitle").textContent="FRUIT MERGE MANIA";
+ document.getElementById("overlayText").textContent=
+ "Drop matching fruits, merge them into bigger fruits and aim for the highest score!";
+ document.getElementById("startBtn").textContent="START GAME";
+ start();
+});
+
+document.getElementById("restartBtn").addEventListener("click",()=>{
+ document.getElementById("overlayTitle").textContent="FRUIT MERGE MANIA";
+ document.getElementById("overlayText").textContent="Start a fresh fruit merging challenge!";
+ document.getElementById("startBtn").textContent="START GAME";
+ gameActive=false;
+ overlay.classList.remove("hidden");
+});
+
+document.getElementById("soundBtn").addEventListener("click",e=>{
+ soundOn=!soundOn;
+ e.target.textContent=soundOn?"♫ Sound: On":"♫ Sound: Off";
+ if(soundOn)sound();
+});
+
+reset();
+draw();
+</script>
+</body>
+</html>
