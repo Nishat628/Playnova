@@ -329,7 +329,7 @@
 
     .pad-row {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
     }
 
@@ -359,27 +359,40 @@
         display: none;
       }
     }
+
     #game-stage:fullscreen,
-#game-stage.mobile-expanded {
-  width: 100vw;
-  height: 100dvh;
-  max-width: none;
-  background: #0b0714;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-}
+    #game-stage.mobile-expanded {
+      width: 100vw;
+      height: 100dvh;
+      max-width: none;
+      background: #0b0714;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      gap: 10px;
+    }
 
-#game-stage:fullscreen canvas,
-#game-stage.mobile-expanded canvas {
-  max-width: 100%;
-  max-height: 85dvh;
-  width: auto;
-  height: auto;
-}
+    #game-stage:fullscreen .game-box,
+    #game-stage.mobile-expanded .game-box {
+      width: 100%;
+      max-width: 440px;
+      flex: 0 1 auto;
+    }
 
+    #game-stage:fullscreen canvas,
+    #game-stage.mobile-expanded canvas {
+      width: 100%;
+      max-height: 72dvh;
+      height: auto;
+    }
+
+    #game-stage:fullscreen .pad-row,
+    #game-stage.mobile-expanded .pad-row {
+      width: 100%;
+      max-width: 440px;
+    }
   </style>
 </head>
 <body>
@@ -436,25 +449,25 @@
         <div id="livesEl" class="stat-value">3</div>
       </div>
     </section>
-<div id="game-stage">
 
-    <section class="game-box">
-      <canvas id="gameCanvas" width="440" height="550"></canvas>
-      <div id="overlay" class="overlay show">
-        <h2 id="overlayTitle">Neon Brick Breaker</h2>
-        <p id="overlayDesc">Hold Left/Right buttons or drag on the screen to move the paddle and smash every brick!</p>
-        <button id="startBtn" class="play-btn" type="button">▶ Play Now</button>
+    <div id="game-stage">
+      <section class="game-box">
+        <canvas id="gameCanvas" width="440" height="550"></canvas>
+        <div id="overlay" class="overlay show">
+          <h2 id="overlayTitle">Neon Brick Breaker</h2>
+          <p id="overlayDesc">Hold Left/Right buttons or drag on the screen to move the paddle and smash every brick!</p>
+          <button id="startBtn" class="play-btn" type="button">▶ Play Now</button>
+        </div>
+      </section>
+
+      <div class="pad-row">
+        <button id="leftBtn" class="pad-btn" type="button">◀ Left</button>
+        <button id="restartBtn" class="pad-btn" type="button">↻ Restart</button>
+        <button id="rightBtn" class="pad-btn" type="button">Right ▶</button>
+        <button id="fullscreen-btn" class="pad-btn" type="button">⛶ Fullscreen</button>
       </div>
-    </section>
-
-    <div class="pad-row">
-      <button id="leftBtn" class="pad-btn" type="button">◀ Left</button>
-      <button id="restartBtn" class="pad-btn" type="button">↻ Restart</button>
-      <button id="rightBtn" class="pad-btn" type="button">Right ▶</button>
-      <button type="button" id="fullscreen-btn">⛶ Fullscreen</button>
-
     </div>
-</div>
+
     <section aria-label="Play Neon Brick Breaker Online on PlayNova" style="width:100%;flex-basis:100%;grid-column:1 / -1;box-sizing:border-box;background:#151126;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px;margin-top:4px;line-height:1.65;color:#f5f3ff">
       <h2 style="font-size:18px;margin:0 0 8px">Play Neon Brick Breaker Online — Free Arcade Game</h2>
       <p style="font-size:13px;color:#cbd5e1;margin:0 0 12px">
@@ -1005,33 +1018,33 @@
 
       loadBest();
       prepareIdleBoard();
+
       const fsBtn = document.getElementById("fullscreen-btn");
-const gameStage = document.getElementById("game-stage");
+      const gameStage = document.getElementById("game-stage");
 
+      if (fsBtn && gameStage) {
+        fsBtn.addEventListener("click", async () => {
+          try {
+            if (!document.fullscreenElement) {
+              await gameStage.requestFullscreen();
+              fsBtn.textContent = "✕ Exit Fullscreen";
+            } else {
+              await document.exitFullscreen();
+              fsBtn.textContent = "⛶ Fullscreen";
+            }
+          } catch (err) {
+            const expanded = gameStage.classList.toggle("mobile-expanded");
+            fsBtn.textContent = expanded ? "✕ Exit Fullscreen" : "⛶ Fullscreen";
+          }
+        });
 
-if (fsBtn && gameStage) {
-  fsBtn.addEventListener("click", async () => {
-    try {
-      if (!document.fullscreenElement) {
-        await gameStage.requestFullscreen();
-        fsBtn.textContent = "✕ Exit Fullscreen";
-      } else {
-        await document.exitFullscreen();
-        fsBtn.textContent = "⛶ Fullscreen";
+        document.addEventListener("fullscreenchange", () => {
+          if (!document.fullscreenElement) {
+            gameStage.classList.remove("mobile-expanded");
+            fsBtn.textContent = "⛶ Fullscreen";
+          }
+        });
       }
-    } catch (err) {
-      // Agar browser fullscreen block kare to fallback class se bada view dikhayein
-      gameStage.classList.toggle("mobile-expanded");
-    }
-  });
-
-  document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) {
-      fsBtn.textContent = "⛶ Fullscreen";
-    }
-  });
-}
-
     })();
   </script>
 </body>
