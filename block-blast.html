@@ -244,11 +244,6 @@ a {
   opacity: 0.7;
 }
 
-.cell.line-clear {
-  transform: scale(0.75);
-  opacity: 0.15;
-}
-
 .game-over-overlay {
   position: absolute;
   inset: 0;
@@ -302,7 +297,9 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
   transition: border-color 0.2s ease, transform 0.15s ease, background 0.2s ease;
 }
 
@@ -335,6 +332,26 @@ a {
 
 .mini-cell.empty {
   background: transparent;
+}
+
+.drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -85%) scale(1.1);
+  opacity: 0.92;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.55));
+  display: none;
+}
+
+.drag-ghost.active {
+  display: block;
+}
+
+.drag-ghost .mini-cell {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
 }
 
 .info-card {
@@ -459,7 +476,7 @@ a {
       </div>
     </div>
 
-    <div class="dock-label" id="dockLabel">Tap a block below, then tap an 8x8 grid cell (or hover to preview)</div>
+    <div class="dock-label" id="dockLabel">Drag a block onto the 8x8 grid — or tap a block, then tap a cell</div>
     <div class="piece-dock" id="pieceDock"></div>
   </section>
 
@@ -471,8 +488,7 @@ a {
 
     <h3>How to Play</h3>
     <ul>
-      <li>Select one of the three block shapes in the bottom dock (or press keys <strong>1</strong>, <strong>2</strong>, or <strong>3</strong>).</li>
-      <li>Move over the 8x8 grid to preview where the shape fits, then click or tap to place it.</li>
+      <li>Drag any block shape onto the 8x8 grid, or tap a block (or press <strong>1</strong>, <strong>2</strong>, or <strong>3</strong>) and tap a target cell.</li>
       <li>Filling an entire row or column clears those cells and awards bonus points.</li>
       <li>Clearing lines on consecutive placements builds your combo streak.</li>
     </ul>
@@ -501,8 +517,11 @@ a {
   </section>
 </main>
 
+<div class="drag-ghost" id="dragGhost" aria-hidden="true"></div>
+
 <script>
 const GRID_SIZE = 8;
+const DRAG_THRESHOLD = 6;
 const BEST_SCORE_KEY = "playnova_block_blast_best_v1";
 const SETTINGS_KEY = "playnova_block_blast_settings_v1";
 
@@ -532,6 +551,8 @@ let combo = 0;
 let linesClearedTotal = 0;
 let isGameOver = false;
 
+let dragState = null;
+
 let settings = {
   sound: true,
   preview: true,
@@ -550,6 +571,7 @@ const gameOverOverlayEl = document.getElementById("gameOverOverlay");
 const finalScoreTextEl = document.getElementById("finalScoreText");
 const settingsDrawerEl = document.getElementById("settingsDrawer");
 const gameStageEl = document.getElementById("gameStage");
+const dragGhostEl = document.getElementById("dragGhost");
 
 const soundToggleEl = document.getElementById("soundToggle");
 const previewToggleEl = document.getElementById("previewToggle");
@@ -707,13 +729,13 @@ function clearFullLines() {
 }
 
 function placeSelectedAt(row, col) {
-  if (isGameOver || selectedIndex === null) return;
+  if (isGameOver || selectedIndex === null) return false;
   const piece = dockPieces[selectedIndex];
-  if (!piece) return;
+  if (!piece) return false;
 
   if (!canPlacePiece(piece.matrix, row, col)) {
     playTone(190, 0.08, "sawtooth");
-    return;
+    return false;
   }
 
   let placedBlocks = 0;
@@ -753,6 +775,7 @@ function placeSelectedAt(row, col) {
   updateHud();
   renderBoard();
   renderDock();
+  return true;
 }
 
 function updateHud() {
@@ -761,6 +784,114 @@ function updateHud() {
   comboEl.textContent = `${combo}x`;
   linesEl.textContent = String(linesClearedTotal);
 }
+
+function buildMatrixElement(piece) {
+  const cols = piece.matrix[0].length;
+  const mini = document.createElement("div");
+  mini.className = "mini-matrix";
+  mini.style.gridTemplateColumns = `repeat(${cols}, auto)`;
+
+  piece.matrix.forEach(row => {
+    row.forEach(val => {
+      const mc = document.createElement("div");
+      mc.className = "mini-cell";
+      if (val === 1) {
+        mc.style.backgroundColor = piece.color;
+      } else {
+        mc.classList.add("empty");
+      }
+      mini.appendChild(mc);
+    });
+  });
+
+  return mini;
+}
+
+function getGridCellFromPoint(clientX, clientY) {
+  const rect = gridBoardEl.getBoundingClientRect();
+  const adjustedY = clientY - 28;
+  if (
+    clientX < rect.left ||
+    clientX > rect.right ||
+    adjustedY < rect.top ||
+    adjustedY > rect.bottom
+  ) {
+    return null;
+  }
+
+  const col = Math.floor(((clientX - rect.left) / rect.width) * GRID_SIZE);
+  const row = Math.floor(((adjustedY - rect.top) / rect.height) * GRID_SIZE);
+
+  if (row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE) {
+    return null;
+  }
+  return { row, col };
+}
+
+function updateGhostPosition(clientX, clientY) {
+  dragGhostEl.style.left = `${clientX}px`;
+  dragGhostEl.style.top = `${clientY}px`;
+}
+
+function startPieceDrag(idx, e) {
+  if (isGameOver || !dockPieces[idx]) return;
+  selectedIndex = idx;
+  renderDock();
+
+  const piece = dockPieces[idx];
+  dragGhostEl.innerHTML = "";
+  dragGhostEl.appendChild(buildMatrixElement(piece));
+  dragGhostEl.classList.add("active");
+  updateGhostPosition(e.clientX, e.clientY);
+
+  dragState = {
+    pieceIndex: idx,
+    startX: e.clientX,
+    startY: e.clientY,
+    moved: false,
+    targetCell: null
+  };
+}
+
+window.addEventListener("pointermove", e => {
+  if (!dragState) return;
+
+  const dx = e.clientX - dragState.startX;
+  const dy = e.clientY - dragState.startY;
+  if (Math.hypot(dx, dy) > DRAG_THRESHOLD) {
+    dragState.moved = true;
+  }
+
+  updateGhostPosition(e.clientX, e.clientY);
+
+  const cell = getGridCellFromPoint(e.clientX, e.clientY);
+  dragState.targetCell = cell;
+
+  if (settings.preview) {
+    const same =
+      (hoverCell === null && cell === null) ||
+      (hoverCell && cell && hoverCell.row === cell.row && hoverCell.col === cell.col);
+    if (!same) {
+      hoverCell = cell;
+      renderBoard();
+    }
+  }
+});
+
+window.addEventListener("pointerup", () => {
+  if (!dragState) return;
+
+  const { moved, targetCell } = dragState;
+  dragState = null;
+  dragGhostEl.classList.remove("active");
+  dragGhostEl.innerHTML = "";
+
+  if (moved && targetCell) {
+    placeSelectedAt(targetCell.row, targetCell.col);
+    hoverCell = null;
+    renderBoard();
+  }
+});
 
 function renderBoard() {
   gridBoardEl.innerHTML = "";
@@ -800,12 +931,13 @@ function renderBoard() {
       }
 
       cell.addEventListener("mouseenter", () => {
-        if (!settings.preview) return;
+        if (!settings.preview || dragState) return;
         hoverCell = { row: r, col: c };
         renderBoard();
       });
 
       cell.addEventListener("click", () => {
+        if (dragState) return;
         placeSelectedAt(r, c);
       });
 
@@ -815,7 +947,7 @@ function renderBoard() {
 }
 
 gridBoardEl.addEventListener("mouseleave", () => {
-  if (hoverCell) {
+  if (hoverCell && !dragState) {
     hoverCell = null;
     renderBoard();
   }
@@ -838,30 +970,10 @@ function renderDock() {
       slot.classList.add("selected");
     }
 
-    const cols = piece.matrix[0].length;
-    const mini = document.createElement("div");
-    mini.className = "mini-matrix";
-    mini.style.gridTemplateColumns = `repeat(${cols}, auto)`;
-
-    piece.matrix.forEach(row => {
-      row.forEach(val => {
-        const mc = document.createElement("div");
-        mc.className = "mini-cell";
-        if (val === 1) {
-          mc.style.backgroundColor = piece.color;
-        } else {
-          mc.classList.add("empty");
-        }
-        mini.appendChild(mc);
-      });
-    });
-
-    slot.appendChild(mini);
-    slot.addEventListener("click", () => {
-      if (isGameOver) return;
-      selectedIndex = idx;
-      renderDock();
-      renderBoard();
+    slot.appendChild(buildMatrixElement(piece));
+    slot.addEventListener("pointerdown", e => {
+      if (e.button !== undefined && e.button !== 0 && e.pointerType === "mouse") return;
+      startPieceDrag(idx, e);
     });
 
     pieceDockEl.appendChild(slot);
@@ -873,6 +985,8 @@ function startNewGame() {
   dockPieces = [randomPiece(), randomPiece(), randomPiece()];
   selectedIndex = 0;
   hoverCell = null;
+  dragState = null;
+  dragGhostEl.classList.remove("active");
   score = 0;
   combo = 0;
   linesClearedTotal = 0;
