@@ -162,6 +162,27 @@ const KEY="playnova2048_save";
 let board=Array(16).fill(0),score=0,best=0;
 let history=[],won=false,keepPlaying=false,gameOver=false;
 let soundOn=true,dark=true,audio=null;
+const DAILY_TARGET = 1024;
+let milestoneShown = false;
+
+function checkDailyTarget() {
+  if (milestoneShown) return;
+  const maxTile = Math.max(...board);
+  if (maxTile >= DAILY_TARGET) {
+    milestoneShown = true;
+    const banner = document.getElementById("milestone-banner");
+    if (banner) {
+      banner.textContent = "Daily Target (" + DAILY_TARGET + ") reached!";
+      banner.style.display = "block";
+      setTimeout(() => {
+        banner.style.display = "none";
+      }, 3000);
+    }
+    if (typeof toast === "function") {
+      toast("Daily Target (" + DAILY_TARGET + ") reached!");
+    }
+  }
+}
 
 function snapshot(){
  return {board:[...board],score,won,keepPlaying,gameOver};
