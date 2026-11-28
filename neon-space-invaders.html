@@ -143,7 +143,7 @@ canvas{
  align-items:center;
  justify-content:center;
  text-align:center;
- background:rgba(5,3,20,.84);
+ background:rgba(5,3,20,.88);
  border-radius:10px;
  z-index:5;
  padding:20px;
@@ -174,14 +174,6 @@ canvas{
  cursor:pointer;
 }
 
-.controls{
- display:flex;
- flex-wrap:wrap;
- justify-content:center;
- gap:9px;
- margin-top:13px;
-}
-
 button{
  border:1px solid #7042bb;
  background:#24133f;
@@ -199,9 +191,18 @@ button:active{
  background:#6732a8;
 }
 
+.controls{
+ display:flex;
+ flex-wrap:wrap;
+ justify-content:center;
+ gap:9px;
+ margin-top:13px;
+}
+
 .mobile-controls{
  display:flex;
  justify-content:center;
+ align-items:center;
  gap:14px;
  margin-top:12px;
 }
@@ -215,11 +216,92 @@ button:active{
  touch-action:none;
  user-select:none;
  -webkit-user-select:none;
+ -webkit-tap-highlight-color:transparent;
 }
 
 .mobile-controls .fire{
  width:115px;
  background:linear-gradient(135deg,#7c3aed,#db2777);
+}
+
+/* FULLSCREEN FIX */
+
+.game-box:fullscreen,
+.game-box:-webkit-full-screen{
+ position:fixed;
+ inset:0;
+ width:100%;
+ height:100%;
+ height:100dvh;
+ max-width:none;
+ border:0;
+ border-radius:0;
+ padding:8px;
+ margin:0;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:flex-start;
+ overflow:hidden;
+ background:#08051a;
+ box-shadow:none;
+ z-index:99999;
+}
+
+.game-box:fullscreen canvas,
+.game-box:-webkit-full-screen canvas{
+ display:block;
+ width:min(100%,70vh);
+ height:auto;
+ max-width:100%;
+ max-height:calc(100dvh - 115px);
+ aspect-ratio:400/560;
+ flex-shrink:1;
+ margin:auto auto 0;
+ border-radius:8px;
+}
+
+/* Controls stay INSIDE fullscreen game box */
+
+.game-box:fullscreen .mobile-controls,
+.game-box:-webkit-full-screen .mobile-controls{
+ position:absolute;
+ left:0;
+ right:0;
+ bottom:12px;
+ z-index:20;
+ display:flex !important;
+ justify-content:center;
+ align-items:center;
+ gap:14px;
+ margin:0;
+ padding:5px;
+ visibility:visible !important;
+ opacity:1 !important;
+}
+
+.game-box:fullscreen .mobile-controls button,
+.game-box:-webkit-full-screen .mobile-controls button{
+ display:inline-flex !important;
+ align-items:center;
+ justify-content:center;
+ visibility:visible !important;
+ opacity:1 !important;
+ pointer-events:auto !important;
+ width:75px;
+ height:54px;
+ font-size:22px;
+}
+
+.game-box:fullscreen .mobile-controls .fire,
+.game-box:-webkit-full-screen .mobile-controls .fire{
+ width:115px;
+}
+
+.game-box:fullscreen .game-overlay,
+.game-box:-webkit-full-screen .game-overlay{
+ inset:8px;
+ z-index:30;
 }
 
 .instructions{
@@ -253,6 +335,39 @@ button:active{
  padding-left:20px;
 }
 
+.instructions a{
+ color:#c4a5fd;
+ text-decoration:underline;
+ text-underline-offset:3px;
+}
+
+.instructions a:hover{
+ color:#67e8f9;
+}
+
+.related-games{
+ display:flex;
+ flex-wrap:wrap;
+ gap:9px;
+ margin-top:10px;
+}
+
+.related-games a{
+ display:inline-block;
+ background:#24133f;
+ border:1px solid #7042bb;
+ border-radius:8px;
+ padding:7px 10px;
+ color:#d8b4fe;
+ text-decoration:none;
+ font-size:13px;
+}
+
+.related-games a:hover{
+ background:#482078;
+ color:#fff;
+}
+
 footer{
  text-align:center;
  margin-top:25px;
@@ -265,25 +380,6 @@ footer a{
  color:#b794ff;
  text-decoration:none;
  margin:0 5px;
-}
-
-.game-box:fullscreen{
- width:100%;
- height:100%;
- max-width:none;
- border:0;
- border-radius:0;
- padding:10px;
- display:flex;
- align-items:center;
- justify-content:center;
- background:#08051a;
-}
-
-.game-box:fullscreen canvas{
- max-height:calc(100vh - 20px);
- width:auto;
- max-width:100%;
 }
 
 @media(max-width:420px){
@@ -302,98 +398,37 @@ footer a{
  button{
   padding:10px 12px;
  }
+
+ .mobile-controls{
+  gap:10px;
+ }
+
+ .mobile-controls button{
+  width:70px;
+ }
+
+ .mobile-controls .fire{
+  width:105px;
+ }
 }
 
-<article class="game-card" data-category="arcade" data-name="neon space invaders">
+@media(orientation:landscape) and (max-height:500px){
+ .game-box:fullscreen canvas,
+ .game-box:-webkit-full-screen canvas{
+  width:min(100%,55vh);
+  max-height:calc(100dvh - 95px);
+ }
 
-  <div class="game-thumb" style="border-radius:14px;overflow:hidden;aspect-ratio:16/9;margin-bottom:12px;background:#08051a;">
+ .game-box:fullscreen .mobile-controls,
+ .game-box:-webkit-full-screen .mobile-controls{
+  bottom:5px;
+ }
 
-    <svg viewBox="0 0 600 338" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="spaceBg">
-          <stop offset="0%" stop-color="#352064"/>
-          <stop offset="100%" stop-color="#08051a"/>
-        </radialGradient>
-        <filter id="spaceGlow">
-          <feGaussianBlur stdDeviation="5" result="blur"/>
-          <feMerge>
-            <feMergeNode in="blur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-      </defs>
-
-      <rect width="600" height="338" fill="url(#spaceBg)"/>
-
-      <g fill="#ffffff" opacity=".7">
-        <circle cx="55" cy="45" r="2"/>
-        <circle cx="145" cy="32" r="2"/>
-        <circle cx="245" cy="50" r="2"/>
-        <circle cx="370" cy="35" r="2"/>
-        <circle cx="485" cy="55" r="2"/>
-        <circle cx="555" cy="25" r="2"/>
-        <circle cx="90" cy="140" r="2"/>
-        <circle cx="510" cy="155" r="2"/>
-      </g>
-
-      <g filter="url(#spaceGlow)">
-        <g fill="#fb7185">
-          <path d="M115 75 L135 58 L155 75 L155 95 L115 95 Z"/>
-          <path d="M205 75 L225 58 L245 75 L245 95 L205 95 Z"/>
-          <path d="M295 75 L315 58 L335 75 L335 95 L295 95 Z"/>
-          <path d="M385 75 L405 58 L425 75 L425 95 L385 95 Z"/>
-        </g>
-
-        <g fill="#a78bfa">
-          <rect x="122" y="96" width="26" height="7"/>
-          <rect x="212" y="96" width="26" height="7"/>
-          <rect x="302" y="96" width="26" height="7"/>
-          <rect x="392" y="96" width="26" height="7"/>
-        </g>
-
-        <path d="M300 170 L265 245 L285 232 L300 250 L315 232 L335 245 Z"
-          fill="#22d3ee" stroke="#ffffff" stroke-width="3"/>
-
-        <path d="M292 225 L300 275 L308 225 Z" fill="#facc15"/>
-        <path d="M300 165 L300 125" stroke="#67e8f9" stroke-width="5" stroke-linecap="round"/>
-        <path d="M280 210 L280 165" stroke="#67e8f9" stroke-width="4" stroke-linecap="round"/>
-        <path d="M320 210 L320 165" stroke="#67e8f9" stroke-width="4" stroke-linecap="round"/>
-      </g>
-
-      <text x="300" y="315" font-family="Arial,sans-serif"
-        font-size="29" font-weight="900" fill="#ffffff"
-        text-anchor="middle" letter-spacing="1">NEON SPACE INVADERS</text>
-    </svg>
-
-  </div>
-
-  <h3>Neon Space Invaders</h3>
-
-  <p>
-    Pilot your spaceship, destroy alien invaders and survive challenging enemy waves!
-    Explore more free games:
-    <a href="neon-dash.html">Neon Dash</a>,
-    <a href="neon-road-rush.html">Neon Road Rush</a>,
-    <a href="snake-dash.html">Nova Snake Dash</a>,
-    <a href="lane-hopper.html">Nova Lane Hopper</a>,
-    <a href="brick-breaker.html">Neon Brick Breaker</a>,
-    <a href="color-reflex.html">Color Reflex Rush</a>,
-    <a href="bubble-shooter.html">Bubble Shooter</a>,
-    <a href="fruit-merge-mania.html">Fruit Merge Mania</a>,
-    <a href="nova-2048.html">2048 Puzzle</a>,
-    <a href="match-3.html">Match 3</a>,
-    <a href="block-blast.html">Block Blast</a>,
-    <a href="stack-tower.html">Stack Tower</a>,
-    <a href="solitaire.html">Solitaire</a>,
-    <a href="typing-challenge.html">Typing Challenge</a>,
-    <a href="city-tycoon.html">City Tycoon</a>,
-    and <a href="hexa-stack-vs.html">Hexa Stack VS</a>.
-  </p>
-
-  <a href="neon-space-invaders.html" class="play-btn">PLAY NOW</a>
-
-</article>
-
+ .game-box:fullscreen .mobile-controls button,
+ .game-box:-webkit-full-screen .mobile-controls button{
+  height:44px;
+ }
+}
 </style>
 </head>
 
@@ -439,12 +474,13 @@ footer a{
   </div>
  </div>
 
-</div>
+ <!-- MOBILE CONTROLS ARE INSIDE GAME BOX -->
+ <div class="mobile-controls">
+  <button id="leftBtn" aria-label="Move left">◀</button>
+  <button id="fireBtn" class="fire" aria-label="Fire">FIRE</button>
+  <button id="rightBtn" aria-label="Move right">▶</button>
+ </div>
 
-<div class="mobile-controls">
- <button id="leftBtn" aria-label="Move left">◀</button>
- <button id="fireBtn" class="fire">FIRE</button>
- <button id="rightBtn" aria-label="Move right">▶</button>
 </div>
 
 <div class="controls">
@@ -487,6 +523,32 @@ footer a{
   <li>Destroy enemies before they reach your spaceship.</li>
   <li>Avoid enemy lasers and protect your lives.</li>
  </ul>
+
+ <h3>Explore More Free Games on PlayNova</h3>
+
+ <p>
+  Enjoy more free browser games from our collection. Choose another game below:
+ </p>
+
+ <div class="related-games">
+  <a href="neon-dash.html">Neon Dash</a>
+  <a href="neon-road-rush.html">Neon Road Rush</a>
+  <a href="fruit-merge-mania.html">Fruit Merge Mania</a>
+  <a href="bubble-shooter.html">Bubble Shooter</a>
+  <a href="nova-2048.html">2048 Puzzle</a>
+  <a href="match-3.html">Match 3</a>
+  <a href="brick-breaker.html">Neon Brick Breaker</a>
+  <a href="color-reflex.html">Color Reflex Rush</a>
+  <a href="snake-dash.html">Nova Snake Dash</a>
+  <a href="lane-hopper.html">Nova Lane Hopper</a>
+  <a href="stack-tower.html">Stack Tower</a>
+  <a href="block-blast.html">Block Blast</a>
+  <a href="solitaire.html">Solitaire</a>
+  <a href="typing-challenge.html">Typing Challenge</a>
+  <a href="city-tycoon.html">City Tycoon</a>
+  <a href="hexa-stack-vs.html">Hexa Stack VS</a>
+  <a href="index.html">All PlayNova Games</a>
+ </div>
 
  <h3>Frequently Asked Questions</h3>
 
@@ -655,18 +717,14 @@ function createEnemies(){
  const cols = 8;
 
  for(let r=0;r<rows;r++){
-
   for(let c=0;c<cols;c++){
-
    enemies.push({
     x:38+c*46,
     y:65+r*43,
     row:r,
     alive:true
    });
-
   }
-
  }
 
  enemySpeed = 0.65 + wave*0.13;
@@ -695,6 +753,10 @@ function resetGame(){
  lastShot = 0;
  lastEnemyShot = 0;
 
+ keys.left = false;
+ keys.right = false;
+ keys.fire = false;
+
  running = true;
 
  createEnemies();
@@ -720,18 +782,14 @@ function drawBackground(){
   ctx.fillRect(s.x,s.y,s.size,s.size);
 
   if(running){
-
    s.y += s.speed;
 
    if(s.y > 560){
     s.y = 0;
     s.x = Math.random()*400;
    }
-
   }
-
  });
-
 }
 
 /* PLAYER */
@@ -744,7 +802,6 @@ function drawPlayer(){
 
  ctx.shadowBlur = 18;
  ctx.shadowColor = "#22d3ee";
-
  ctx.fillStyle = "#22d3ee";
 
  ctx.beginPath();
@@ -859,7 +916,6 @@ function enemyShoot(){
 function addParticles(x,y,color){
 
  for(let i=0;i<9;i++){
-
   particles.push({
    x:x,
    y:y,
@@ -868,9 +924,7 @@ function addParticles(x,y,color){
    life:25,
    color:color
   });
-
  }
-
 }
 
 function updateParticles(){
@@ -887,11 +941,9 @@ function updateParticles(){
 function drawParticles(){
 
  particles.forEach(p=>{
-
   ctx.globalAlpha = Math.max(0,p.life/25);
   ctx.fillStyle = p.color;
   ctx.fillRect(p.x,p.y,4,4);
-
  });
 
  ctx.globalAlpha = 1;
@@ -905,14 +957,16 @@ function endGame(){
 
  running = false;
 
- if(score > best){
+ keys.left = false;
+ keys.right = false;
+ keys.fire = false;
 
+ if(score > best){
   best = score;
 
   try{
    localStorage.setItem("novaSpaceBest",String(best));
   }catch(e){}
-
  }
 
  updateStats();
@@ -932,7 +986,6 @@ function endGame(){
   "Ready for another battle?";
 
  startBtn.textContent = "PLAY AGAIN";
-
  overlay.style.display = "flex";
 
  playTone(130,0.25,"sawtooth");
@@ -953,7 +1006,6 @@ function loseLife(){
  if(lives <= 0){
   endGame();
  }
-
 }
 
 /* UPDATE GAME */
@@ -961,8 +1013,6 @@ function loseLife(){
 function updateGame(){
 
  if(!running) return;
-
- /* PLAYER MOVEMENT */
 
  if(keys.left){
   player.x -= player.speed;
@@ -978,15 +1028,11 @@ function updateGame(){
   shoot();
  }
 
- /* PLAYER BULLETS */
-
  bullets.forEach(b=>{
   b.y -= b.speed;
  });
 
  bullets = bullets.filter(b=>b.y>0);
-
- /* ENEMY BULLETS */
 
  enemyBullets.forEach(b=>{
   b.y += b.speed;
@@ -994,30 +1040,24 @@ function updateGame(){
 
  enemyBullets = enemyBullets.filter(b=>b.y<580);
 
- /* ENEMY MOVEMENT */
-
  const activeEnemies = enemies.filter(e=>e.alive);
 
  let hitEdge = false;
 
  activeEnemies.forEach(e=>{
-
   e.x += enemyDirection*enemySpeed;
 
   if(e.x > 380 || e.x < 20){
    hitEdge = true;
   }
-
  });
 
  if(hitEdge){
-
   enemyDirection *= -1;
 
   activeEnemies.forEach(e=>{
    e.y += 13;
   });
-
  }
 
  /* BULLET COLLISION */
@@ -1035,22 +1075,16 @@ function updateGame(){
     Math.abs(b.y-e.y)<18;
 
    if(hit){
-
     e.alive = false;
     b.y = -20;
 
     score += 10*(e.row+1);
 
     addParticles(e.x,e.y,"#a78bfa");
-
     playTone(280,0.07);
-
     updateStats();
-
    }
-
   });
-
  });
 
  /* ENEMY BULLET COLLISION */
@@ -1064,12 +1098,9 @@ function updateGame(){
    Math.abs(b.y-player.y)<20;
 
   if(hit){
-
    b.y = 600;
    loseLife();
-
   }
-
  });
 
  if(!running) return;
@@ -1077,11 +1108,9 @@ function updateGame(){
  /* ENEMIES REACH PLAYER */
 
  enemies.forEach(e=>{
-
   if(e.alive && e.y > player.y-24){
    endGame();
   }
-
  });
 
  if(!running) return;
@@ -1091,25 +1120,15 @@ function updateGame(){
  const remaining = enemies.filter(e=>e.alive);
 
  if(remaining.length === 0){
-
   wave++;
-
   enemyBullets = [];
-
   createEnemies();
-
   updateStats();
-
   playTone(800,0.25,"sine");
-
  }
 
- /* ENEMY FIRE */
-
  enemyShoot();
-
  updateParticles();
-
 }
 
 /* DRAW GAME */
@@ -1119,16 +1138,12 @@ function drawGame(){
  drawBackground();
 
  enemies.forEach(e=>{
-
   if(e.alive){
    drawEnemy(e);
   }
-
  });
 
  drawPlayer();
-
- /* PLAYER BULLETS */
 
  bullets.forEach(b=>{
 
@@ -1141,10 +1156,7 @@ function drawGame(){
   ctx.fillRect(b.x-2,b.y-9,4,15);
 
   ctx.restore();
-
  });
-
- /* ENEMY BULLETS */
 
  enemyBullets.forEach(b=>{
 
@@ -1157,12 +1169,9 @@ function drawGame(){
   ctx.fillRect(b.x-3,b.y-4,6,12);
 
   ctx.restore();
-
  });
 
  drawParticles();
-
- /* LIVES */
 
  ctx.fillStyle = "#c4b5fd";
  ctx.font = "13px Arial";
@@ -1173,7 +1182,6 @@ function drawGame(){
   12,
   25
  );
-
 }
 
 /* GAME LOOP */
@@ -1186,7 +1194,6 @@ function loop(){
  }
 
  updateGame();
-
  drawGame();
 
  if(running){
@@ -1194,17 +1201,14 @@ function loop(){
  }else{
   animationId = null;
  }
-
 }
 
 /* START BUTTON */
 
 startBtn.addEventListener("click",function(){
-
  if(!running){
   resetGame();
  }
-
 });
 
 /* RESTART BUTTON */
@@ -1225,7 +1229,6 @@ soundBtn.addEventListener("click",function(){
  if(soundOn){
   playTone(500,0.08);
  }
-
 });
 
 /* FULLSCREEN */
@@ -1236,7 +1239,13 @@ fullscreenBtn.addEventListener("click",async function(){
 
   if(!document.fullscreenElement){
 
-   await gameBox.requestFullscreen();
+   if(gameBox.requestFullscreen){
+    await gameBox.requestFullscreen();
+   }else if(gameBox.webkitRequestFullscreen){
+    gameBox.webkitRequestFullscreen();
+   }else{
+    alert("Fullscreen is not supported by this browser.");
+   }
 
   }else{
 
@@ -1246,20 +1255,30 @@ fullscreenBtn.addEventListener("click",async function(){
 
  }catch(e){
 
-  alert("Full Screen is not supported on this device.");
+  alert("Unable to enter fullscreen. Please try your browser's fullscreen option.");
 
  }
 
 });
 
-document.addEventListener("fullscreenchange",function(){
+/* FULLSCREEN CHANGE */
+
+function updateFullscreenButton(){
+
+ const isFullscreen =
+  document.fullscreenElement === gameBox ||
+  document.webkitFullscreenElement === gameBox;
 
  fullscreenBtn.textContent =
-  document.fullscreenElement
-  ? "✕ EXIT FULL SCREEN"
-  : "⛶ FULL SCREEN";
+  isFullscreen ? "✕ EXIT FULL SCREEN" : "⛶ FULL SCREEN";
 
-});
+ keys.left = false;
+ keys.right = false;
+ keys.fire = false;
+}
+
+document.addEventListener("fullscreenchange",updateFullscreenButton);
+document.addEventListener("webkitfullscreenchange",updateFullscreenButton);
 
 /* KEYBOARD CONTROLS */
 
@@ -1284,7 +1303,6 @@ document.addEventListener("keydown",function(e){
  if(e.code === "Space"){
   keys.fire = true;
  }
-
 });
 
 document.addEventListener("keyup",function(e){
@@ -1300,7 +1318,12 @@ document.addEventListener("keyup",function(e){
  if(e.code === "Space"){
   keys.fire = false;
  }
+});
 
+window.addEventListener("blur",function(){
+ keys.left = false;
+ keys.right = false;
+ keys.fire = false;
 });
 
 /* MOBILE BUTTON CONTROLS */
@@ -1309,25 +1332,25 @@ function holdButton(id,key){
 
  const btn = document.getElementById(id);
 
- btn.addEventListener("pointerdown",function(e){
-
+ function press(e){
   e.preventDefault();
-
   keys[key] = true;
 
   try{
    btn.setPointerCapture(e.pointerId);
   }catch(err){}
+ }
 
- });
-
- function release(){
+ function release(e){
+  if(e) e.preventDefault();
   keys[key] = false;
  }
 
+ btn.addEventListener("pointerdown",press);
  btn.addEventListener("pointerup",release);
  btn.addEventListener("pointercancel",release);
  btn.addEventListener("lostpointercapture",release);
+ btn.addEventListener("contextmenu",e=>e.preventDefault());
 
 }
 
@@ -1342,14 +1365,12 @@ function showInitialScreen(){
  running = false;
 
  drawBackground();
-
  drawPlayer();
 
  ctx.fillStyle = "#c4b5fd";
  ctx.font = "14px Arial";
  ctx.textAlign = "center";
  ctx.fillText("READY FOR BATTLE?",200,420);
-
 }
 
 showInitialScreen();
